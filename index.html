@@ -160,7 +160,8 @@
             <h2>Informações da festa</h2>
             <ul class="details-list">
                 <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
-                <li class="details-item"><span class="icon">📍</span>Sítio Verdes Encantos – Tinguá, Nova Iguaçu (RJ)</li>
+                <!-- Atualizado para exibir o endereço completo do Sítio Verdes Encantos -->
+                <li class="details-item"><span class="icon">📍</span>Sítio Verdes Encantos – Rua Nossa Senhora da Conceição, 234, Casa F, Tinguá, Nova Iguaçu - RJ, 26063‑420, Brasil</li>
                 <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
             </ul>
             <div class="button-row">
@@ -209,7 +210,8 @@
                     try {
                         await navigator.share({
                             title: 'Festa da Isabella',
-                            text: 'Venha celebrar o 1º aniversário da Isabella! Sábado, 22 de novembro de 2025, das 14h às 18h no Sítio Verdes Encantos.',
+                            // Atualiza o texto de compartilhamento para incluir o endereço completo
+                            text: 'Venha celebrar o 1º aniversário da Isabella! Sábado, 22 de novembro de 2025, das 14h às 18h no Sítio Verdes Encantos, Rua Nossa Senhora da Conceição, 234, Casa F, Tinguá, Nova Iguaçu - RJ, 26063‑420, Brasil.',
                             url: window.location.href
                         });
                     } catch (err) {
