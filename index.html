@@ -94,8 +94,10 @@
             margin-bottom: 15px;
         }
         .album-preview img {
+            /* Make preview thumbnails square. Each image has a fixed width and height so
+               the object-fit will crop the image to the central square. */
             flex: 1 1 calc(33.333% - 10px);
-            max-width: 160px;
+            width: 120px;
             height: 120px;
             object-fit: cover;
             border-radius: 12px;
@@ -271,9 +273,13 @@
         // Configuração da prévia do álbum
         const previewElements = document.querySelectorAll('.album-preview img');
         const previewImages = [
+            // Imagens para a prévia do álbum. Podem ser adicionadas quantas fotos quiser;
+            // o script embaralha e seleciona 3 aleatórias para exibir.
             'album_preview_crop2_1.jpg',
             'album_preview_crop2_2.jpg',
-            'album_preview_crop2_3.jpg'
+            'album_preview_crop2_3.jpg',
+            'album_preview_extra1.jpg',
+            'album_preview_extra2.jpg'
         ];
         function shuffleAlbumPreview() {
             // copia e embaralha as imagens
