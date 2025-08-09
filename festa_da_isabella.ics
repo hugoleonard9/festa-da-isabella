@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Festa da Isabella//PT_BR
+BEGIN:VEVENT
+UID:festa-isabella@local
+DTSTAMP:20250809T133049Z
+DTSTART;TZID=America/Sao_Paulo:20251122T140000
+DTEND;TZID=America/Sao_Paulo:20251122T180000
+SUMMARY:Festa da Isabella - 1º aniversário
+DESCRIPTION:Comemore o 1º aniversário da Isabella no Sítio Verdes Encantos.
+LOCATION:Sítio Verdes Encantos, Rua Nossa Senhora da Conceição, 234, Casa F, Tinguá, Nova Iguaçu - RJ, 26063-420, Brasil
+END:VEVENT
+END:VCALENDAR

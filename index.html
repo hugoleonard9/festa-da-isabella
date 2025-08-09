@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Festa da Isabella</title>
+    <style>
+        /* Reset some defaults */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            background: #fdfdfe;
+            color: #333;
+        }
+        a { color: #5b3fa2; text-decoration: none; }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* Hero section */
+        .hero {
+            position: relative;
+            /* Use a separate image file for the hero to keep this HTML manageable. */
+            background: url('hero.jpg') center/cover no-repeat;
+            height: 60vh;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(2px);
+        }
+        .hero h1 {
+            position: relative;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .hero p {
+            position: relative;
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+        /* Card styles */
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #5b3fa2;
+        }
+        .details-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        .details-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        .details-item span.icon {
+            font-size: 1.3rem;
+            color: #5b3fa2;
+        }
+        /* Button styles */
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-align: center;
+        }
+        .btn-primary {
+            background: #5b3fa2;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #493183;
+        }
+        .btn-secondary {
+            background: #f1eaff;
+            color: #5b3fa2;
+        }
+        .btn-secondary:hover {
+            background: #e5d9ff;
+        }
+        /* Responsive adjustments */
+        @media (min-width: 600px) {
+            .details-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 900px) {
+            .details-list {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        /* Map container */
+        .map-container {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        /* Playlist embed style */
+        .playlist-iframe {
+            width: 100%;
+            max-width: 600px;
+            height: 180px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <div>
+            <h1>Festa da Isabella</h1>
+            <p>Celebrando seu 1º aniversário</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Detalhes principais -->
+        <section class="card">
+            <h2>Informações da festa</h2>
+            <ul class="details-list">
+                <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
+                <li class="details-item"><span class="icon">📍</span>Sítio Verdes Encantos – Tinguá, Nova Iguaçu (RJ)</li>
+                <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
+            </ul>
+            <div class="button-row">
+                <a class="btn btn-primary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
+                <a class="btn btn-secondary" href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20na%20Festa%20da%20Isabella!" target="_blank" rel="noopener">Confirmar presença</a>
+                <a class="btn btn-secondary" href="javascript:void(0);" id="share-btn">Compartilhar</a>
+            </div>
+        </section>
+
+        <!-- Álbum -->
+        <section class="card">
+            <h2>Álbum de fotos</h2>
+            <p>Clique no botão abaixo para acessar nosso álbum compartilhado e adicionar suas fotos favoritas da festa.</p>
+            <div class="button-row">
+                <a class="btn btn-primary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">Abrir álbum</a>
+            </div>
+        </section>
+
+        <!-- Mapa -->
+        <section class="card">
+            <h2>Como chegar</h2>
+            <p>Use o mapa abaixo para visualizar a localização do Sítio Verdes Encantos e traçar sua rota.</p>
+            <div class="map-container">
+                <iframe src="https://maps.google.com/maps?q=Rua%20Nossa%20Senhora%20da%20Concei%C3%A7%C3%A3o%2C%20234%2C%20Casa%20F%2C%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-420%2C%20Brasil&amp;t=m&amp;z=15&amp;ie=UTF8&amp;iwloc=&amp;output=embed" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="button-row">
+                <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Rua%20Nossa%20Senhora%20da%20Concei%C3%A7%C3%A3o%2C%20234%2C%20Casa%20F%2C%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-420%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
+                <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Rua%20Nossa%20Senhora%20da%20Concei%C3%A7%C3%A3o%2C%20234%2C%20Casa%20F%2C%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-420%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
+            </div>
+        </section>
+
+        <!-- Playlist -->
+        <section class="card">
+            <h2>Playlist da festa</h2>
+            <p>Dê o play e entre no clima da celebração com nossa playlist no Apple Music.</p>
+            <iframe class="playlist-iframe" allow="autoplay *; encrypted-media *; fullscreen *" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"></iframe>
+        </section>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var shareBtn = document.getElementById('share-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', async function() {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Festa da Isabella',
+                            text: 'Venha celebrar o 1º aniversário da Isabella! Sábado, 22 de novembro de 2025, das 14h às 18h no Sítio Verdes Encantos.',
+                            url: window.location.href
+                        });
+                    } catch (err) {
+                        console.error('Erro ao compartilhar:', err);
+                    }
+                } else {
+                    alert('Função de compartilhamento não suportada neste dispositivo. Copie o link manualmente.');
+                }
+            });
+        }
+    });
+    </script>
+</body>
+</html>
