@@ -55,7 +55,9 @@
         }
         /* Card styles */
         .card {
-            background: #ffffff;
+            /* Use a translucent white background with a blur effect to let the hero image subtly show through. */
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
             border-radius: 12px;
             padding: 20px;
             margin: 20px 0;
@@ -155,6 +157,15 @@
     </header>
 
     <main class="container">
+        <!-- Mensagem de introdução -->
+        <section class="card intro-card">
+            <h2>Organizado por Hugo Mattos</h2>
+            <p>
+                É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖<br>
+                Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
+                Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
+            </p>
+        </section>
         <!-- Detalhes principais -->
         <section class="card">
             <h2>Informações da festa</h2>
