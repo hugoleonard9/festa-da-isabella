@@ -96,13 +96,15 @@
         .album-preview img {
             /* Make preview thumbnails square. Each image has a fixed width and height so
                the object-fit will crop the image to the central square. */
-            flex: 1 1 calc(33.333% - 10px);
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.5s ease;
+    /* Each preview image is square.  Set a fixed size and prevent the flexbox from stretching the images. */
+    width: 120px;
+    height: 120px;
+    /* Prevent flexbox from expanding the thumbnail widths. */
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s ease;
         }
         /* Button styles */
         .button-row {
