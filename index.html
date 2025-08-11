@@ -1,310 +1,211 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Festa da Isabella</title>
-    <style>
-        /* Reset some defaults */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.5;
-            background: #fdfdfe;
-            color: #333;
-        }
-        a { color: #5b3fa2; text-decoration: none; }
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        /* Hero section */
-        .hero {
-            position: relative;
-            /* Use a separate image file for the hero to keep this HTML manageable. */
-            background: url('hero.jpg') center/cover no-repeat;
-            height: 60vh;
-            min-height: 320px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            text-align: center;
-        }
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(0.5px);
-        }
-        .hero h1 {
-            position: relative;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
-        .hero p {
-            position: relative;
-            font-size: 1.2rem;
-            margin-bottom: 0;
-        }
-        /* Card styles */
-        .card {
-            /* Use a translucent white background with a blur effect to let the hero image subtly show through. */
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(8px);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #5b3fa2;
-        }
-        .details-list {
-            list-style: none;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-        }
-        .details-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-        }
-        .details-item span.icon {
-            font-size: 1.3rem;
-            color: #5b3fa2;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Festa da Isabella</title>
+  <style>
+    /* Reset */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;
+      line-height:1.5;background:#fdfdfe;color:#333
+    }
+    a{color:#5b3fa2;text-decoration:none}
+    .container{max-width:960px;margin:0 auto;padding:20px}
 
-        /* Album preview styles */
-        .album-preview {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .album-preview img {
-            /* Make preview thumbnails square. Each image has a fixed width and height so
-               the object-fit will crop the image to the central square. */
-    /* Each preview image is square.  Set a fixed size and prevent the flexbox from stretching the images. */
-    width: 120px;
-    height: 120px;
-    /* Prevent flexbox from expanding the thumbnail widths. */
-    flex: 0 0 auto;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.5s ease;
-        }
-        /* Button styles */
-        .button-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            text-align: center;
-        }
-        .btn-primary {
-            background: #5b3fa2;
-            color: #fff;
-        }
-        .btn-primary:hover {
-            background: #493183;
-        }
-        .btn-secondary {
-            background: #f1eaff;
-            color: #5b3fa2;
-        }
-        .btn-secondary:hover {
-            background: #e5d9ff;
-        }
-        /* Responsive adjustments */
-        @media (min-width: 600px) {
-            .details-list {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (min-width: 900px) {
-            .details-list {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        /* Map container */
-        .map-container {
-            width: 100%;
-            height: 300px;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        /* Playlist embed style */
-        .playlist-iframe {
-            width: 100%;
-            max-width: 600px;
-            height: 180px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: none;
-        }
-    </style>
+    /* Hero */
+    .hero{
+      position:relative;
+      background:url('hero.jpg') center/cover no-repeat;
+      height:60vh;min-height:320px;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;text-align:center
+    }
+    .hero::before{
+      content:"";position:absolute;inset:0;
+      /* Reduzi o “embaçado”: removi blur e baixei a opacidade do overlay */
+      background:rgba(0,0,0,.2);         /* era 0.35 */
+      /* backdrop-filter: blur(0.5px);  removido */
+    }
+    .hero h1{position:relative;font-size:2.5rem;margin-bottom:.5rem;font-weight:700}
+    .hero p{position:relative;font-size:1.2rem;margin-bottom:0}
+
+    /* Cards */
+    .card{
+      background:rgba(255,255,255,.8);
+      backdrop-filter:blur(8px);
+      border-radius:12px;padding:20px;margin:20px 0;
+      box-shadow:0 4px 6px rgba(0,0,0,.05)
+    }
+    .card h2{font-size:1.5rem;margin-bottom:10px;color:#5b3fa2}
+    .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.5rem}
+    .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem}
+    .details-item .icon{font-size:1.3rem;color:#5b3fa2}
+
+    /* Botões */
+    .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
+    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s;text-align:center}
+    .btn-primary{background:#5b3fa2;color:#fff}
+    .btn-primary:hover{background:#493183}
+    .btn-secondary{background:#f1eaff;color:#5b3fa2}
+    .btn-secondary:hover{background:#e5d9ff}
+
+    /* Álbum (moldura gira, foto fica enquadrada) */
+    .album-preview{
+      display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:15px
+    }
+    .album-preview .frame{
+      position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;
+      width:120px;flex:0 0 auto;            /* miniatura quadrada */
+      box-shadow:0 4px 6px rgba(0,0,0,.1);
+      transform:rotate(var(--tilt,0deg));    /* rotação aplicada na moldura */
+      transition:transform .5s ease
+    }
+    .album-preview .frame img{
+      width:100%;height:100%;display:block;object-fit:cover;object-position:center
+    }
+
+    /* Responsivo */
+    @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
+    @media (min-width:900px){.details-list{grid-template-columns:repeat(3,1fr)}}
+
+    /* Mapa + Playlist */
+    .map-container{width:100%;height:300px;border-radius:12px;overflow:hidden}
+    iframe{width:100%;height:100%;border:0}
+    .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:12px;overflow:hidden;border:none}
+  </style>
 </head>
 <body>
-    <header class="hero">
-        <div>
-            <h1>Festa da Isabella</h1>
-            <p>Celebrando seu 1º aniversário</p>
-        </div>
-    </header>
+  <header class="hero">
+    <div>
+      <h1>Festa da Isabella</h1>
+      <p>Celebrando seu 1º aniversário</p>
+    </div>
+  </header>
 
-    <main class="container">
-        <!-- Mensagem de introdução -->
-        <section class="card intro-card">
-            <h2>Boas-vindas</h2>
-            <p>
-                É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖<br>
-                Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
-                Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
-            </p>
-        </section>
-        <!-- Detalhes principais -->
-        <section class="card">
-            <h2>Informações da festa</h2>
-            <ul class="details-list">
-                <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
-                <!-- Atualizado para exibir o endereço completo da festa -->
-                <li class="details-item"><span class="icon">📍</span>Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil</li>
-                <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
-            </ul>
-            <div class="button-row">
-                <a class="btn btn-primary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
-                <a class="btn btn-secondary" href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20na%20Festa%20da%20Isabella!" target="_blank" rel="noopener">Confirmar presença</a>
-                <a class="btn btn-secondary" href="javascript:void(0);"<button class="share-button">Compartilhar</button>
-            </div>
-        </section>
+  <main class="container">
+    <!-- Intro -->
+    <section class="card intro-card">
+      <h2>Boas-vindas</h2>
+      <p>
+        É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖<br>
+        Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
+        Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
+      </p>
+    </section>
 
-        <!-- Álbum -->
-        <section class="card">
-            <h2>Álbum de fotos</h2>
-            <p>Clique nas fotos abaixo para ver uma prévia do nosso álbum compartilhado. As imagens mudam periodicamente!</p>
-            <div class="album-preview">
-                <img src="album_preview_crop2_1.jpg" alt="Foto do álbum 1">
-                <img src="album_preview_crop2_2.jpg" alt="Foto do álbum 2">
-                <img src="album_preview_crop2_3.jpg" alt="Foto do álbum 3">
-            </div>
-            <div class="button-row">
-                <a class="btn btn-primary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">Abrir álbum</a>
-            </div>
-        </section>
+    <!-- Info -->
+    <section class="card">
+      <h2>Informações da festa</h2>
+      <ul class="details-list">
+        <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
+        <li class="details-item"><span class="icon">📍</span>Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil</li>
+        <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
+      </ul>
+      <div class="button-row">
+        <a class="btn btn-primary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
+        <a class="btn btn-secondary" href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20na%20Festa%20da%20Isabella!" target="_blank" rel="noopener">Confirmar presença</a>
+        <!-- Botão Compartilhar removido conforme pedido -->
+      </div>
+    </section>
 
-            <!-- Mapa -->
-        <section class="card">
-                <h2>Como chegar</h2>
-                <p>Use o mapa abaixo para visualizar a localização da festa e traçar sua rota.</p>
-            <div class="map-container">
-                    <iframe src="https://maps.google.com/maps?q=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&amp;t=m&amp;z=15&amp;ie=UTF8&amp;iwloc=&amp;output=embed" allowfullscreen loading="lazy"></iframe>
-            </div>
-            <div class="button-row">
-                    <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
-                        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
-            </div>
-        </section>
+    <!-- Álbum -->
+    <section class="card">
+      <h2>Álbum de fotos</h2>
+      <p>Clique nas fotos abaixo para ver uma prévia do nosso álbum compartilhado. As imagens mudam periodicamente!</p>
 
-        <!-- Sugestão de presentes -->
-        <section class="card">
-            <h2>Sugestão de presentes 💝</h2>
-            <ul class="details-list">
-                <li class="details-item"><span class="icon">🧸</span>Brinquedos educativos</li>
-                <li class="details-item"><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
-                <li class="details-item"><span class="icon">🩰</span>Calçados tamanho 22</li>
-            </ul>
-        </section>
+      <div class="album-preview">
+        <!-- 9 molduras para a grade inicial; o JS vai trocando as fotos -->
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+      </div>
 
-        <!-- Playlist -->
-        <section class="card">
-            <h2>Playlist da festa</h2>
-            <p>Dê o play e entre no clima da celebração com nossa playlist no Apple Music.</p>
-            <iframe class="playlist-iframe" allow="autoplay *; encrypted-media *; fullscreen *" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"></iframe>
-        </section>
-    </main>
+      <div class="button-row">
+        <a class="btn btn-primary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">Abrir álbum</a>
+      </div>
+    </section>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Configura botão de compartilhamento, se suportado
-        var shareBtn = document.getElementById('share-btn');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', async function() {
-                if (navigator.share) {
-                    try {
-                        await navigator.share({
-                            title: 'Festa da Isabella',
-                            // Atualiza o texto de compartilhamento para incluir o endereço completo
-                            text: 'Venha celebrar o 1º aniversário da Isabella! Sábado, 22 de novembro de 2025, das 14h às 18h na Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil.',
-                            url: window.location.href
-                        });
-                    } catch (err) {
-                        console.error('Erro ao compartilhar:', err);
-                    }
-                } else {
-                    alert('Função de compartilhamento não suportada neste dispositivo. Copie o link manualmente.');
-                }
-            });
+    <!-- Mapa -->
+    <section class="card">
+      <h2>Como chegar</h2>
+      <p>Use o mapa abaixo para visualizar a localização da festa e traçar sua rota.</p>
+      <div class="map-container">
+        <iframe src="https://maps.google.com/maps?q=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="button-row">
+        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
+      </div>
+    </section>
+
+    <!-- Presentes -->
+    <section class="card">
+      <h2>Sugestão de presentes 💝</h2>
+      <ul class="details-list">
+        <li class="details-item"><span class="icon">🧸</span>Brinquedos educativos</li>
+        <li class="details-item"><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
+        <li class="details-item"><span class="icon">🩰</span>Calçados tamanho 22</li>
+      </ul>
+    </section>
+
+    <!-- Playlist -->
+    <section class="card">
+      <h2>Playlist da festa</h2>
+      <p>Dê o play e entre no clima da celebração com nossa playlist no Apple Music.</p>
+      <iframe class="playlist-iframe" allow="autoplay *; encrypted-media *; fullscreen *"
+              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+              src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"></iframe>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      /* Prévia do álbum — usa apenas as 10 fotos do album2 */
+      const previewImages = [
+        'album2/IMG_5139.jpeg',
+        'album2/IMG_5010.jpeg',
+        'album2/IMG_4772.jpeg',
+        'album2/IMG_4765.jpeg',
+        'album2/IMG_4639.jpeg',
+        'album2/IMG_6911.jpeg',
+        'album2/IMG_4450.jpeg',
+        'album2/IMG_4352.jpeg',
+        'album2/IMG_3056.jpeg',
+        'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
+      ];
+
+      const frames = document.querySelectorAll('.album-preview .frame');
+
+      function shuffle(arr){
+        const a = arr.slice();
+        for(let i=a.length-1;i>0;i--){
+          const j = Math.floor(Math.random()*(i+1));
+          [a[i],a[j]] = [a[j],a[i]];
         }
+        return a;
+      }
 
-        // Configuração da prévia do álbum
-        const previewElements = document.querySelectorAll('.album-preview img');
-        const previewImages = [
-  'album2/IMG_5139.jpeg',
-  'album2/IMG_5010.jpeg',
-  'album2/IMG_4772.jpeg',
-  'album2/IMG_4765.jpeg',
-  'album2/IMG_4639.jpeg',
-  'album2/IMG_6911.jpeg',
-  'album2/IMG_4450.jpeg',
-  'album2/IMG_4352.jpeg',
-  'album2/IMG_3056.jpeg',
-  'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
-];
-        function shuffleAlbumPreview() {
-            // copia e embaralha as imagens
-            const shuffled = previewImages.slice();
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            // atualiza cada elemento de imagem com nova fonte sem rotação
-            previewElements.forEach((el, idx) => {
-                el.src = shuffled[idx % shuffled.length];
-                // removemos a rotação aleatória para manter os quadrados retos
-                el.style.transform = '';
-            });
-        }
-        // inicia a prévia imediatamente
-        shuffleAlbumPreview();
-        // troca as imagens periodicamente (a cada 8 segundos)
-        setInterval(shuffleAlbumPreview, 8000);
+      function fillPreview(){
+        const imgs = shuffle(previewImages);
+        frames.forEach((frame, idx) => {
+          const img = frame.querySelector('img');
+          img.src = imgs[idx % imgs.length];
+          const angle = (Math.random()*10 - 5);      // -5° a +5°
+          frame.style.setProperty('--tilt', angle + 'deg');
+        });
+      }
+
+      fillPreview();
+      setInterval(fillPreview, 8000);
     });
-    </script>
+  </script>
 </body>
 </html>
