@@ -17,7 +17,7 @@
     a{color:var(--roxo);text-decoration:none}
     .container{max-width:960px;margin:0 auto;padding:20px}
 
-    /* Overlay de boas-vindas (solicitar música) */
+    /* Overlay de boas‑vindas (solicitar música) */
     .welcome-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
     .welcome-card{width:min(92vw,520px);background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
     .welcome-card h2{font-size:1.6rem;color:var(--roxo);margin-bottom:8px}
@@ -59,16 +59,31 @@
     iframe{width:100%;height:100%;border:0}
     .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:12px;overflow:hidden;border:none}
 
+    /* Card de Tempo (estilo iOS) */
+    .weather-wrapper{display:flex;justify-content:center;margin:18px 0 90px}
+    .weather-card{
+      width:min(680px,92vw);padding:24px 18px 28px;border-radius:28px;
+      background:linear-gradient(180deg,rgba(25,25,28,.65),rgba(25,25,28,.55));
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 8px 30px rgba(0,0,0,.12);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      color:#fff;text-align:center;position:relative;overflow:hidden
+    }
+    .weather-card::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 80px rgba(0,0,0,.25);pointer-events:none}
+    .weather-app{font-weight:700;font-size:1.4rem;opacity:.95}
+    .weather-date{margin-top:6px;font-size:1.1rem;opacity:.7}
+    .weather-text{margin:16px auto 0;font-size:1.6rem;line-height:1.25;max-width:34ch;opacity:.98}
+    @media (max-width:420px){.weather-card{border-radius:22px;padding:20px 14px 24px}.weather-text{font-size:1.35rem}}
+
     /* Marca d'água */
     footer{position:fixed;bottom:20px;width:100%;text-align:center;font-size:12px;color:#999;}
   </style>
 </head>
 <body>
 
-  <!-- Tela de Boas-vindas para iniciar música -->
+  <!-- Tela de Boas‑vindas para iniciar música -->
   <div class="welcome-overlay" id="welcome">
     <div class="welcome-card">
-      <h2>Bem-vindo(a) à Festa da Isabella! 🎶</h2>
+      <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
       <p>Toque a música para entrar no clima da celebração.</p>
       <div class="welcome-actions">
         <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
@@ -159,12 +174,19 @@
               src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
               title="Playlist da Festa"></iframe>
     </section>
+
+    <!-- Card de Tempo dinâmico -->
+    <section class="weather-wrapper">
+      <div class="weather-card">
+        <div class="weather-app">Tempo</div>
+        <div class="weather-date" id="weatherDate">—</div>
+        <div class="weather-text" id="weatherText">Carregando…</div>
+      </div>
+    </section>
   </main>
 
   <!-- Marca d'água -->
-  <footer>
-    © 2025 Hugo Mattos. Todos os direitos reservados.
-  </footer>
+  <footer>© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -214,6 +236,79 @@
 
       enterSilent?.addEventListener('click', () => { closeWelcome(); });
     });
+
+    /* ====== Card de Tempo dinâmico ====== */
+    (function(){
+      const EVENT_DATE_DEFAULT = '2025-11-22';                     // altere aqui se quiser
+      const LAT = -22.606, LON = -43.490;                          // Tinguá, Nova Iguaçu
+      const TZ = 'America/Sao_Paulo';
+
+      const qs = new URLSearchParams(location.search);
+      const EVENT_DATE = qs.get('data') || EVENT_DATE_DEFAULT;
+
+      function formatPtBRDate(iso){
+        const d = new Date(iso + 'T12:00:00');
+        return new Intl.DateTimeFormat('pt-BR',{ day:'2-digit', month:'long'}).format(d);
+      }
+      document.getElementById('weatherDate').textContent = formatPtBRDate(EVENT_DATE);
+
+      function daysTo(dateIso){
+        const today = new Date(); today.setHours(0,0,0,0);
+        const ev = new Date(dateIso+'T00:00:00');
+        return Math.round((ev - today)/86400000);
+      }
+      const dleft = daysTo(EVENT_DATE);
+      const elText = document.getElementById('weatherText');
+
+      async function getDailyForecast(){
+        const url = new URL('https://api.open-meteo.com/v1/forecast');
+        url.search = new URLSearchParams({
+          latitude: LAT, longitude: LON, timezone: TZ,
+          daily: 'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',
+          start_date: EVENT_DATE, end_date: EVENT_DATE
+        });
+        const r = await fetch(url); if(!r.ok) throw new Error('forecast http');
+        return r.json();
+      }
+      async function getClimateNormals(month){
+        const url = new URL('https://climate-api.open-meteo.com/v1/climate');
+        url.search = new URLSearchParams({
+          latitude: LAT, longitude: LON,
+          start_year: 1991, end_year: 2020, models: 'ERA5',
+          monthly: 'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',
+          month: month
+        });
+        const r = await fetch(url); if(!r.ok) throw new Error('climate http');
+        return r.json();
+      }
+
+      (async () => {
+        try{
+          if(dleft >= 0 && dleft <= 16){
+            const data = await getDailyForecast();
+            const d = data.daily;
+            const tmax = Math.round(d.temperature_2m_max[0]);
+            const tmin = Math.round(d.temperature_2m_min[0]);
+            const ppop = d.precipitation_probability_mean?.[0];
+            elText.textContent =
+              (typeof ppop === 'number')
+              ? `Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${ppop}%`
+              : `Previsão: entre ${tmin}° e ${tmax}°`;
+          }else{
+            const month = Number(EVENT_DATE.split('-')[1]);
+            const clim = await getClimateNormals(month);
+            const m = clim.monthly || clim.daily || {};
+            const tmax = Math.round(m.temperature_2m_max_mean?.[0] ?? 27);
+            const tmin = Math.round(m.temperature_2m_min_mean?.[0] ?? 20);
+            elText.textContent =
+              `Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
+          }
+        }catch(e){
+          console.warn('Tempo: fallback estático', e);
+          elText.textContent = 'Nesta época do ano, a temperatura varia entre 20° e 27°.';
+        }
+      })();
+    })();
   </script>
 </body>
 </html>
