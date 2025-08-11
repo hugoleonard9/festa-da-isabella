@@ -35,7 +35,18 @@
     .card h2{font-size:1.5rem;margin-bottom:10px;color:var(--roxo)}
     .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.5rem}
     .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem}
-    .details-item .icon{font-size:1.3rem;color:var(--roxo)}
+    /* Ícones alinhados à linha base do texto */
+    .details-item .icon{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:1.4em;
+      height:1.4em;
+      font-size:1.2rem;
+      line-height:1;
+      transform:translateY(1px);
+      color:var(--roxo);
+    }
 
     /* Botões */
     .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
@@ -66,7 +77,12 @@
       background:rgba(255,255,255,.8);backdrop-filter:blur(8px);
       box-shadow:0 4px 6px rgba(0,0,0,.05); color:var(--txt); text-align:center
     }
-    .weather-app{font-weight:800;font-size:clamp(1.2rem,1rem + .8vw,1.6rem);color:var(--roxo)}
+    /* Título do Tempo herda de .card h2 — não definir font-size aqui */
+    .weather-app{
+      color:var(--roxo);
+      font-weight:800;
+      letter-spacing:-0.02em;
+    }
     .weather-date{margin-top:6px;font-size:1rem;color:#666}
     .weather-text{margin:14px auto 8px;font-size:clamp(1.2rem,1rem + 1.2vw,1.8rem);line-height:1.3;max-width:36ch}
     .weather-source{margin-top:6px;font-size:.9rem;color:#7a7a7a}
@@ -166,11 +182,11 @@
       <h2>Como chegar</h2>
       <p>Use o mapa abaixo para visualizar a localização da festa e traçar sua rota.</p>
       <div class="map-container">
-        <iframe src="https://maps.google.com/maps?q=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen loading="lazy"></iframe>
+        <iframe src="https://maps.google.com/maps?q=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="button-row">
-        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
-        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
       </div>
     </section>
 
@@ -186,8 +202,8 @@
 
     <!-- Card de Tempo dinâmico -->
     <section class="weather-wrapper">
-      <div class="weather-card">
-        <div class="weather-app">Tempo</div>
+      <div class="weather-card card">
+        <h2 class="weather-app">Tempo</h2>
         <div class="weather-date" id="weatherDate">—</div>
         <div class="weather-text" id="weatherText">Carregando…</div>
         <div class="weather-source" id="weatherSource">Fonte: —</div>
