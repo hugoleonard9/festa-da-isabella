@@ -5,58 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Festa da Isabella</title>
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;
-      line-height:1.5;background:#fdfdfe;color:#333
+    :root{
+      --roxo:#5b3fa2;
+      --roxo-esc:#493183;
+      --roxo-cl:#f1eaff;
+      --bg:#fdfdfe;
+      --txt:#333;
     }
-    a{color:#5b3fa2;text-decoration:none}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;line-height:1.5;background:var(--bg);color:var(--txt)}
+    a{color:var(--roxo);text-decoration:none}
     .container{max-width:960px;margin:0 auto;padding:20px}
 
+    /* Overlay de boas‑vindas (solicitar música) */
+    .welcome-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+    .welcome-card{width:min(92vw,520px);background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .welcome-card h2{font-size:1.6rem;color:var(--roxo);margin-bottom:8px}
+    .welcome-card p{color:#444;margin-bottom:18px}
+    .welcome-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
     /* Hero */
-    .hero{
-      position:relative;background:url('hero.jpg') center/cover no-repeat;
-      height:60vh;min-height:320px;display:flex;align-items:center;justify-content:center;
-      color:#fff;text-align:center
-    }
+    .hero{position:relative;background:url('hero.jpg') center/cover no-repeat;height:60vh;min-height:320px;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center}
     .hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2)}
     .hero h1{position:relative;font-size:2.5rem;margin-bottom:.5rem;font-weight:700}
     .hero p{position:relative;font-size:1.2rem;margin-bottom:0}
 
     /* Cards */
-    .card{
-      background:rgba(255,255,255,.8);backdrop-filter:blur(8px);
-      border-radius:12px;padding:20px;margin:20px 0;box-shadow:0 4px 6px rgba(0,0,0,.05)
-    }
-    .card h2{font-size:1.5rem;margin-bottom:10px;color:#5b3fa2}
+    .card{background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border-radius:12px;padding:20px;margin:20px 0;box-shadow:0 4px 6px rgba(0,0,0,.05)}
+    .card h2{font-size:1.5rem;margin-bottom:10px;color:var(--roxo)}
     .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.5rem}
     .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem}
-    .details-item .icon{font-size:1.3rem;color:#5b3fa2}
+    .details-item .icon{font-size:1.3rem;color:var(--roxo)}
 
     /* Botões */
     .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
     .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s;text-align:center;border:none}
-    .btn-primary{background:#5b3fa2;color:#fff}.btn-primary:hover{background:#493183}
-    .btn-secondary{background:#f1eaff;color:#5b3fa2}.btn-secondary:hover{background:#e5d9ff}
+    .btn-primary{background:var(--roxo);color:#fff}
+    .btn-primary:hover{background:var(--roxo-esc)}
+    .btn-secondary{background:var(--roxo-cl);color:var(--roxo)}
+    .btn-secondary:hover{filter:brightness(.97)}
 
     /* Álbum (grade 3x2, moldura inclinada) */
-    .album-preview{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 por linha */
-      gap:10px;
-      justify-items:center;
-      margin-bottom:15px
-    }
-    .album-preview .frame{
-      position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;
-      width:120px; /* tamanho das miniaturas */
-      box-shadow:0 4px 6px rgba(0,0,0,.1);
-      transform:rotate(var(--tilt,0deg));
-      transition:transform .5s ease
-    }
-    .album-preview .frame img{
-      width:100%;height:100%;display:block;object-fit:cover;object-position:center
-    }
+    .album-preview{display:grid;grid-template-columns: repeat(3, 1fr);gap:10px;justify-items:center;margin-bottom:15px}
+    .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
+    .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
 
     /* Responsivo */
     @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
@@ -69,6 +61,19 @@
   </style>
 </head>
 <body>
+
+  <!-- Tela de Boas‑vindas para iniciar música -->
+  <div class="welcome-overlay" id="welcome">
+    <div class="welcome-card">
+      <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
+      <p>Toque a música para entrar no clima da celebração.</p>
+      <div class="welcome-actions">
+        <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
+        <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
+      </div>
+    </div>
+  </div>
+
   <header class="hero">
     <div>
       <h1>Festa da Isabella</h1>
@@ -96,13 +101,14 @@
         <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
       </ul>
       <div class="button-row">
-        <a class="btn btn-primary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
-        <!-- Confirmar presença direto no WhatsApp -->
-        <a class="btn btn-secondary"
+        <!-- Confirmar presença (PRIMEIRO e PRIMÁRIO/roxo) -->
+        <a class="btn btn-primary"
            href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20no%20anivers%C3%A1rio%20da%20Isabella!"
            target="_blank" rel="noopener">
           Confirmar presença
         </a>
+        <!-- Adicionar ao calendário (depois e SECUNDÁRIO/claro) -->
+        <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
       </div>
     </section>
 
@@ -112,7 +118,6 @@
       <p>Alguns momentos especiais — as fotos abaixo se renovam periodicamente.</p>
 
       <div class="album-preview">
-        <!-- 6 molduras fixas; o JS faz o rodízio das imagens -->
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
@@ -122,7 +127,7 @@
       </div>
 
       <div class="button-row" style="margin-top:14px">
-        <a class="btn btn-primary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">
+        <a class="btn btn-secondary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">
           Abrir álbum completo
         </a>
       </div>
@@ -144,8 +149,9 @@
     <!-- Playlist -->
     <section class="card" id="playlist-section">
       <h2>Playlist da festa</h2>
-      <p>A música inicia na primeira interação (clique/rolagem/toque) por política dos navegadores.</p>
-      <iframe class="playlist-iframe" allow="autoplay *; encrypted-media *; fullscreen *"
+      <p>Toque “Entrar e tocar playlist” na abertura do site para garantir o áudio.</p>
+      <iframe class="playlist-iframe"
+              allow="autoplay *; encrypted-media *; fullscreen *"
               sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
               src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
               title="Playlist da Festa"></iframe>
@@ -169,14 +175,7 @@
       ];
       const frames = document.querySelectorAll('.album-preview .frame');
 
-      function shuffle(arr){
-        const a = arr.slice();
-        for(let i=a.length-1;i>0;i--){
-          const j = Math.floor(Math.random()*(i+1));
-          [a[i],a[j]] = [a[j],a[i]];
-        }
-        return a;
-      }
+      function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]} return a; }
       function fillPreview(){
         const imgs = shuffle(previewImages);
         frames.forEach((frame, idx) => {
@@ -189,34 +188,30 @@
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* ====== Música: iniciar na primeira interação ====== */
+      /* ====== Música: solicitar e iniciar ====== */
+      const welcome = document.getElementById('welcome');
+      const startBtn = document.getElementById('start-music');
+      const enterSilent = document.getElementById('enter-silent');
       const playlistIframe = document.querySelector('.playlist-iframe');
       const playlistURL = 'https://music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M';
-      let musicStarted = false;
 
-      function startMusicOnce(){
-        if (musicStarted) return;
-        musicStarted = true;
-        // tenta mandar "play" para o embed (pode não funcionar em todos os casos)
+      function closeWelcome(){ if (welcome) welcome.style.display='none'; }
+
+      startBtn?.addEventListener('click', () => {
+        // Tenta mandar "play" ao embed (nem sempre disponível)
         try { playlistIframe?.contentWindow?.postMessage({ action:'play' }, '*'); } catch(e){}
-        // abre Apple Music em nova aba (gesto do usuário garante áudio)
+        // Abre a playlist em nova aba com gesto do usuário -> áudio garantido
         window.open(playlistURL, '_blank', 'noopener');
-        removeMusicListeners();
-      }
-      function addMusicListeners(){
-        ['click','touchstart','keydown','wheel'].forEach(evt => {
-          window.addEventListener(evt, startMusicOnce, { once:false, passive:true });
-        });
-      }
-      function removeMusicListeners(){
-        ['click','touchstart','keydown','wheel'].forEach(evt => {
-          window.removeEventListener(evt, startMusicOnce, { passive:true });
-        });
-      }
-      addMusicListeners();
+        closeWelcome();
+        // rola até a playlist
+        document.getElementById('playlist-section')?.scrollIntoView({behavior:'smooth'});
+      });
+
+      enterSilent?.addEventListener('click', () => { closeWelcome(); });
     });
   </script>
 </body>
 </html>
+
 
 
