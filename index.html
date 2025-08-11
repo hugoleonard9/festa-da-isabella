@@ -1,224 +1,148 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Confirmação de presença — Festa da Isabella</title>
-<style>
-  :root{ --roxo:#5b3fa2; --roxo-clar:#f1eaff; }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;
-    background:#f7f7fb;color:#333;line-height:1.5;padding:20px
-  }
-  .container{max-width:720px;margin:0 auto}
-  .card{
-    background:#fff;border-radius:16px;padding:22px;margin:14px 0;
-    box-shadow:0 6px 20px rgba(0,0,0,.06)
-  }
-  h1{font-size:1.8rem;margin-bottom:8px;color:var(--roxo)}
-  p.lead{margin-bottom:14px;color:#555}
-  .choices{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 6px}
-  .btn{
-    border:none;cursor:pointer;border-radius:10px;padding:12px 18px;font-weight:600;
-    background:var(--roxo-clar);color:var(--roxo);transition:.2s
-  }
-  .btn:hover{filter:brightness(.95)}
-  .btn-primary{background:var(--roxo);color:#fff}
-  .hidden{display:none}
-  label{display:block;margin-top:12px;margin-bottom:6px;font-weight:600}
-  input,textarea{
-    width:100%;padding:12px;border:1px solid #e5e5ef;border-radius:10px;background:#fcfcff
-  }
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:640px){.row{grid-template-columns:1fr}}
-  .kids{margin-top:10px}
-  .kid-row{display:grid;grid-template-columns:1fr 120px auto;gap:10px;margin-top:8px}
-  .kid-row .remove{background:#fff;border:1px solid #eee;border-radius:10px;padding:0 10px;cursor:pointer}
-  .muted{color:#777;font-size:.95rem}
-  .success{padding:14px;border-radius:10px;background:#ecfff2;color:#1d7c3e;margin-top:12px}
-  .error{padding:14px;border-radius:10px;background:#fff1f1;color:#a32020;margin-top:12px}
-  .footnote{margin-top:10px;font-size:.9rem;color:#777}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Festa da Isabella</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;line-height:1.5;background:#fdfdfe;color:#333}
+    a{color:#5b3fa2;text-decoration:none}
+    .container{max-width:960px;margin:0 auto;padding:20px}
+
+    /* Hero */
+    .hero{position:relative;background:url('hero.jpg') center/cover no-repeat;height:60vh;min-height:320px;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center}
+    .hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2)}
+    .hero h1{position:relative;font-size:2.5rem;margin-bottom:.5rem;font-weight:700}
+    .hero p{position:relative;font-size:1.2rem;margin-bottom:0}
+
+    /* Cards */
+    .card{background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border-radius:12px;padding:20px;margin:20px 0;box-shadow:0 4px 6px rgba(0,0,0,.05)}
+    .card h2{font-size:1.5rem;margin-bottom:10px;color:#5b3fa2}
+    .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.5rem}
+    .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem}
+    .details-item .icon{font-size:1.3rem;color:#5b3fa2}
+
+    /* Botões */
+    .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
+    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s;text-align:center;border:none}
+    .btn-primary{background:#5b3fa2;color:#fff}.btn-primary:hover{background:#493183}
+    .btn-secondary{background:#f1eaff;color:#5b3fa2}.btn-secondary:hover{background:#e5d9ff}
+
+    /* Álbum */
+    .album-preview{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:15px}
+    .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;flex:0 0 auto;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
+    .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+
+    /* Responsivo */
+    @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
+    @media (min-width:900px){.details-list{grid-template-columns:repeat(3,1fr)}}
+
+    /* Mapa + Playlist */
+    .map-container{width:100%;height:300px;border-radius:12px;overflow:hidden}
+    iframe{width:100%;height:100%;border:0}
+    .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:12px;overflow:hidden;border:none}
+  </style>
 </head>
 <body>
+  <header class="hero">
+    <div>
+      <h1>Festa da Isabella</h1>
+      <p>Celebrando seu 1º aniversário</p>
+    </div>
+  </header>
+
   <main class="container">
-    <section class="card">
-      <h1>Confirmação de presença ✨</h1>
-      <p class="lead">
-        Olá! Este espaço é exclusivo para sua confirmação de presença no aniversário da Isabella.
-        Seu nome já está na lista oficial — aqui é apenas para registrar seus dados, o nome do seu acompanhante e dos seus filhos.
+    <!-- Intro -->
+    <section class="card intro-card">
+      <h2>Boas-vindas</h2>
+      <p>
+        É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖<br>
+        Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
+        Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
       </p>
+    </section>
 
-      <!-- Etapa 1: escolha -->
-      <div id="step-choice">
-        <p class="muted">Como você confirma?</p>
-        <div class="choices">
-          <button class="btn btn-primary" data-rsvp="Sim">Sim</button>
-          <button class="btn" data-rsvp="Não">Não</button>
-        </div>
+    <!-- Informações -->
+    <section class="card">
+      <h2>Informações da festa</h2>
+      <ul class="details-list">
+        <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
+        <li class="details-item"><span class="icon">📍</span>Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil</li>
+        <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
+      </ul>
+      <div class="button-row">
+        <a class="btn btn-primary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
+
+        <!-- CONFIRMAR PRESENÇA: seta flag e vai para o RSVP -->
+        <a class="btn btn-secondary"
+           href="rsvp.html"
+           onclick="sessionStorage.setItem('cameFromIndex','1')">
+          Confirmar presença
+        </a>
       </div>
+    </section>
 
-      <!-- Etapa 2a: formulário para "Sim" -->
-      <form id="form-sim" class="hidden">
-        <input type="hidden" name="rsvp" value="Sim">
-        <label for="nome">Seu nome *</label>
-        <input id="nome" name="nome" required placeholder="Ex.: João Silva">
+    <!-- Álbum -->
+    <section class="card">
+      <h2>Álbum de fotos</h2>
+      <p>Clique nas fotos abaixo para ver uma prévia do nosso álbum compartilhado. As imagens mudam periodicamente!</p>
+      <div class="album-preview">
+        <div class="frame"><img alt=""></div><div class="frame"><img alt=""></div><div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div><div class="frame"><img alt=""></div><div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div><div class="frame"><img alt=""></div><div class="frame"><img alt=""></div>
+      </div>
+      <div class="button-row">
+        <a class="btn btn-primary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">Abrir álbum</a>
+      </div>
+    </section>
 
-        <div class="row">
-          <div>
-            <label for="idade">Sua idade</label>
-            <input id="idade" name="idade" type="number" min="0" placeholder="Ex.: 32">
-          </div>
-          <div>
-            <label for="acompanhante">Nome do acompanhante</label>
-            <input id="acompanhante" name="acompanhante" placeholder="Se houver">
-          </div>
-        </div>
+    <!-- Mapa -->
+    <section class="card">
+      <h2>Como chegar</h2>
+      <p>Use o mapa abaixo para visualizar a localização da festa e traçar sua rota.</p>
+      <div class="map-container">
+        <iframe src="https://maps.google.com/maps?q=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="button-row">
+        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
+      </div>
+    </section>
 
-        <div class="kids">
-          <label>Filhos (idade de cada)</label>
-          <div id="kids-list"></div>
-          <button type="button" id="add-kid" class="btn" style="margin-top:8px">+ Adicionar filho</button>
-        </div>
+    <!-- Presentes -->
+    <section class="card">
+      <h2>Sugestão de presentes 💝</h2>
+      <ul class="details-list">
+        <li class="details-item"><span class="icon">🧸</span>Brinquedos educativos</li>
+        <li class="details-item"><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
+        <li class="details-item"><span class="icon">🩰</span>Calçados tamanho 22</li>
+      </ul>
+    </section>
 
-        <label for="obs">Observações</label>
-        <textarea id="obs" name="observacoes" rows="3" placeholder="Alergias, restrições, etc. (opcional)"></textarea>
-
-        <button type="submit" class="btn btn-primary" style="margin-top:14px">Enviar confirmação</button>
-        <div id="msg-sim" class="hidden"></div>
-        <p class="footnote">Seus dados ficam visíveis apenas para os organizadores.</p>
-      </form>
-
-      <!-- Etapa 2b: envio rápido para "Não" -->
-      <form id="form-nao" class="hidden">
-        <input type="hidden" name="rsvp" value="Não">
-        <label for="nome2">Seu nome *</label>
-        <input id="nome2" name="nome" required placeholder="Ex.: João Silva">
-        <label for="motivo">Mensagem (opcional)</label>
-        <textarea id="motivo" name="observacoes" rows="3" placeholder="Se quiser, deixe um recado"></textarea>
-        <button type="submit" class="btn btn-primary" style="margin-top:14px">Enviar</button>
-        <div id="msg-nao" class="hidden"></div>
-      </form>
+    <!-- Playlist (embed) -->
+    <section class="card" id="playlist-section">
+      <h2>Playlist da festa</h2>
+      <p>Entre no clima da celebração com nossa playlist no Apple Music.</p>
+      <iframe class="playlist-iframe" allow="autoplay *; encrypted-media *; fullscreen *"
+              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+              src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
+              title="Playlist da Festa"></iframe>
     </section>
   </main>
 
-<script>
-  /* ====== CONFIG ====== */
-  const SCRIPT_URL = 'COLE_AQUI_A_URL_DO_SEU_WEB_APP'; // Google Apps Script Web App (POST)
-  const WHATSAPP   = '5521993835163';                  // só números, com DDI e DDD
-  const EVENTO     = 'Festa da Isabella';
-
-  /* ====== UI: fluxo ====== */
-  const stepChoice = document.getElementById('step-choice');
-  const formSim = document.getElementById('form-sim');
-  const formNao = document.getElementById('form-nao');
-
-  document.querySelectorAll('[data-rsvp]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const choice = btn.dataset.rsvp;
-      stepChoice.classList.add('hidden');
-      if(choice === 'Sim'){ formSim.classList.remove('hidden'); }
-      else { formNao.classList.remove('hidden'); }
+  <script>
+    // Álbum - usa apenas as 10 fotos do album2
+    document.addEventListener('DOMContentLoaded', function () {
+      const previewImages = [
+        'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg','album2/IMG_4765.jpeg','album2/IMG_4639.jpeg',
+        'album2/IMG_6911.jpeg','album2/IMG_4450.jpeg','album2/IMG_4352.jpeg','album2/IMG_3056.jpeg','album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
+      ];
+      const frames = document.querySelectorAll('.album-preview .frame');
+      function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
+      function fill(){const imgs=shuffle(previewImages);frames.forEach((f,i)=>{const img=f.querySelector('img');img.src=imgs[i%imgs.length];f.style.setProperty('--tilt',(Math.random()*10-5)+'deg');});}
+      fill(); setInterval(fill,8000);
     });
-  });
-
-  /* ====== Filhos dinâmicos ====== */
-  const kidsList = document.getElementById('kids-list');
-  document.getElementById('add-kid').addEventListener('click', ()=>{
-    const row = document.createElement('div');
-    row.className = 'kid-row';
-    row.innerHTML = `
-      <input name="filho_nome[]" placeholder="Nome (opcional)">
-      <input name="filho_idade[]" type="number" min="0" placeholder="Idade">
-      <button type="button" class="remove">x</button>
-    `;
-    row.querySelector('.remove').addEventListener('click', ()=> row.remove());
-    kidsList.appendChild(row);
-  });
-
-  /* ====== Helpers ====== */
-  function toParams(obj){
-    return new URLSearchParams(obj).toString();
-  }
-  function goWhatsApp(msg){
-    const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
-    window.location.href = url;
-  }
-  async function postForm(fd){
-    if(!SCRIPT_URL || SCRIPT_URL.startsWith('COLE_AQUI')) return {status:'skip'};
-    const res = await fetch(SCRIPT_URL,{method:'POST',body:fd});
-    try { return await res.json(); } catch { return {status:'ok'} }
-  }
-
-  /* ====== Envio: SIM ====== */
-  formSim.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const msgBox = document.getElementById('msg-sim');
-    msgBox.className=''; msgBox.innerHTML='Enviando...';
-
-    const data = new FormData(formSim);
-    // serializar filhos
-    const nomes = Array.from(document.getElementsByName('filho_nome[]')).map(i=>i.value.trim()).filter(Boolean);
-    const idades= Array.from(document.getElementsByName('filho_idade[]')).map(i=>i.value.trim()).filter(Boolean);
-    data.append('filhos_nomes', nomes.join(', '));
-    data.append('filhos_idades', idades.join(', '));
-
-    // mensagem do WhatsApp
-    const nome = (data.get('nome')||'').trim();
-    const acomp = (data.get('acompanhante')||'').trim();
-    const kids  = idades.length ? idades.map((v,i)=> (nomes[i]? `${nomes[i]} (${v})` : `${v} anos`)).join(', ') : '—';
-    const obs   = (data.get('observacoes')||'—').trim();
-
-    const waMsg =
-`${EVENTO} — Confirmação de presença
-Nome: ${nome}
-RSVP: SIM
-Acompanhante: ${acomp || '—'}
-Filhos: ${kids}
-Observações: ${obs}`;
-
-    try{
-      await postForm(data);         // tenta salvar (se falhar, ainda assim segue)
-      msgBox.className='success';
-      msgBox.innerHTML='Confirmação registrada! Redirecionando para o WhatsApp...';
-      setTimeout(()=> goWhatsApp(waMsg), 600);
-    }catch(err){
-      console.error(err);
-      msgBox.className='error';
-      msgBox.innerHTML='Não deu para salvar agora, mas vamos seguir para o WhatsApp.';
-      setTimeout(()=> goWhatsApp(waMsg), 800);
-    }
-  });
-
-  /* ====== Envio: NÃO ====== */
-  formNao.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const msgBox = document.getElementById('msg-nao');
-    msgBox.className=''; msgBox.innerHTML='Enviando...';
-
-    const data = new FormData(formNao);
-    const nome = (data.get('nome')||'').trim();
-    const obs  = (data.get('observacoes')||'—').trim();
-
-    const waMsg =
-`${EVENTO} — Confirmação de presença
-Nome: ${nome}
-RSVP: NÃO
-Mensagem: ${obs}`;
-
-    try{
-      await postForm(data);
-      msgBox.className='success';
-      msgBox.innerHTML='Resposta registrada. Levando ao WhatsApp...';
-      setTimeout(()=> goWhatsApp(waMsg), 600);
-    }catch(err){
-      console.error(err);
-      msgBox.className='error';
-      msgBox.innerHTML='Falha ao salvar, mas vamos seguir para o WhatsApp.';
-      setTimeout(()=> goWhatsApp(waMsg), 800);
-    }
-  });
-</script>
+  </script>
 </body>
 </html>
