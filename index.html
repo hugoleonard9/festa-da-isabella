@@ -59,14 +59,8 @@
     iframe{width:100%;height:100%;border:0}
     .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:12px;overflow:hidden;border:none}
 
-    /* Marca d’água */
-    footer {
-      text-align: center;
-      font-size: 10px;
-      color: rgba(0,0,0,0.4);
-      margin-top: 20px;
-      padding: 5px 0;
-    }
+    /* Marca d'água */
+    footer{position:fixed;bottom:20px;width:100%;text-align:center;font-size:12px;color:#999;}
   </style>
 </head>
 <body>
@@ -110,19 +104,22 @@
         <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
       </ul>
       <div class="button-row">
+        <!-- Confirmar presença (PRIMEIRO e PRIMÁRIO/roxo) -->
         <a class="btn btn-primary"
            href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20no%20anivers%C3%A1rio%20da%20Isabella!"
            target="_blank" rel="noopener">
           Confirmar presença
         </a>
+        <!-- Adicionar ao calendário (depois e SECUNDÁRIO/claro) -->
         <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
       </div>
     </section>
 
-    <!-- Álbum -->
+    <!-- Álbum (6 miniaturas em 2 linhas) -->
     <section class="card">
       <h2>Álbum de fotos</h2>
       <p>Alguns momentos especiais — as fotos abaixo se renovam periodicamente.</p>
+
       <div class="album-preview">
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
@@ -131,6 +128,7 @@
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
       </div>
+
       <div class="button-row" style="margin-top:14px">
         <a class="btn btn-secondary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">
           Abrir álbum completo
@@ -163,11 +161,14 @@
     </section>
   </main>
 
-  <!-- Marca d’água -->
-  <footer>© 2025 Hugo Mattos</footer>
+  <!-- Marca d'água -->
+  <footer>
+    © 2025 Hugo Mattos. Todos os direitos reservados.
+  </footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      /* ====== Álbum (10 fotos fonte, 6 visíveis) ====== */
       const previewImages = [
         'album2/IMG_5139.jpeg',
         'album2/IMG_5010.jpeg',
@@ -188,13 +189,14 @@
         frames.forEach((frame, idx) => {
           const img = frame.querySelector('img');
           img.src = imgs[idx % imgs.length];
-          const angle = (Math.random()*10 - 5);
+          const angle = (Math.random()*10 - 5);   // -5° a +5°
           frame.style.setProperty('--tilt', angle + 'deg');
         });
       }
       fillPreview();
       setInterval(fillPreview, 8000);
 
+      /* ====== Música: solicitar e iniciar ====== */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
