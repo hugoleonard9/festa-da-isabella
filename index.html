@@ -14,6 +14,27 @@
     a{color:#5b3fa2;text-decoration:none}
     .container{max-width:960px;margin:0 auto;padding:20px}
 
+    /* Overlay de boas‑vindas */
+    .welcome-overlay{
+      position:fixed;inset:0;z-index:9999;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.6);
+      backdrop-filter:blur(4px)
+    }
+    .welcome-card{
+      width:min(92vw,520px);
+      background:#fff;border-radius:16px;padding:28px;
+      text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)
+    }
+    .welcome-card h2{font-size:1.6rem;color:#5b3fa2;margin-bottom:8px}
+    .welcome-card p{color:#444;margin-bottom:18px}
+    .welcome-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s;text-align:center;border:none}
+    .btn-primary{background:#5b3fa2;color:#fff}
+    .btn-primary:hover{background:#493183}
+    .btn-secondary{background:#f1eaff;color:#5b3fa2}
+    .btn-secondary:hover{background:#e5d9ff}
+
     /* Hero */
     .hero{
       position:relative;
@@ -24,9 +45,7 @@
     }
     .hero::before{
       content:"";position:absolute;inset:0;
-      /* Reduzi o “embaçado”: removi blur e baixei a opacidade do overlay */
-      background:rgba(0,0,0,.2);         /* era 0.35 */
-      /* backdrop-filter: blur(0.5px);  removido */
+      background:rgba(0,0,0,.2); /* menos escurecido */
     }
     .hero h1{position:relative;font-size:2.5rem;margin-bottom:.5rem;font-weight:700}
     .hero p{position:relative;font-size:1.2rem;margin-bottom:0}
@@ -43,23 +62,18 @@
     .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem}
     .details-item .icon{font-size:1.3rem;color:#5b3fa2}
 
-    /* Botões */
+    /* Botões gerais */
     .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
-    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s;text-align:center}
-    .btn-primary{background:#5b3fa2;color:#fff}
-    .btn-primary:hover{background:#493183}
-    .btn-secondary{background:#f1eaff;color:#5b3fa2}
-    .btn-secondary:hover{background:#e5d9ff}
 
-    /* Álbum (moldura gira, foto fica enquadrada) */
+    /* Álbum (moldura gira, foto enquadrada) */
     .album-preview{
       display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:15px
     }
     .album-preview .frame{
       position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;
-      width:120px;flex:0 0 auto;            /* miniatura quadrada */
+      width:120px;flex:0 0 auto;
       box-shadow:0 4px 6px rgba(0,0,0,.1);
-      transform:rotate(var(--tilt,0deg));    /* rotação aplicada na moldura */
+      transform:rotate(var(--tilt,0deg));
       transition:transform .5s ease
     }
     .album-preview .frame img{
@@ -77,6 +91,19 @@
   </style>
 </head>
 <body>
+
+  <!-- Tela de Boas‑vindas (para habilitar o áudio) -->
+  <div class="welcome-overlay" id="welcome">
+    <div class="welcome-card">
+      <h2>Bem-vindo(a) à Festa da Isabella! 🎶</h2>
+      <p>Toque a música para entrar no clima da celebração.</p>
+      <div class="welcome-actions">
+        <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
+        <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
+      </div>
+    </div>
+  </div>
+
   <header class="hero">
     <div>
       <h1>Festa da Isabella</h1>
@@ -106,7 +133,7 @@
       <div class="button-row">
         <a class="btn btn-primary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
         <a class="btn btn-secondary" href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20na%20Festa%20da%20Isabella!" target="_blank" rel="noopener">Confirmar presença</a>
-        <!-- Botão Compartilhar removido conforme pedido -->
+        <!-- Botão Compartilhar removido -->
       </div>
     </section>
 
@@ -116,7 +143,6 @@
       <p>Clique nas fotos abaixo para ver uma prévia do nosso álbum compartilhado. As imagens mudam periodicamente!</p>
 
       <div class="album-preview">
-        <!-- 9 molduras para a grade inicial; o JS vai trocando as fotos -->
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
@@ -141,8 +167,8 @@
         <iframe src="https://maps.google.com/maps?q=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="button-row">
-        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
-        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
       </div>
     </section>
 
@@ -157,18 +183,52 @@
     </section>
 
     <!-- Playlist -->
-    <section class="card">
+    <section class="card" id="playlist-section">
       <h2>Playlist da festa</h2>
       <p>Dê o play e entre no clima da celebração com nossa playlist no Apple Music.</p>
-      <iframe class="playlist-iframe" allow="autoplay *; encrypted-media *; fullscreen *"
-              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-              src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"></iframe>
+      <iframe
+        class="playlist-iframe"
+        allow="autoplay *; encrypted-media *; fullscreen *"
+        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+        src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
+        title="Playlist da Festa"
+      ></iframe>
     </section>
   </main>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      /* Prévia do álbum — usa apenas as 10 fotos do album2 */
+      /* ====== Boas‑vindas / Música ====== */
+      const welcome = document.getElementById('welcome');
+      const startBtn = document.getElementById('start-music');
+      const enterSilent = document.getElementById('enter-silent');
+      const playlistIframe = document.querySelector('.playlist-iframe');
+      const playlistURL = 'https://music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M';
+
+      function closeWelcome(){
+        if (welcome) welcome.style.display = 'none';
+      }
+
+      // Tenta tocar a playlist no embed e também abre em nova aba (garante o áudio)
+      startBtn?.addEventListener('click', () => {
+        try {
+          // tentativa (nem sempre suportada pelo embed)
+          playlistIframe?.contentWindow?.postMessage({ action:'play' }, '*');
+        } catch (e) {
+          console.warn('Não foi possível enviar comando ao embed:', e);
+        }
+        // abrir a playlist em nova aba com gesto do usuário -> áudio garantido
+        window.open(playlistURL, '_blank', 'noopener');
+        closeWelcome();
+        // rolar até a seção da playlist
+        document.getElementById('playlist-section')?.scrollIntoView({behavior:'smooth'});
+      });
+
+      enterSilent?.addEventListener('click', () => {
+        closeWelcome();
+      });
+
+      /* ====== Álbum (apenas fotos do album2) ====== */
       const previewImages = [
         'album2/IMG_5139.jpeg',
         'album2/IMG_5010.jpeg',
@@ -198,7 +258,7 @@
         frames.forEach((frame, idx) => {
           const img = frame.querySelector('img');
           img.src = imgs[idx % imgs.length];
-          const angle = (Math.random()*10 - 5);      // -5° a +5°
+          const angle = (Math.random()*10 - 5);   // -5° a +5°
           frame.style.setProperty('--tilt', angle + 'deg');
         });
       }
