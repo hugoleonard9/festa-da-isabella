@@ -39,28 +39,30 @@
     .btn-primary{background:#5b3fa2;color:#fff}.btn-primary:hover{background:#493183}
     .btn-secondary{background:#f1eaff;color:#5b3fa2}.btn-secondary:hover{background:#e5d9ff}
 
-    /* Carrossel (6 fotos) */
-    .carousel{position:relative;overflow:hidden;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
-    .carousel-track{display:flex;transition:transform .6s ease}
-    .carousel-slide{min-width:100%;height:0;padding-top:56.25%;position:relative} /* 16:9 */
-    .carousel-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-
-    .carousel-nav{
-      position:absolute;inset:auto 0 8px 0;display:flex;gap:6px;justify-content:center
+    /* Álbum (grade 3x2, moldura inclinada) */
+    .album-preview{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 por linha */
+      gap:10px;
+      justify-items:center;
+      margin-bottom:15px
     }
-    .dot{width:8px;height:8px;border-radius:50%;background:#ddd}
-    .dot.active{background:#5b3fa2}
-
-    .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.35);color:#fff;
-      border:none;border-radius:999px;width:36px;height:36px;cursor:pointer}
-    .carousel-btn:hover{background:rgba(0,0,0,.45)}
-    .prev{left:10px}.next{right:10px}
+    .album-preview .frame{
+      position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;
+      width:120px; /* tamanho das miniaturas */
+      box-shadow:0 4px 6px rgba(0,0,0,.1);
+      transform:rotate(var(--tilt,0deg));
+      transition:transform .5s ease
+    }
+    .album-preview .frame img{
+      width:100%;height:100%;display:block;object-fit:cover;object-position:center
+    }
 
     /* Responsivo */
     @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
     @media (min-width:900px){.details-list{grid-template-columns:repeat(3,1fr)}}
 
-    /* Map + Playlist */
+    /* Mapa + Playlist */
     .map-container{width:100%;height:300px;border-radius:12px;overflow:hidden}
     iframe{width:100%;height:100%;border:0}
     .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:12px;overflow:hidden;border:none}
@@ -95,7 +97,7 @@
       </ul>
       <div class="button-row">
         <a class="btn btn-primary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
-        <!-- Direto para o WhatsApp -->
+        <!-- Confirmar presença direto no WhatsApp -->
         <a class="btn btn-secondary"
            href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20no%20anivers%C3%A1rio%20da%20Isabella!"
            target="_blank" rel="noopener">
@@ -104,29 +106,19 @@
       </div>
     </section>
 
-    <!-- Carrossel de fotos (6 imagens) -->
+    <!-- Álbum (6 miniaturas em 2 linhas) -->
     <section class="card">
       <h2>Álbum de fotos</h2>
-      <p>Alguns momentos especiais — deslize para ver mais.</p>
+      <p>Alguns momentos especiais — as fotos abaixo se renovam periodicamente.</p>
 
-      <div class="carousel" id="albumCarousel">
-        <div class="carousel-track">
-          <!-- Use os caminhos reais das suas imagens -->
-          <div class="carousel-slide"><img src="album2/IMG_5139.jpeg" alt="Foto 1"></div>
-          <div class="carousel-slide"><img src="album2/IMG_5010.jpeg" alt="Foto 2"></div>
-          <div class="carousel-slide"><img src="album2/IMG_4772.jpeg" alt="Foto 3"></div>
-          <div class="carousel-slide"><img src="album2/IMG_4765.jpeg" alt="Foto 4"></div>
-          <div class="carousel-slide"><img src="album2/IMG_4639.jpeg" alt="Foto 5"></div>
-          <div class="carousel-slide"><img src="album2/IMG_6911.jpeg" alt="Foto 6"></div>
-        </div>
-
-        <button class="carousel-btn prev" aria-label="Anterior">‹</button>
-        <button class="carousel-btn next" aria-label="Próximo">›</button>
-
-        <div class="carousel-nav" aria-hidden="true">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </div>
+      <div class="album-preview">
+        <!-- 6 molduras fixas; o JS faz o rodízio das imagens -->
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
       </div>
 
       <div class="button-row" style="margin-top:14px">
@@ -144,25 +136,15 @@
         <iframe src="https://maps.google.com/maps?q=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="button-row">
-        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
-        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&destination=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Traçar rota</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil" target="_blank" rel="noopener">Abrir no Google Maps</a>
       </div>
-    </section>
-
-    <!-- Presentes -->
-    <section class="card">
-      <h2>Sugestão de presentes 💝</h2>
-      <ul class="details-list">
-        <li class="details-item"><span class="icon">🧸</span>Brinquedos educativos</li>
-        <li class="details-item"><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
-        <li class="details-item"><span class="icon">🩰</span>Calçados tamanho 22</li>
-      </ul>
     </section>
 
     <!-- Playlist -->
     <section class="card" id="playlist-section">
       <h2>Playlist da festa</h2>
-      <p>Entre no clima da celebração com nossa playlist no Apple Music.</p>
+      <p>A música inicia na primeira interação (clique/rolagem/toque) por política dos navegadores.</p>
       <iframe class="playlist-iframe" allow="autoplay *; encrypted-media *; fullscreen *"
               sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
               src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
@@ -171,42 +153,70 @@
   </main>
 
   <script>
-    // ------- Carrossel simples (6 fotos) -------
-    (function(){
-      const carousel = document.getElementById('albumCarousel');
-      const track = carousel.querySelector('.carousel-track');
-      const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
-      const prevBtn = carousel.querySelector('.prev');
-      const nextBtn = carousel.querySelector('.next');
-      const dots = Array.from(carousel.querySelectorAll('.dot'));
+    document.addEventListener('DOMContentLoaded', function () {
+      /* ====== Álbum (10 fotos fonte, 6 visíveis) ====== */
+      const previewImages = [
+        'album2/IMG_5139.jpeg',
+        'album2/IMG_5010.jpeg',
+        'album2/IMG_4772.jpeg',
+        'album2/IMG_4765.jpeg',
+        'album2/IMG_4639.jpeg',
+        'album2/IMG_6911.jpeg',
+        'album2/IMG_4450.jpeg',
+        'album2/IMG_4352.jpeg',
+        'album2/IMG_3056.jpeg',
+        'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
+      ];
+      const frames = document.querySelectorAll('.album-preview .frame');
 
-      let idx = 0, timer;
-
-      function update(){
-        track.style.transform = `translateX(-${idx * 100}%)`;
-        dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+      function shuffle(arr){
+        const a = arr.slice();
+        for(let i=a.length-1;i>0;i--){
+          const j = Math.floor(Math.random()*(i+1));
+          [a[i],a[j]] = [a[j],a[i]];
+        }
+        return a;
       }
-      function go(n){
-        idx = (n + slides.length) % slides.length;
-        update();
-        restartAuto();
+      function fillPreview(){
+        const imgs = shuffle(previewImages);
+        frames.forEach((frame, idx) => {
+          const img = frame.querySelector('img');
+          img.src = imgs[idx % imgs.length];
+          const angle = (Math.random()*10 - 5);   // -5° a +5°
+          frame.style.setProperty('--tilt', angle + 'deg');
+        });
       }
-      function next(){ go(idx+1); }
-      function prev(){ go(idx-1); }
+      fillPreview();
+      setInterval(fillPreview, 8000);
 
-      function auto(){ timer = setInterval(next, 5000); }
-      function stop(){ clearInterval(timer); }
-      function restartAuto(){ stop(); auto(); }
+      /* ====== Música: iniciar na primeira interação ====== */
+      const playlistIframe = document.querySelector('.playlist-iframe');
+      const playlistURL = 'https://music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M';
+      let musicStarted = false;
 
-      nextBtn.addEventListener('click', next);
-      prevBtn.addEventListener('click', prev);
-      dots.forEach((d,i)=> d.addEventListener('click', ()=> go(i)));
-      carousel.addEventListener('mouseenter', stop);
-      carousel.addEventListener('mouseleave', auto);
-
-      update(); auto();
-    })();
+      function startMusicOnce(){
+        if (musicStarted) return;
+        musicStarted = true;
+        // tenta mandar "play" para o embed (pode não funcionar em todos os casos)
+        try { playlistIframe?.contentWindow?.postMessage({ action:'play' }, '*'); } catch(e){}
+        // abre Apple Music em nova aba (gesto do usuário garante áudio)
+        window.open(playlistURL, '_blank', 'noopener');
+        removeMusicListeners();
+      }
+      function addMusicListeners(){
+        ['click','touchstart','keydown','wheel'].forEach(evt => {
+          window.addEventListener(evt, startMusicOnce, { once:false, passive:true });
+        });
+      }
+      function removeMusicListeners(){
+        ['click','touchstart','keydown','wheel'].forEach(evt => {
+          window.removeEventListener(evt, startMusicOnce, { passive:true });
+        });
+      }
+      addMusicListeners();
+    });
   </script>
 </body>
 </html>
+
 
