@@ -206,6 +206,14 @@
     </section>
   </main>
 
+  <!-- IFRAME OCULTO PARA ÁUDIO DO SPOTIFY (toca a prévia no fundo) -->
+  <iframe
+    id="spotify-audio"
+    allow="autoplay; encrypted-media"
+    title="Spotify Audio Background"
+    style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;border:0;">
+  </iframe>
+
   <!-- Marca d'água -->
   <footer>© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
 
@@ -232,18 +240,27 @@
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* Música: solicitar e iniciar */
+      /* Música: tocar prévia embutida sem rolar e sem abrir app */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
-      const playlistURL = 'https://open.spotify.com/playlist/6FLOrumhEmeIucB1VJAjjV?si=MQvJD6S6SmCULNFSvCiO_Q&pi=5RTA_JNLSuiCQ';
+      const hiddenAudioFrame = document.getElementById('spotify-audio');
+      const EMBED_BG_URL = 'https://open.spotify.com/embed/playlist/6FLOrumhEmeIucB1VJAjjV?autoplay=1';
+
       function closeWelcome(){ welcome.style.display='none'; }
+
       startBtn?.addEventListener('click', () => {
-        window.open(playlistURL, '_blank', 'noopener');
+        // Define a URL do player oculto com autoplay=1 (gesto do usuário presente)
+        hiddenAudioFrame.src = EMBED_BG_URL;
         closeWelcome();
-        document.getElementById('playlist-section')?.scrollIntoView({behavior:'smooth'});
+        // não rola a página — mantém a experiência inicial
       });
-      enterSilent?.addEventListener('click', () => { closeWelcome(); });
+
+      enterSilent?.addEventListener('click', () => {
+        // Garante silêncio: remove o src do iframe oculto
+        hiddenAudioFrame.src = 'about:blank';
+        closeWelcome();
+      });
     });
 
     /* Tempo: previsão perto da data, climatologia fora da janela */
