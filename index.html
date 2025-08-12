@@ -55,7 +55,7 @@
     .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
     .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
 
-    /* Ajustes de espaçamento para cards "limpos" (sem subtítulo) */
+    /* Ajustes de espaçamento p/ cards sem subtítulo */
     .card--tight .album-preview{margin-top:6px}
     .card--tight .playlist-iframe{margin-top:6px}
     .card--tight .map-container{margin-top:6px}
@@ -89,7 +89,7 @@
   <div class="welcome-overlay" id="welcome">
     <div class="welcome-card">
       <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
-      <p>Toque a música para entrar no clima da celebralação.</p>
+      <p>Toque a música para entrar no clima da celebração.</p>
       <div class="welcome-actions">
         <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
         <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
@@ -97,8 +97,8 @@
     </div>
   </div>
 
-  <!-- Áudio de fundo (fica oculto) -->
-  <audio id="bg-music" src="assets/kids-children-baby-music-363272.mp3" preload="auto" loop></audio>
+  <!-- Áudio (oculto) -->
+  <audio id="bg-music" preload="auto" loop playsinline></audio>
 
   <header class="hero">
     <div>
@@ -137,7 +137,7 @@
       </div>
     </section>
 
-    <!-- Álbum (sem subtítulo) -->
+    <!-- Álbum -->
     <section class="card card--tight">
       <h2>Álbum de fotos</h2>
       <div class="album-preview">
@@ -155,7 +155,7 @@
       </div>
     </section>
 
-    <!-- Mapa (sem subtítulo) -->
+    <!-- Mapa -->
     <section class="card card--tight">
       <h2>Como chegar</h2>
       <div class="map-container">
@@ -189,7 +189,7 @@
       </div>
     </section>
 
-    <!-- Playlist (sem subtítulo) -->
+    <!-- Playlist -->
     <section class="card card--tight" id="playlist-section">
       <h2>Playlist da festa</h2>
       <iframe class="playlist-iframe"
@@ -214,7 +214,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      /* Álbum (10 fotos fonte, 6 visíveis) */
+      /* ===== Álbum (10 fotos fonte, 6 visíveis) ===== */
       const previewImages = [
         'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
         'album2/IMG_4765.jpeg','album2/IMG_4639.jpeg','album2/IMG_6911.jpeg',
@@ -235,26 +235,63 @@
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* Música: tocar MP3 local ao clicar (sem rolar e sem abrir Spotify) */
+      /* ===== Música: tenta vários caminhos e só fecha ao tocar ===== */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
       const audioEl = document.getElementById('bg-music');
 
+      // possíveis caminhos (cobre erros como "assets:kids-..." ou arquivo no raiz)
+      const CANDIDATES = [
+        'assets/kids-children-baby-music-363272.mp3',
+        '/assets/kids-children-baby-music-363272.mp3',
+        'kids-children-baby-music-363272.mp3',
+        'assets:kids-children-baby-music-363272.mp3'
+      ];
+
+      async function tryPlay(src){
+        return new Promise((resolve, reject) => {
+          audioEl.src = src;
+          audioEl.load();
+          audioEl.volume = 0.85;
+          const onCanPlay = () => {
+            audioEl.play().then(resolve).catch(reject);
+          };
+          audioEl.addEventListener('canplay', onCanPlay, { once:true });
+          // fallback: se não disparar canplay, tenta tocar mesmo assim após 700ms
+          setTimeout(()=>audioEl.play().then(resolve).catch(reject), 700);
+        });
+      }
+
+      async function playMusicSequence(){
+        let lastErr = null;
+        for (const src of CANDIDATES){
+          try{
+            console.log('[audio] tentando:', src);
+            await tryPlay(src);
+            console.log('[audio] OK com:', src);
+            return true;
+          }catch(e){
+            console.log('[audio] falhou:', src, e);
+            lastErr = e;
+          }
+        }
+        console.log('[audio] nenhuma fonte tocou', lastErr);
+        return false;
+      }
+
       function closeWelcome(){ welcome.style.display='none'; }
 
-      startBtn?.addEventListener('click', () => {
-        audioEl.volume = 0.8;       // ajuste fino
-        audioEl.play().catch(err=>{
-          console.log('Reprodução bloqueada, tente tocar novamente:', err);
-        });
+      startBtn?.addEventListener('click', async () => {
+        const ok = await playMusicSequence();
+        // fecha o popup mesmo se não tocar, para não travar a experiência
         closeWelcome();
       });
 
       enterSilent?.addEventListener('click', () => { closeWelcome(); });
     });
 
-    /* Tempo: previsão perto da data, climatologia fora da janela */
+    /* ===== Tempo: previsão/climatologia ===== */
     (function(){
       const EVENT_DATE_DEFAULT = '2025-11-22';
       const LAT = -22.606, LON = -43.490;
