@@ -30,13 +30,12 @@
     .hero h1{position:relative;font-size:2.5rem;margin-bottom:.5rem;font-weight:700}
     .hero p{position:relative;font-size:1.2rem;margin-bottom:0}
 
-    /* Cards padrão do site (global centralizado) */
+    /* Cards padrão (global centralizado) */
     .card{background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border-radius:12px;padding:20px;margin:20px 0;box-shadow:0 4px 6px rgba(0,0,0,.05); text-align:center}
     .card h2{color:var(--roxo);font-weight:800;letter-spacing:-0.02em;font-size:clamp(1.4rem,1.2rem + 1vw,1.8rem);margin-bottom:10px}
     .card p{margin:8px auto 0;max-width:60ch;color:#4a4a4a}
     .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.5rem;justify-items:center}
     .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem;justify-content:center}
-    /* Ícones alinhados à linha base do texto */
     .details-item .icon{
       display:inline-flex;align-items:center;justify-content:center;
       width:1.4em;height:1.4em;font-size:1.2rem;line-height:1;
@@ -52,9 +51,13 @@
     .btn-secondary:hover{filter:brightness(.97)}
 
     /* Álbum (grade 3x2, moldura inclinada) */
-    .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin-bottom:15px}
+    .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin:4px auto 12px}
     .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
     .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+
+    /* Ajustes de espaçamento para os dois cards limpos */
+    .card--tight .album-preview{margin-top:6px}
+    .card--tight .playlist-iframe{margin-top:6px}
 
     /* Responsivo */
     @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
@@ -70,7 +73,6 @@
     .weather-card{width:min(680px,92vw);padding:22px 18px;border-radius:12px;background:rgba(255,255,255,.8);backdrop-filter:blur(8px);box-shadow:0 4px 6px rgba(0,0,0,.05);color:var(--txt);text-align:center}
     .weather-app{color:var(--roxo);font-weight:800;letter-spacing:-0.02em;}
     .weather-date{margin-top:6px;font-size:1rem;color:#666}
-    /* >>> Ajuste: igual ao texto de descrição dos cards (ex.: playlist) */
     .weather-text{margin:14px auto 8px;font-size:1rem;line-height:1.5;max-width:60ch;color:#4a4a4a;font-weight:400}
     .weather-source{margin-top:6px;font-size:.9rem;color:#7a7a7a}
     .weather-source a{color:var(--roxo);text-decoration:none}
@@ -124,22 +126,16 @@
         <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
       </ul>
       <div class="button-row">
-        <!-- Confirmar presença (primeiro) -->
         <a class="btn btn-primary"
            href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20no%20anivers%C3%A1rio%20da%20Isabella!"
-           target="_blank" rel="noopener">
-          Confirmar presença
-        </a>
-        <!-- Adicionar ao calendário (depois) -->
+           target="_blank" rel="noopener">Confirmar presença</a>
         <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
       </div>
     </section>
 
-    <!-- Álbum (6 miniaturas em 2 linhas) -->
-    <section class="card">
+    <!-- Álbum (6 miniaturas em 2 linhas) - sem texto abaixo do título -->
+    <section class="card card--tight">
       <h2>Álbum de fotos</h2>
-      <p>Alguns momentos especiais — as fotos abaixo se renovam periodicamente.</p>
-
       <div class="album-preview">
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
@@ -148,8 +144,7 @@
         <div class="frame"><img alt=""></div>
         <div class="frame"><img alt=""></div>
       </div>
-
-      <div class="button-row" style="margin-top:14px">
+      <div class="button-row" style="margin-top:10px">
         <a class="btn btn-secondary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">
           Abrir álbum completo
         </a>
@@ -191,10 +186,9 @@
       </div>
     </section>
 
-    <!-- Playlist (Spotify) -->
-    <section class="card" id="playlist-section">
+    <!-- Playlist (Spotify) - sem texto abaixo do título -->
+    <section class="card card--tight" id="playlist-section">
       <h2>Playlist da festa</h2>
-      <p>Toque “Entrar e tocar playlist” na abertura do site para garantir o áudio.</p>
       <iframe class="playlist-iframe"
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               src="https://open.spotify.com/embed/playlist/6FLOrumhEmeIucB1VJAjjV?utm_source=generator"
@@ -217,59 +211,46 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      /* ====== Álbum (10 fotos fonte, 6 visíveis) ====== */
+      /* Álbum (10 fotos fonte, 6 visíveis) */
       const previewImages = [
-        'album2/IMG_5139.jpeg',
-        'album2/IMG_5010.jpeg',
-        'album2/IMG_4772.jpeg',
-        'album2/IMG_4765.jpeg',
-        'album2/IMG_4639.jpeg',
-        'album2/IMG_6911.jpeg',
-        'album2/IMG_4450.jpeg',
-        'album2/IMG_4352.jpeg',
-        'album2/IMG_3056.jpeg',
+        'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
+        'album2/IMG_4765.jpeg','album2/IMG_4639.jpeg','album2/IMG_6911.jpeg',
+        'album2/IMG_4450.jpeg','album2/IMG_4352.jpeg','album2/IMG_3056.jpeg',
         'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
       ];
       const frames = document.querySelectorAll('.album-preview .frame');
-
-      function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]} return a; }
+      function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b;}
       function fillPreview(){
         const imgs = shuffle(previewImages);
         frames.forEach((frame, idx) => {
           const img = frame.querySelector('img');
           img.src = imgs[idx % imgs.length];
-          const angle = (Math.random()*10 - 5);   // -5° a +5°
+          const angle = (Math.random()*10 - 5);
           frame.style.setProperty('--tilt', angle + 'deg');
         });
       }
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* ====== Música: solicitar e iniciar ====== */
+      /* Música: solicitar e iniciar */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
-      const playlistIframe = document.querySelector('.playlist-iframe');
       const playlistURL = 'https://open.spotify.com/playlist/6FLOrumhEmeIucB1VJAjjV?si=MQvJD6S6SmCULNFSvCiO_Q&pi=5RTA_JNLSuiCQ';
-
-      function closeWelcome(){ if (welcome) welcome.style.display='none'; }
-
+      function closeWelcome(){ welcome.style.display='none'; }
       startBtn?.addEventListener('click', () => {
-        try { playlistIframe?.contentWindow?.postMessage({ action:'play' }, '*'); } catch(e){}
         window.open(playlistURL, '_blank', 'noopener');
         closeWelcome();
         document.getElementById('playlist-section')?.scrollIntoView({behavior:'smooth'});
       });
-
       enterSilent?.addEventListener('click', () => { closeWelcome(); });
     });
 
-    /* ====== Card de Tempo dinâmico + fonte ====== */
+    /* Card de Tempo: previsão perto da data, climatologia no restante */
     (function(){
-      const EVENT_DATE_DEFAULT = '2025-11-22';     // altere aqui se quiser
-      const LAT = -22.606, LON = -43.490;          // Tinguá, Nova Iguaçu
+      const EVENT_DATE_DEFAULT = '2025-11-22';
+      const LAT = -22.606, LON = -43.490;
       const TZ = 'America/Sao_Paulo';
-
       const qs = new URLSearchParams(location.search);
       const EVENT_DATE = qs.get('data') || EVENT_DATE_DEFAULT;
 
@@ -338,8 +319,7 @@
             const m = clim.monthly || clim.daily || {};
             const tmax = Math.round(m.temperature_2m_max_mean?.[0] ?? 27);
             const tmin = Math.round(m.temperature_2m_min_mean?.[0] ?? 20);
-            elText.textContent =
-              `Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
+            elText.textContent = `Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
             setSourceStamp('Open‑Meteo (climatologia 1991–2020)');
           }
         }catch(e){
