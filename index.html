@@ -89,13 +89,16 @@
   <div class="welcome-overlay" id="welcome">
     <div class="welcome-card">
       <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
-      <p>Toque a música para entrar no clima da celebração.</p>
+      <p>Toque a música para entrar no clima da celebralação.</p>
       <div class="welcome-actions">
         <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
         <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
       </div>
     </div>
   </div>
+
+  <!-- Áudio de fundo (fica oculto) -->
+  <audio id="bg-music" src="assets/kids-children-baby-music-363272.mp3" preload="auto" loop></audio>
 
   <header class="hero">
     <div>
@@ -206,14 +209,6 @@
     </section>
   </main>
 
-  <!-- IFRAME OCULTO PARA ÁUDIO DO SPOTIFY (toca a prévia no fundo) -->
-  <iframe
-    id="spotify-audio"
-    allow="autoplay; encrypted-media"
-    title="Spotify Audio Background"
-    style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;border:0;">
-  </iframe>
-
   <!-- Marca d'água -->
   <footer>© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
 
@@ -240,27 +235,23 @@
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* Música: tocar prévia embutida sem rolar e sem abrir app */
+      /* Música: tocar MP3 local ao clicar (sem rolar e sem abrir Spotify) */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
-      const hiddenAudioFrame = document.getElementById('spotify-audio');
-      const EMBED_BG_URL = 'https://open.spotify.com/embed/playlist/6FLOrumhEmeIucB1VJAjjV?autoplay=1';
+      const audioEl = document.getElementById('bg-music');
 
       function closeWelcome(){ welcome.style.display='none'; }
 
       startBtn?.addEventListener('click', () => {
-        // Define a URL do player oculto com autoplay=1 (gesto do usuário presente)
-        hiddenAudioFrame.src = EMBED_BG_URL;
+        audioEl.volume = 0.8;       // ajuste fino
+        audioEl.play().catch(err=>{
+          console.log('Reprodução bloqueada, tente tocar novamente:', err);
+        });
         closeWelcome();
-        // não rola a página — mantém a experiência inicial
       });
 
-      enterSilent?.addEventListener('click', () => {
-        // Garante silêncio: remove o src do iframe oculto
-        hiddenAudioFrame.src = 'about:blank';
-        closeWelcome();
-      });
+      enterSilent?.addEventListener('click', () => { closeWelcome(); });
     });
 
     /* Tempo: previsão perto da data, climatologia fora da janela */
