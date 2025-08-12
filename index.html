@@ -44,7 +44,7 @@
 
     /* Botões */
     .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px;justify-content:center}
-    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s,text-shadow .2s; text-align:center;border:none}
+    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s;text-align:center;border:none}
     .btn-primary{background:var(--roxo);color:#fff}
     .btn-primary:hover{background:var(--roxo-esc)}
     .btn-secondary{background:var(--roxo-cl);color:var(--roxo)}
@@ -81,15 +81,12 @@
 
     /* Marca d'água */
     footer{position:fixed;bottom:20px;width:100%;text-align:center;font-size:12px;color:#999;}
-    
-    /* Áudio invisível */
-    #bg-music{display:none}
   </style>
 </head>
 <body>
 
-  <!-- Áudio local (fica oculto). Será tocado ao clicar em “Entrar e tocar playlist” -->
-  <audio id="bg-music" preload="auto" loop>
+  <!-- Áudio invisível (MP3 local) -->
+  <audio id="bg-audio" preload="auto" loop style="display:none">
     <source src="assets/kids-children-baby-music-363272.mp3" type="audio/mpeg">
   </audio>
 
@@ -194,12 +191,13 @@
       </div>
     </section>
 
-    <!-- Playlist (sem subtítulo) -->
+    <!-- Playlist (Apple Music) -->
     <section class="card card--tight" id="playlist-section">
       <h2>Playlist da festa</h2>
       <iframe class="playlist-iframe"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              src="https://open.spotify.com/embed/playlist/6FLOrumhEmeIucB1VJAjjV?utm_source=generator"
+              allow="autoplay *; encrypted-media *;"
+              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+              src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
               title="Playlist da Festa"></iframe>
     </section>
 
@@ -240,27 +238,18 @@
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* ===== Música local: tocar ao clicar no botão do modal ===== */
+      /* Música: solicitar e iniciar (toca o MP3 local) */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
-      const audioEl = document.getElementById('bg-music');
+      const audio = document.getElementById('bg-audio');
 
-      async function playLocalMusic(){
-        try{
-          audioEl.currentTime = 0;
-          audioEl.volume = 0.85;           // ajuste fino do volume
-          await audioEl.play();             // gesto do usuário -> permitido no iOS/Android
-        }catch(e){
-          console.log('Não foi possível iniciar o áudio:', e);
-        }
-      }
       function closeWelcome(){ welcome.style.display='none'; }
 
       startBtn?.addEventListener('click', async () => {
-        await playLocalMusic();             // toca o MP3 local
-        closeWelcome();                     // fecha o modal
-        // Sem rolagem automática para manter a experiência inicial
+        try { await audio.play(); } catch(e) { console.warn(e); }
+        closeWelcome();
+        // Não rolar a página – mantém a experiência inicial no topo
       });
 
       enterSilent?.addEventListener('click', () => { closeWelcome(); });
