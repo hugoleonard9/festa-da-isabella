@@ -55,9 +55,10 @@
     .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
     .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
 
-    /* Ajustes de espaçamento para os dois cards limpos */
+    /* Ajustes de espaçamento para cards "limpos" (sem subtítulo) */
     .card--tight .album-preview{margin-top:6px}
     .card--tight .playlist-iframe{margin-top:6px}
+    .card--tight .map-container{margin-top:6px}
 
     /* Responsivo */
     @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
@@ -133,7 +134,7 @@
       </div>
     </section>
 
-    <!-- Álbum (6 miniaturas em 2 linhas) - sem texto abaixo do título -->
+    <!-- Álbum (sem subtítulo) -->
     <section class="card card--tight">
       <h2>Álbum de fotos</h2>
       <div class="album-preview">
@@ -151,10 +152,9 @@
       </div>
     </section>
 
-    <!-- Mapa -->
-    <section class="card">
+    <!-- Mapa (sem subtítulo) -->
+    <section class="card card--tight">
       <h2>Como chegar</h2>
-      <p>Use o mapa abaixo para visualizar a localização da festa e traçar sua rota.</p>
       <div class="map-container">
         <iframe
           src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"
@@ -186,7 +186,7 @@
       </div>
     </section>
 
-    <!-- Playlist (Spotify) - sem texto abaixo do título -->
+    <!-- Playlist (sem subtítulo) -->
     <section class="card card--tight" id="playlist-section">
       <h2>Playlist da festa</h2>
       <iframe class="playlist-iframe"
@@ -195,7 +195,7 @@
               title="Playlist da Festa"></iframe>
     </section>
 
-    <!-- Card de Tempo dinâmico -->
+    <!-- Card de Tempo -->
     <section class="weather-wrapper">
       <div class="weather-card">
         <h2 class="weather-app">Tempo</h2>
@@ -246,7 +246,7 @@
       enterSilent?.addEventListener('click', () => { closeWelcome(); });
     });
 
-    /* Card de Tempo: previsão perto da data, climatologia no restante */
+    /* Tempo: previsão perto da data, climatologia fora da janela */
     (function(){
       const EVENT_DATE_DEFAULT = '2025-11-22';
       const LAT = -22.606, LON = -43.490;
