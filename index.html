@@ -44,11 +44,14 @@
 
     /* Botões */
     .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px;justify-content:center}
-    .btn{display:inline-block;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:background .2s;text-align:center;border:none}
-    .btn-primary{background:var(--roxo);color:#fff}
+    .btn{display:inline-block;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;transition:transform .06s ease, box-shadow .2s;background:transparent;border:none;font-size:1.05rem}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:var(--roxo);color:#fff;box-shadow:0 6px 16px rgba(91,63,162,.25)}
     .btn-primary:hover{background:var(--roxo-esc)}
     .btn-secondary{background:var(--roxo-cl);color:var(--roxo)}
     .btn-secondary:hover{filter:brightness(.97)}
+    /* Deixar o Confirmar presença ainda mais chamativo */
+    .btn-prominent{font-size:1.12rem;padding:14px 24px;box-shadow:0 8px 20px rgba(91,63,162,.32)}
 
     /* Álbum (grade 3x2, moldura inclinada) */
     .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin:4px auto 12px}
@@ -85,21 +88,26 @@
     /* ===== Modal RSVP ===== */
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9998}
     .modal.show{display:flex}
-    .modal-card{width:min(92vw,620px);background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:20px}
+    .modal-card{width:min(92vw,640px);background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:20px}
     .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
     .modal-header h3{color:var(--roxo);font-size:1.4rem}
-    .modal-close{background:#eee;border:none;border-radius:8px;padding:6px 10px;cursor:pointer}
-    .form-row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+    .modal-close{background:#eee;border:none;border-radius:10px;padding:8px 12px;cursor:pointer}
+    .form-row{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
     .form-row label{font-weight:600;font-size:.95rem}
-    .form-row input, .form-row select{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:1rem}
+    .form-row input, .form-row select, .form-row textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:1rem}
+    .form-row textarea{resize:none}
     .rsvp-options{display:flex;gap:10px;margin-top:8px;justify-content:center}
     .pill{border:1px solid var(--roxo);color:var(--roxo);padding:8px 12px;border-radius:999px;cursor:pointer}
     .pill.active{background:var(--roxo);color:#fff}
     .children-list{display:flex;flex-direction:column;gap:8px}
     .child-row{display:grid;grid-template-columns:2fr 1fr auto;gap:8px}
     .child-row button{border:none;background:#f3f3f3;border-radius:10px;padding:0 10px;cursor:pointer}
-    .modal-actions{display:flex;justify-content:center;gap:12px;margin-top:16px}
+    .modal-actions{display:flex;justify-content:center;gap:12px;margin-top:8px}
     .hint{font-size:.9rem;color:#666;margin-top:6px;text-align:center}
+
+    /* Mural */
+    .mural-list{min-height:72px;display:flex;align-items:center;justify-content:center}
+    .mural-msg{font-size:1.05rem;color:#4a4a4a;max-width:60ch}
   </style>
 </head>
 <body>
@@ -113,7 +121,7 @@
       <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
       <p>Toque a música para entrar no clima da celebração.</p>
       <div class="welcome-actions">
-        <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
+        <button class="btn btn-primary btn-prominent" id="start-music">Entrar e tocar playlist</button>
         <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
       </div>
     </div>
@@ -149,7 +157,7 @@
         <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
       </ul>
       <div class="button-row">
-        <button class="btn btn-primary" id="open-rsvp">Confirmar presença</button>
+        <button class="btn btn-primary btn-prominent" id="open-rsvp">Confirmar presença</button>
         <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
       </div>
     </section>
@@ -177,12 +185,12 @@
       <h2>Como chegar</h2>
       <div class="map-container">
         <iframe
-          src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"
+          src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"
           allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="button-row">
         <a class="btn btn-secondary"
-           href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+           href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil"
            target="_blank" rel="noopener">Traçar rota</a>
         <a class="btn btn-secondary"
            href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil"
@@ -214,6 +222,14 @@
               sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
               src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
               title="Playlist da Festa"></iframe>
+    </section>
+
+    <!-- Mural -->
+    <section class="card" id="mural-card">
+      <h2>Mural 💌</h2>
+      <div class="mural-list">
+        <div class="mural-msg" id="muralMsg">Seja o primeiro a deixar uma mensagem para a Isabella! ✨</div>
+      </div>
     </section>
 
     <!-- Card de Tempo -->
@@ -276,8 +292,13 @@
           </div>
         </div>
 
+        <div>
+          <label for="mensagem">Mensagem para o Mural (até 2 linhas) </label>
+          <textarea id="mensagem" rows="2" maxlength="160" placeholder="Deixe um recadinho carinhoso 💜"></textarea>
+        </div>
+
         <div class="modal-actions">
-          <button type="submit" class="btn btn-primary">Enviar pelo WhatsApp</button>
+          <button type="submit" class="btn btn-primary btn-prominent">Enviar pelo WhatsApp</button>
         </div>
       </form>
     </div>
@@ -316,18 +337,10 @@
       function closeWelcome(){ welcome.style.display='none'; }
 
       startBtn?.addEventListener('click', async () => {
-        try {
-          await audio.play(); // reprodução inicia por gesto do usuário (compatível com iOS)
-        } catch(e) {
-          console.warn('Falha ao iniciar áudio:', e);
-        }
+        try { await audio.play(); } catch(e) { console.warn('Falha ao iniciar áudio:', e); }
         closeWelcome();
       });
-
-      enterSilent?.addEventListener('click', () => {
-        try { audio.pause(); audio.currentTime = 0; } catch(_) {}
-        closeWelcome();
-      });
+      enterSilent?.addEventListener('click', () => { try{audio.pause();audio.currentTime=0;}catch(_){}; closeWelcome(); });
 
       /* ===== Modal RSVP (WhatsApp) ===== */
       const openRsvp = document.getElementById('open-rsvp');
@@ -378,10 +391,37 @@
       }
       addChild.addEventListener('click', ()=> addChildRow());
 
+      /* ====== Mural (client-side) ====== */
+      const muralEl = document.getElementById('muralMsg');
+      const STORAGE_KEY = 'muralMsgs';
+      let muralMsgs = [];
+      try{
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        if(Array.isArray(stored)) muralMsgs = stored;
+      }catch(_){}
+      // Mensagens de exemplo para não ficar vazio
+      if(muralMsgs.length === 0){
+        muralMsgs = [
+          'Estamos felizes por celebrar com vocês! 💜',
+          'Parabéns, Isabella! Que Deus abençoe sempre! ✨',
+          'Mal podemos esperar pela festa! 🎉'
+        ];
+      }
+      let muralIdx = 0;
+      function renderMural(){
+        if(muralMsgs.length === 0) return;
+        muralEl.textContent = muralMsgs[muralIdx % muralMsgs.length];
+        muralIdx++;
+      }
+      renderMural();
+      setInterval(renderMural, 6000);
+
+      /* Envio do RSVP -> WhatsApp + adiciona mensagem no mural local */
       form.addEventListener('submit', (e)=>{
         e.preventDefault();
         const nome = document.getElementById('nome').value.trim();
         const acomp = document.getElementById('acomp').value.trim();
+        const msgInput = document.getElementById('mensagem').value.trim();
 
         if(!nome || !acomp){ alert('Preencha todos os campos obrigatórios.'); return; }
 
@@ -404,15 +444,26 @@
           ? 'Olá! Confirmo minha presença no aniversário da Isabella 🎉'
           : 'Olá! Infelizmente não poderei comparecer ao aniversário da Isabella 😔';
 
-        const msg =
+        const msgWhats =
 `${header}
 
 • Nome: ${nome}
 • Acompanhante: ${acomp}
-• Filhos: ${filhosTxt}`;
+• Filhos: ${filhosTxt}
+${msgInput ? '• Mensagem: ' + msgInput : ''}`;
 
-        const url = 'https://wa.me/5521993835163?text=' + encodeURIComponent(msg);
+        // Abre WhatsApp
+        const url = 'https://wa.me/5521993835163?text=' + encodeURIComponent(msgWhats);
         window.open(url, '_blank', 'noopener');
+
+        // Se deixou mensagem, adiciona ao mural local
+        if(msgInput){
+          muralMsgs.unshift(msgInput);
+          try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(muralMsgs.slice(0,50))); }catch(_){}
+          muralIdx = 0; // recomeça rotação
+          renderMural();
+        }
+
         toggleModal(false);
       });
     });
