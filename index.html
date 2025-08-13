@@ -50,18 +50,13 @@
     .btn-primary:hover{background:var(--roxo-esc)}
     .btn-secondary{background:var(--roxo-cl);color:var(--roxo)}
     .btn-secondary:hover{filter:brightness(.97)}
-    /* Deixar o Confirmar presença ainda mais chamativo */
+    /* Confirmar presença mais chamativo */
     .btn-prominent{font-size:1.12rem;padding:14px 24px;box-shadow:0 8px 20px rgba(91,63,162,.32)}
 
     /* Álbum (grade 3x2, moldura inclinada) */
     .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin:4px auto 12px}
     .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
     .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
-
-    /* Ajustes de espaçamento para cards "limpos" (sem subtítulo) */
-    .card--tight .album-preview{margin-top:6px}
-    .card--tight .playlist-iframe{margin-top:6px}
-    .card--tight .map-container{margin-top:6px}
 
     /* Responsivo */
     @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
@@ -107,7 +102,11 @@
 
     /* Mural */
     .mural-list{min-height:72px;display:flex;align-items:center;justify-content:center}
-    .mural-msg{font-size:1.05rem;color:#4a4a4a;max-width:60ch}
+    .mural-msg{
+      font-size:1.05rem;color:#4a4a4a;max-width:60ch;opacity:0;transform:translateY(6px);
+      transition:opacity .45s ease, transform .45s ease;
+    }
+    .mural-msg.show{opacity:1;transform:translateY(0)}
   </style>
 </head>
 <body>
@@ -143,6 +142,14 @@
         Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
         Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
       </p>
+    </section>
+
+    <!-- Mural (logo abaixo de Boas‑vindas) -->
+    <section class="card" id="mural-card">
+      <h2>Mural 💌</h2>
+      <div class="mural-list">
+        <div class="mural-msg" id="muralMsg">Carregando mensagens…</div>
+      </div>
     </section>
 
     <!-- Informações -->
@@ -190,7 +197,7 @@
       </div>
       <div class="button-row">
         <a class="btn btn-secondary"
-           href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+           href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
            target="_blank" rel="noopener">Traçar rota</a>
         <a class="btn btn-secondary"
            href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil"
@@ -222,14 +229,6 @@
               sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
               src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
               title="Playlist da Festa"></iframe>
-    </section>
-
-    <!-- Mural -->
-    <section class="card" id="mural-card">
-      <h2>Mural 💌</h2>
-      <div class="mural-list">
-        <div class="mural-msg" id="muralMsg">Seja o primeiro a deixar uma mensagem para a Isabella! ✨</div>
-      </div>
     </section>
 
     <!-- Card de Tempo -->
@@ -305,6 +304,42 @@
   </div>
 
   <script>
+    /* =================== CONFIG MURAL (Supabase) =================== */
+    const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co'; // <<< PREENCHER
+    const SUPABASE_ANON_KEY = 'ey...';                       // <<< PREENCHER
+    const MURAL_TABLE = 'mural_messages';
+
+    async function muralFetchLatest(limit=50){
+      if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return [];
+      const url = `${SUPABASE_URL}/rest/v1/${MURAL_TABLE}?select=message,name,created_at&order=created_at.desc&limit=${limit}`;
+      const r = await fetch(url, {
+        headers:{
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY
+        }
+      });
+      if(!r.ok) throw new Error('fetch mural');
+      return r.json();
+    }
+
+    async function muralInsert(name, message){
+      if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+      const url = `${SUPABASE_URL}/rest/v1/${MURAL_TABLE}`;
+      const r = await fetch(url, {
+        method: 'POST',
+        headers:{
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type':'application/json',
+          Prefer: 'return=representation'
+        },
+        body: JSON.stringify({ name, message })
+      });
+      if(!r.ok) throw new Error('insert mural');
+      return r.json();
+    }
+    /* =============================================================== */
+
     document.addEventListener('DOMContentLoaded', function () {
       /* Álbum (10 fotos fonte, 6 visíveis) */
       const previewImages = [
@@ -327,19 +362,14 @@
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* Música: tocar MP3 local (sem redirecionar/rolar) */
+      /* Música: tocar MP3 local */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
       const audio = document.getElementById('ambient-music');
       audio.volume = 0.35;
-
       function closeWelcome(){ welcome.style.display='none'; }
-
-      startBtn?.addEventListener('click', async () => {
-        try { await audio.play(); } catch(e) { console.warn('Falha ao iniciar áudio:', e); }
-        closeWelcome();
-      });
+      startBtn?.addEventListener('click', async () => { try { await audio.play(); } catch(_){}; closeWelcome(); });
       enterSilent?.addEventListener('click', () => { try{audio.pause();audio.currentTime=0;}catch(_){}; closeWelcome(); });
 
       /* ===== Modal RSVP (WhatsApp) ===== */
@@ -352,32 +382,13 @@
       const childrenBox = document.getElementById('childrenBox');
       const childrenList = document.getElementById('childrenList');
       const addChild = document.getElementById('addChild');
-
       let status = 'sim'; // default
-
       function toggleModal(show){ modal.classList.toggle('show', !!show); document.body.style.overflow = show ? 'hidden' : ''; }
       openRsvp.addEventListener('click', ()=> toggleModal(true));
       closeBtn.addEventListener('click', ()=> toggleModal(false));
       modal.addEventListener('click', (e)=>{ if(e.target === modal) toggleModal(false); });
-
-      pills.forEach(p=>{
-        p.addEventListener('click', ()=>{
-          pills.forEach(x=>x.classList.remove('active'));
-          p.classList.add('active');
-          status = p.dataset.value; // 'sim' ou 'nao'
-        });
-      });
-
-      temFilhos.addEventListener('change', ()=>{
-        if(temFilhos.value === 'sim'){
-          childrenBox.style.display = '';
-          if(childrenList.children.length === 0) addChildRow();
-        }else{
-          childrenBox.style.display = 'none';
-          childrenList.innerHTML = '';
-        }
-      });
-
+      pills.forEach(p=>{ p.addEventListener('click', ()=>{ pills.forEach(x=>x.classList.remove('active')); p.classList.add('active'); status = p.dataset.value; }); });
+      temFilhos.addEventListener('change', ()=>{ if(temFilhos.value === 'sim'){ childrenBox.style.display=''; if(childrenList.children.length===0) addChildRow(); } else { childrenBox.style.display='none'; childrenList.innerHTML=''; } });
       function addChildRow(name='', age=''){
         const row = document.createElement('div');
         row.className = 'child-row';
@@ -391,38 +402,54 @@
       }
       addChild.addEventListener('click', ()=> addChildRow());
 
-      /* ====== Mural (client-side) ====== */
+      /* ====== Mural (compartilhado via Supabase + animação) ====== */
       const muralEl = document.getElementById('muralMsg');
-      const STORAGE_KEY = 'muralMsgs';
-      let muralMsgs = [];
-      try{
-        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        if(Array.isArray(stored)) muralMsgs = stored;
-      }catch(_){}
-      // Mensagens de exemplo para não ficar vazio
-      if(muralMsgs.length === 0){
-        muralMsgs = [
-          'Estamos felizes por celebrar com vocês! 💜',
-          'Parabéns, Isabella! Que Deus abençoe sempre! ✨',
-          'Mal podemos esperar pela festa! 🎉'
-        ];
-      }
+      let muralMsgs = []; // {message, name, created_at}
       let muralIdx = 0;
-      function renderMural(){
-        if(muralMsgs.length === 0) return;
-        muralEl.textContent = muralMsgs[muralIdx % muralMsgs.length];
-        muralIdx++;
+      function showMural(text){
+        muralEl.classList.remove('show');
+        // dá um pequeno tempo para reflow e animação
+        setTimeout(()=>{ muralEl.textContent = text; muralEl.classList.add('show'); }, 50);
       }
-      renderMural();
-      setInterval(renderMural, 6000);
+      async function muralRefresh(){
+        try{
+          const rows = await muralFetchLatest(50);
+          muralMsgs = (rows || []).reverse(); // mais antigas primeiro para rotacionar
+          muralIdx = 0;
+          if(muralMsgs.length === 0){
+            showMural('Seja o primeiro a deixar uma mensagem para a Isabella! ✨');
+          } else {
+            showMural(`"${muralMsgs[0].message}" — ${muralMsgs[0].name}`);
+          }
+        }catch(e){
+          // fallback local se não tiver Supabase configurado
+          if(muralMsgs.length===0){
+            muralMsgs = [
+              {message:'Estamos felizes por celebrar com vocês! 💜', name:'Família Santos'},
+              {message:'Parabéns, Isabella! Que Deus abençoe sempre! ✨', name:'Tia Ana'},
+              {message:'Mal podemos esperar pela festa! 🎉', name:'Primos'}
+            ];
+            showMural(`"${muralMsgs[0].message}" — ${muralMsgs[0].name}`);
+          }
+        }
+      }
+      function muralRotate(){
+        if(muralMsgs.length===0) return;
+        muralIdx = (muralIdx + 1) % muralMsgs.length;
+        const m = muralMsgs[muralIdx];
+        showMural(`"${m.message}" — ${m.name}`);
+      }
+      // inicia mural
+      muralRefresh();
+      setInterval(muralRotate, 6000);   // troca mensagem
+      setInterval(muralRefresh, 20000); // atualiza da base periodicamente
 
-      /* Envio do RSVP -> WhatsApp + adiciona mensagem no mural local */
-      form.addEventListener('submit', (e)=>{
+      /* Envio do RSVP -> WhatsApp + insere no Mural (Supabase) + atualiza na hora */
+      form.addEventListener('submit', async (e)=>{
         e.preventDefault();
         const nome = document.getElementById('nome').value.trim();
         const acomp = document.getElementById('acomp').value.trim();
         const msgInput = document.getElementById('mensagem').value.trim();
-
         if(!nome || !acomp){ alert('Preencha todos os campos obrigatórios.'); return; }
 
         let filhosTxt = 'Sem filhos.';
@@ -456,16 +483,36 @@ ${msgInput ? '• Mensagem: ' + msgInput : ''}`;
         const url = 'https://wa.me/5521993835163?text=' + encodeURIComponent(msgWhats);
         window.open(url, '_blank', 'noopener');
 
-        // Se deixou mensagem, adiciona ao mural local
+        // Se deixou mensagem, salva na base e mostra no mural imediatamente
         if(msgInput){
-          muralMsgs.unshift(msgInput);
-          try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(muralMsgs.slice(0,50))); }catch(_){}
-          muralIdx = 0; // recomeça rotação
-          renderMural();
+          try{
+            await muralInsert(nome, msgInput);
+            muralMsgs.push({name:nome, message:msgInput, created_at:new Date().toISOString()});
+            // mostra já a mensagem enviada
+            muralIdx = muralMsgs.length - 1;
+            showMural(`"${msgInput}" — ${nome}`);
+          }catch(e){
+            console.warn('Falha ao gravar mensagem no mural (Supabase):', e);
+          }
         }
 
+        // Fecha modal
         toggleModal(false);
       });
+
+      /* Helpers do modal dentro do escopo */
+      function toggleModal(show){ modal.classList.toggle('show', !!show); document.body.style.overflow = show ? 'hidden' : ''; }
+      function addChildRow(name='', age=''){
+        const row = document.createElement('div');
+        row.className = 'child-row';
+        row.innerHTML = `
+          <input placeholder="Nome da criança" required value="${name}">
+          <input placeholder="Idade" type="number" min="0" max="17" required value="${age}">
+          <button type="button" aria-label="Remover filho">✕</button>
+        `;
+        row.querySelector('button').addEventListener('click', ()=> row.remove());
+        childrenList.appendChild(row);
+      }
     });
 
     /* Tempo: previsão/climatologia */
