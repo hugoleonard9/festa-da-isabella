@@ -4,7 +4,10 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Festa da Isabella</title>
-<meta name="color-scheme" content="light only">
+
+<!-- Supabase JS (para o mural) -->
+<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+
 <style>
   :root{
     --roxo:#5b3fa2;
@@ -12,128 +15,143 @@
     --roxo-cl:#f1eaff;
     --bg:#fdfdfe;
     --txt:#333;
+    --card-bg: rgba(255,255,255,.85);
+    --shadow: 0 4px 10px rgba(0,0,0,.06);
+    --radius: 14px;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;line-height:1.5;background:var(--bg);color:var(--txt)}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;line-height:1.55;background:var(--bg);color:var(--txt)}
   a{color:var(--roxo);text-decoration:none}
   .container{max-width:960px;margin:0 auto;padding:20px}
 
   /* Hero */
-  .hero{position:relative;background:url('hero.jpg') center/cover no-repeat;height:60vh;min-height:320px;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center}
-  .hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.25)}
-  .hero h1{position:relative;font-size:2.5rem;margin-bottom:.4rem;font-weight:800;letter-spacing:-0.02em}
-  .hero p{position:relative;font-size:1.1rem;margin:0}
+  .hero{position:relative;background:url('hero.jpg') center/cover no-repeat;min-height:360px;height:58vh;display:flex;align-items:flex-end;justify-content:center;color:#fff;text-align:center}
+  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.15),rgba(0,0,0,.45))}
+  .hero .hero-inner{position:relative; padding:36px 20px 28px}
+  .hero h1{font-size:clamp(2rem,1.2rem + 3vw,3rem);font-weight:800;letter-spacing:-.02em}
+  .hero p{opacity:.95;margin-top:6px}
 
   /* Cards */
-  .card{background:#fff;border-radius:16px;padding:20px;margin:20px 0;box-shadow:0 6px 16px rgba(0,0,0,.06); text-align:center}
-  .card h2{color:var(--roxo);font-weight:800;letter-spacing:-0.02em;font-size:clamp(1.4rem,1.2rem + 1vw,1.8rem);margin-bottom:10px}
-  .card p{margin:8px auto 0;max-width:60ch;color:#4a4a4a}
-  .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.55rem;justify-items:center}
-  .details-item{display:flex;align-items:center;gap:.55rem;font-size:1rem;justify-content:center}
-  .details-item .icon{display:inline-flex;align-items:center;justify-content:center;width:1.4em;height:1.4em;font-size:1.2rem;line-height:1;transform:translateY(1px);color:var(--roxo);}
+  .card{background:var(--card-bg);backdrop-filter:blur(8px);border-radius:var(--radius);box-shadow:var(--shadow); padding:18px 18px; margin:18px 0}
+  .card h2{color:var(--roxo);font-weight:800;letter-spacing:-0.02em;font-size:clamp(1.35rem,1.1rem + 1vw,1.8rem);text-align:center;margin-bottom:10px}
+  .card p.lead{text-align:center;max-width:65ch;margin:0 auto;color:#4a4a4a}
 
-  /* Botões (proporção única do site) */
-  .button-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;justify-content:center}
-  .btn{display:inline-block;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;transition:transform .06s ease, background .2s; text-align:center;border:none;font-size:1rem}
+  /* Botões */
+  .button-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px}
+  .btn{display:inline-block;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;text-align:center;border:none;transition:transform .03s ease, filter .15s ease;font-size:1rem}
   .btn:active{transform:translateY(1px)}
   .btn-primary{background:var(--roxo);color:#fff}
-  .btn-primary:hover{background:var(--roxo-esc)}
+  .btn-primary:hover{filter:brightness(.98)}
   .btn-secondary{background:var(--roxo-cl);color:var(--roxo)}
   .btn-secondary:hover{filter:brightness(.97)}
+  .btn-ghost{background:#fff;color:var(--roxo);border:1px solid #e9e1ff}
 
-  /* Overlay de boas‑vindas (música) */
-  .welcome-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
-  .welcome-card{width:min(92vw,520px);background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-  .welcome-card h2{font-size:1.6rem;color:var(--roxo);margin-bottom:8px}
-  .welcome-card p{color:#444;margin-bottom:18px}
+  /* Listas de detalhes (informações da festa) */
+  .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.55rem;justify-items:center;margin-top:2px}
+  .details-item{display:flex;align-items:center;gap:.55rem;font-size:1rem;justify-content:center;text-align:center}
+  .details-item .icon{display:inline-flex;align-items:center;justify-content:center;width:1.4em;height:1.4em;font-size:1.2rem;transform:translateY(1px);color:var(--roxo);}
+
+  /* Botões da Info da Festa: mesma proporção dos demais */
+  .info-actions{display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .info-actions .btn{min-width:220px;padding:12px 18px}
 
   /* Álbum */
-  .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin:4px auto 12px}
-  .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
+  .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin:6px auto 12px}
+  .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease;background:#f5f0ff}
   .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
 
-  /* Mapa + Playlist */
+  /* Mapa + Playlist + Tempo */
   .map-container{width:100%;height:300px;border-radius:12px;overflow:hidden}
   iframe{width:100%;height:100%;border:0}
-  .playlist-iframe{width:100%;max-width:640px;height:205px;border-radius:12px;overflow:hidden;border:none;margin:8px auto 0}
-
-  /* Tempo */
-  .weather-wrapper{display:flex;justify-content:center;margin:18px 0 90px}
-  .weather-card{width:min(680px,92vw);padding:22px 18px;border-radius:16px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.06);color:var(--txt);text-align:center}
+  .playlist-iframe{width:100%;max-width:720px;height:250px;border-radius:12px;overflow:hidden;border:1px solid #eee;background:#fff;margin:0 auto}
+  .weather-wrapper{display:flex;justify-content:center;margin:18px 0 28px}
+  .weather-card{width:min(680px,92vw);padding:18px;border-radius:12px;background:var(--card-bg);backdrop-filter:blur(8px);box-shadow:var(--shadow);text-align:left}
   .weather-app{color:var(--roxo);font-weight:800;letter-spacing:-0.02em;}
   .weather-date{margin-top:6px;font-size:1rem;color:#666}
-  .weather-text{margin:14px auto 8px;font-size:1rem;line-height:1.5;max-width:60ch;color:#4a4a4a}
-  .weather-source{margin-top:6px;font-size:.9rem;color:#7a7a7a}
+  .weather-text{margin:12px 0 6px;font-size:1rem;color:#4a4a4a}
+  .weather-source{margin-top:8px;font-size:.92rem;color:#7a7a7a}
   .weather-source a{color:var(--roxo)}
-  footer{margin:18px 0 26px;text-align:center;font-size:12px;color:#999;}
+  .weather-card h2{ text-align:left; margin-bottom:2px }
 
-  /* ---------- MURAL ---------- */
-  .mural-quote{
-    font-size: clamp(1.05rem, 1rem + .3vw, 1.25rem);
-    color:#4a4a4a; min-height: 3.5em; margin: 10px auto 6px;
-    max-width: 38ch; text-align: center; opacity: 0; transform: translateY(4px);
-    transition: opacity .5s ease, transform .5s ease;
+  /* Overlay de boas‑vindas (tocar MP3) */
+  .welcome-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)}
+  .welcome-card{width:min(92vw,520px);background:#fff;border-radius:16px;padding:26px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+  .welcome-card h2{font-size:1.6rem;color:var(--roxo);margin-bottom:10px}
+  .welcome-card p{color:#444;margin-bottom:16px}
+  .welcome-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  /* Modal genérico */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:9998}
+  .modal{width:min(92vw,560px);background:#fff;border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.25);position:relative}
+  .modal h3{font-size:1.45rem;color:var(--roxo);font-weight:800;letter-spacing:-.02em;margin-bottom:8px;text-align:left}
+  .modal .modal-sub{color:#555;margin-bottom:14px}
+  .modal .field{margin:12px 0}
+  .modal label{font-weight:700;color:#222;display:block;margin-bottom:6px}
+  .modal input, .modal textarea, .modal select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #eadfff;background:#f9f6ff;outline:none}
+  .modal input:focus,.modal textarea:focus{border-color:#d3c6ff;box-shadow:0 0 0 3px #efe9ff}
+  .modal .modal-actions{display:flex;gap:12px;justify-content:flex-start;margin-top:14px}
+  .modal-x{position:absolute;right:10px;top:8px;border:none;background:transparent;font-size:28px;line-height:1;color:#9a8ad6;cursor:pointer}
+  .modal .note{ font-size:.92rem; color:#666; margin-top:6px; }
+
+  /* Alternância SIM / NÃO pequenos */
+  .yesno{display:flex;gap:8px}
+  .yesno .btn{padding:10px 12px;font-size:.95rem;font-weight:700}
+
+  /* Filhos (grid) */
+  .kids-grid{display:grid;grid-template-columns:1fr 110px;gap:10px}
+  .kid-age,.kid-name{width:100%}
+
+  footer{padding:30px 0 70px;text-align:center;font-size:12px;color:#9a9a9a}
+
+  /* Pequenos ajustes */
+  .muted{text-align:center;color:#7d7d7d}
+
+  @media (min-width:600px){
+    .details-list{grid-template-columns:repeat(2,1fr)}
   }
-  .mural-quote.show{ opacity:1; transform:translateY(0) }
-
-  /* ---------- Modais (Mural & Confirmação) ---------- */
-  .modal-overlay{position:fixed; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.5); z-index:10000}
-  .modal{
-    width:min(92vw, 560px); background:#fff; border-radius:16px; padding:22px;
-    box-shadow:0 10px 28px rgba(0,0,0,.25); text-align:left; position:relative;
+  @media (min-width:900px){
+    .details-list{grid-template-columns:repeat(3,1fr)}
   }
-  .modal h3{margin:4px 0 6px; color:var(--roxo); font-weight:800; letter-spacing:-.02em; font-size:1.4rem; text-align:left}
-  .modal-sub{ color:#666; margin-bottom:10px; text-align:left }
-  .modal .modal-x{position:absolute; right:12px; top:8px; border:none; background:transparent; font-size:22px; cursor:pointer; color:#888}
-  .modal .field{ text-align:left; margin:10px 0 6px }
-  .modal label{ display:block; font-weight:700; color:#333; margin:8px 0 6px }
-  .modal input[type="text"], .modal input[type="number"], .modal select, .modal textarea{
-    width:100%; padding:12px 14px; border:1px solid #e6e6ef; border-radius:10px;
-    background:#f7f4ff; outline:none;
-  }
-  .modal input:focus, .modal select:focus, .modal textarea:focus{ border-color: var(--roxo); background:#f3ecff }
-  .modal .row{ display:grid; grid-template-columns:1fr; gap:12px }
-  @media(min-width:600px){ .modal .row.two { grid-template-columns:1fr 1fr } }
-  .modal-actions{ display:flex; gap:12px; justify-content:center; margin-top:14px }
-  .mural-error{ margin-top:10px; text-align:center; color:#b00020; font-size:.95rem }
-  .visually-hidden{ position:absolute !important; height:1px;width:1px;overflow:hidden; clip:rect(1px,1px,1px,1px) }
 
-  /* Ajuste dos dois botões lado a lado no card “Informações da festa” */
-  .button-row.duo .btn{ flex:1 1 240px; min-width: 240px }
-
-  /* Ajustes responsivos das listas */
-  @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
-  @media (min-width:900px){.details-list{grid-template-columns:repeat(3,1fr)}}
+  /* Mural (rotator) */
+  .mural-message{min-height:70px;display:flex;align-items:center;justify-content:center;padding:8px 10px;transition:opacity .6s ease;opacity:1;text-align:center}
+  .mural-message.fade{opacity:0}
 </style>
 </head>
 <body>
 
-<!-- Tela de Boas‑vindas: tocar música -->
-<div class="welcome-overlay" id="welcome" hidden>
+<!-- Tela de Boas‑vindas para iniciar música -->
+<div class="welcome-overlay" id="welcome">
   <div class="welcome-card">
     <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
     <p>Toque a música para entrar no clima da celebração.</p>
-    <div class="button-row">
+    <div class="welcome-actions">
       <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
       <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
     </div>
   </div>
 </div>
 
+<!-- ÁUDIO local (prévia) -->
+<audio id="bg-audio" preload="auto">
+  <source src="assets/kids-children-baby-music-363272.mp3" type="audio/mpeg">
+</audio>
+
 <header class="hero">
-  <div>
+  <div class="hero-inner">
     <h1>Festa da Isabella</h1>
     <p>Celebrando seu 1º aniversário</p>
   </div>
 </header>
 
 <main class="container">
-  <!-- Boas‑vindas (primeiro card) -->
+
+  <!-- Boas‑vindas (sempre primeiro) -->
   <section class="card">
     <h2>Boas‑vindas</h2>
-    <p>
-      É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖<br>
-      Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
+    <p class="lead">
+      É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖
+      Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.
       Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
     </p>
   </section>
@@ -141,24 +159,21 @@
   <!-- Mural -->
   <section class="card" id="mural-card">
     <h2>Mural 💌</h2>
-    <p id="mural-rotating" class="mural-quote" aria-live="polite">Carregando mensagens…</p>
+    <div class="mural-message" id="muralMessage">Seja o primeiro a deixar um recado 💜</div>
     <div class="button-row">
-      <button class="btn btn-primary" id="btn-open-mural">Deixar mensagem 💌</button>
+      <button class="btn btn-primary" id="open-mural">Deixar mensagem 💌</button>
     </div>
   </section>
 
-  <!-- Informações -->
+  <!-- Informações da festa -->
   <section class="card">
     <h2>Informações da festa</h2>
     <ul class="details-list">
       <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
-      <li class="details-item">
-        <span class="icon">📍</span>
-        Sítio Verdes Encantos – Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil
-      </li>
+      <li class="details-item"><span class="icon">📍</span>Sítio Verdes Encantos – Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil</li>
       <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
     </ul>
-    <div class="button-row duo">
+    <div class="info-actions">
       <button class="btn btn-primary" id="btn-confirmar">Confirmar presença</button>
       <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
     </div>
@@ -175,10 +190,8 @@
       <div class="frame"><img alt=""></div>
       <div class="frame"><img alt=""></div>
     </div>
-    <div class="button-row" style="margin-top:10px">
-      <a class="btn btn-secondary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">
-        Abrir álbum completo
-      </a>
+    <div class="button-row" style="margin-top:8px">
+      <a class="btn btn-secondary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">Abrir álbum completo</a>
     </div>
   </section>
 
@@ -192,11 +205,11 @@
     </div>
     <div class="button-row">
       <a class="btn btn-secondary"
-         href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
-         target="_blank" rel="noopener">Traçar rota</a>
+        href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+        target="_blank" rel="noopener">Traçar rota</a>
       <a class="btn btn-secondary"
-         href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
-         target="_blank" rel="noopener">Abrir no Google Maps</a>
+        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+        target="_blank" rel="noopener">Abrir no Google Maps</a>
     </div>
   </section>
 
@@ -210,58 +223,65 @@
     </ul>
     <div class="button-row">
       <a class="btn btn-secondary" target="_blank" rel="noopener"
-         href="https://wa.me/5521993835163?text=Oi%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20presente%20da%20Isabella">
-        Dúvidas sobre o presente
-      </a>
+        href="https://wa.me/5521993835163?text=Oi%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20presente%20da%20Isabella">Dúvidas sobre o presente</a>
     </div>
   </section>
 
-  <!-- Playlist Apple -->
+  <!-- Playlist (Apple Music) -->
   <section class="card">
     <h2>Playlist da festa</h2>
-    <iframe class="playlist-iframe"
-      allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-      sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-      src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-76oNtdyh5ZK8dA"></iframe>
+    <div class="playlist-iframe">
+      <iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+              frameborder="0" height="100%" style="width:100%;overflow:hidden;background:transparent;"
+              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+              src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-EdAVP4ECGZ0X3">
+      </iframe>
+    </div>
   </section>
 
   <!-- Tempo -->
-  <section class="weather-wrapper">
-    <div class="weather-card">
-      <h2 class="weather-app">Tempo</h2>
-      <div class="weather-date" id="weatherDate">—</div>
-      <div class="weather-text" id="weatherText">Carregando…</div>
-      <div class="weather-source" id="weatherSource">Fonte: —</div>
+  <section class="card">
+    <div class="weather-wrapper">
+      <div class="weather-card">
+        <h2 class="weather-app">Tempo</h2>
+        <div class="weather-date" id="weatherDate">—</div>
+        <div class="weather-text" id="weatherText">Carregando…</div>
+        <div class="weather-source" id="weatherSource">Fonte: —</div>
+      </div>
     </div>
   </section>
 </main>
 
 <footer>© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
 
-<!-- ---------- Modais ---------- -->
-
-<!-- Modal: Mural -->
+<!-- Modal: Mural (deixar mensagem) -->
 <div class="modal-overlay" id="mural-modal" hidden>
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mural-title">
     <button class="modal-x" id="mural-close" aria-label="Fechar">×</button>
-    <h3>Deixar mensagem 💌</h3>
+    <h3 id="mural-title">Deixar mensagem 💌</h3>
     <p class="modal-sub">Máx. 140 caracteres. Se quiser, assine no final (ex.: “— Família Silva”).</p>
-    <label for="mural-textarea" class="visually-hidden">Mensagem</label>
-    <textarea id="mural-textarea" maxlength="140" rows="3" placeholder="Escreva sua mensagem…"></textarea>
-    <div class="char-count"><span id="mural-count">0</span>/140</div>
+
+    <div class="field">
+      <label for="mural-msg">Mensagem *</label>
+      <textarea id="mural-msg" rows="3" maxlength="140" placeholder="Escreva sua mensagem"></textarea>
+    </div>
+
     <div class="modal-actions">
-      <button class="btn btn-primary" id="mural-publish">Publicar</button>
+      <button class="btn btn-primary" id="mural-send">Publicar</button>
       <button class="btn btn-secondary" id="mural-cancel">Cancelar</button>
     </div>
-    <div id="mural-error" class="mural-error" role="alert" hidden>Não foi possível publicar agora. Tente de novo.</div>
+
+    <div id="mural-error" class="note" style="display:none;margin-top:10px;color:#b3261e;">
+      Não foi possível publicar agora. Tente de novo.
+    </div>
   </div>
 </div>
 
 <!-- Modal: Confirmação de presença -->
 <div class="modal-overlay" id="confirm-modal" hidden>
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
     <button class="modal-x" id="confirm-close" aria-label="Fechar">×</button>
-    <h3>Confirmação de presença ✨</h3>
+    <h3 id="confirm-title">Confirmação de presença ✨</h3>
     <p class="modal-sub">Preencha seus dados e envie — abriremos o WhatsApp com a mensagem pronta.</p>
 
     <div class="field">
@@ -271,9 +291,9 @@
 
     <div class="field">
       <label>Você vai?</label>
-      <div class="row two">
-        <button class="btn btn-secondary" id="btn-no">Não</button>
-        <button class="btn btn-primary" id="btn-yes">Sim</button>
+      <div class="yesno">
+        <button type="button" class="btn btn-secondary" id="btn-no">Não</button>
+        <button type="button" class="btn btn-secondary" id="btn-yes">Sim</button>
       </div>
     </div>
 
@@ -283,15 +303,15 @@
         <input type="text" id="acompanha" placeholder="Nome do(a) acompanhante (se houver)">
       </div>
 
-      <div class="row two">
-        <div class="field">
-          <label for="qtd">Qtd. filhos</label>
-          <input type="number" id="qtd" min="0" value="0">
-        </div>
-        <div class="field">
-          <label for="idades">Idades dos filhos</label>
-          <input type="text" id="idades" placeholder="Ex.: 5, 2">
-        </div>
+      <div class="field">
+        <label for="qtd">Qtd. filhos</label>
+        <input type="number" id="qtd" min="0" value="0">
+        <div class="note">Ao informar a quantidade, surgem os campos para nome e idade.</div>
+      </div>
+
+      <div id="children-wrap" class="field" hidden>
+        <label>Filhos</label>
+        <div id="children-grid" class="kids-grid"></div>
       </div>
     </div>
 
@@ -302,25 +322,22 @@
   </div>
 </div>
 
-<!-- Áudio escondido para o preview -->
-<audio id="preview-audio" preload="none">
-  <source src="assets/kids-children-baby-music-363272.mp3" type="audio/mpeg">
-</audio>
-
-<!-- Supabase JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.5/dist/umd/supabase.js" crossorigin="anonymous"></script>
-
 <script>
-/* ======= Álbum (10 fontes, 6 visíveis) ======= */
-document.addEventListener('DOMContentLoaded', function () {
-  const previewImages = [
-    'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
-    'album2/IMG_4765.jpeg','album2/IMG_4639.jpeg','album2/IMG_6911.jpeg',
-    'album2/IMG_4450.jpeg','album2/IMG_4352.jpeg','album2/IMG_3056.jpeg',
-    'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
-  ];
+/* ====== CONFIGURAÇÕES ====== */
+const SUPABASE_URL = "https://kfoousycrqscvhivhmxu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ====== ÁLBUM (6 imagens rotativas) ====== */
+const previewImages = [
+  'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
+  'album2/IMG_4765.jpeg','album2/IMG_4639.jpeg','album2/IMG_6911.jpeg',
+  'album2/IMG_4450.jpeg','album2/IMG_4352.jpeg','album2/IMG_3056.jpeg',
+  'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
+];
+function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b;}
+(function(){
   const frames = document.querySelectorAll('.album-preview .frame');
-  function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b;}
   function fillPreview(){
     const imgs = shuffle(previewImages);
     frames.forEach((frame, idx) => {
@@ -332,31 +349,92 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   fillPreview();
   setInterval(fillPreview, 8000);
-});
+})();
 
-/* ======= Boas‑vindas + MP3 local ======= */
+/* ====== BOAS-VINDAS / PLAY MP3 ====== */
 (function(){
   const welcome = document.getElementById('welcome');
   const startBtn = document.getElementById('start-music');
   const enterSilent = document.getElementById('enter-silent');
-  const audio = document.getElementById('preview-audio');
-
-  // Mostra overlay só na primeira visita da sessão
-  try{
-    if(!sessionStorage.getItem('isabella_welcome_seen')){
-      welcome.hidden = false;
-    }
-  }catch(e){ welcome.hidden = false; }
-
-  function closeWelcome(){ welcome.hidden = true; try{ sessionStorage.setItem('isabella_welcome_seen','1'); }catch(_){} }
-
+  const audio = document.getElementById('bg-audio');
+  function closeWelcome(){ welcome.style.display='none'; }
   startBtn?.addEventListener('click', async () => {
-    try{
-      await audio.play();
-    }catch(e){ /* alguns browsers pedem interação extra; o botão já foi clique */ }
+    try{ await audio.play(); }catch(e){ /* ignore */ }
     closeWelcome();
   });
   enterSilent?.addEventListener('click', () => { closeWelcome(); });
+})();
+
+/* ====== MURAL (listar + rotacionar + enviar) ====== */
+(async function(){
+  const txt = document.getElementById('muralMessage');
+  const openBtn = document.getElementById('open-mural');
+  const modal = document.getElementById('mural-modal');
+  const closeX = document.getElementById('mural-close');
+  const cancel = document.getElementById('mural-cancel');
+  const send = document.getElementById('mural-send');
+  const msgInput = document.getElementById('mural-msg');
+  const errBox = document.getElementById('mural-error');
+
+  function open(){ modal.hidden=false; setTimeout(()=>msgInput.focus(),50); }
+  function close(){ modal.hidden=true; msgInput.value=''; errBox.style.display='none'; }
+
+  openBtn?.addEventListener('click', open);
+  closeX?.addEventListener('click', close);
+  cancel?.addEventListener('click', close);
+  modal?.addEventListener('click', (e)=>{ if(e.target===modal) close(); });
+
+  async function fetchMessages(){
+    const { data, error } = await supabaseClient
+      .from('messages')
+      .select('mensagem, created_at')
+      .order('created_at', { ascending:false })
+      .limit(20);
+    if(error){ return []; }
+    return data?.map(d => d.mensagem).filter(Boolean) ?? [];
+  }
+
+  let pool = await fetchMessages();
+  if(!pool.length){
+    pool = [
+      "Ansiosos para comemorar com vocês! 🎉",
+      "Que Deus abençoe esse dia especial! ✨",
+      "Isabella, muita saúde e amor! 💜",
+      "Já contando os dias! 🥳"
+    ];
+  }
+
+  let i = 0;
+  function rotate(){
+    if(!pool.length) return;
+    txt.classList.add('fade');
+    setTimeout(()=>{
+      txt.textContent = pool[i % pool.length];
+      txt.classList.remove('fade');
+      i++;
+    }, 350);
+  }
+  rotate();
+  setInterval(rotate, 4200);
+
+  // Realtime: sempre que inserir, atualiza pool
+  try{
+    supabaseClient
+      .channel('msg-realtime')
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'}, async (payload)=>{
+        pool.unshift(payload.new.mensagem);
+      }).subscribe();
+  }catch(e){/* opcional */}
+
+  // Enviar
+  send?.addEventListener('click', async ()=>{
+    const v = (msgInput.value||'').trim();
+    if(!v){ msgInput.focus(); return; }
+    errBox.style.display='none';
+    const { error } = await supabaseClient.from('messages').insert({ mensagem: v });
+    if(error){ errBox.style.display='block'; return; }
+    close();
+  });
 })();
 
 /* ======= CONFIRMAÇÃO (WhatsApp) ======= */
@@ -366,62 +444,100 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeBtn = document.getElementById('confirm-close');
   const cancelBtn = document.getElementById('confirm-cancel');
   const sendBtn = document.getElementById('confirm-send');
+
   const nameEl = document.getElementById('name');
   const acompEl = document.getElementById('acompanha');
   const qtdEl = document.getElementById('qtd');
-  const idadesEl = document.getElementById('idades');
-  const extra = document.getElementById('extra-fields');
+  const wrapExtra = document.getElementById('extra-fields');
+
+  const wrapChildren = document.getElementById('children-wrap');
+  const gridChildren = document.getElementById('children-grid');
+
   const btnYes = document.getElementById('btn-yes');
   const btnNo  = document.getElementById('btn-no');
 
-  let vai = null; // true/false
+  let vai = null;
 
-  function open(){ modal.hidden = false; nameEl.focus(); }
+  function open(){ modal.hidden = false; setTimeout(()=>nameEl.focus(), 50); }
   function close(){ modal.hidden = true; }
+
   openBtn?.addEventListener('click', open);
   closeBtn?.addEventListener('click', close);
   cancelBtn?.addEventListener('click', close);
   modal?.addEventListener('click', (ev)=>{ if(ev.target === modal) close(); });
 
-  // Toggle SIM/NÃO
-  function setVai(v){
-    vai = v;
-    btnYes.classList.toggle('btn-primary', v===true);
-    btnYes.classList.toggle('btn-secondary', v!==true);
-    btnNo.classList.toggle('btn-primary', v===false);
-    btnNo.classList.toggle('btn-secondary', v!==false);
-    extra.hidden = v!==true;
+  function highlight(btn, active){
+    btn.classList.toggle('btn-primary', active);
+    btn.classList.toggle('btn-secondary', !active);
   }
+  function setVai(value){
+    vai = value;
+    highlight(btnYes, value === true);
+    highlight(btnNo,  value === false);
+    wrapExtra.hidden = (value !== true);
+    if(value !== true){
+      acompEl.value = '';
+      qtdEl.value = 0;
+      gridChildren.innerHTML = '';
+      wrapChildren.hidden = true;
+    }
+  }
+  highlight(btnYes, false); highlight(btnNo, false);
   btnYes.addEventListener('click', ()=>setVai(true));
-  btnNo.addEventListener('click', ()=>setVai(false));
-  setVai(true); // default
+  btnNo .addEventListener('click', ()=>setVai(false));
 
-  // mostra/oculta campos de filhos
-  qtdEl.addEventListener('input', ()=>{
-    const n = parseInt(qtdEl.value||'0',10);
-    idadesEl.parentElement.hidden = !(n>0);
-    if(!(n>0)) idadesEl.value='';
-  });
-  idadesEl.parentElement.hidden = true;
+  function rebuildChildren(){
+    const n = Math.max(0, parseInt(qtdEl.value || '0', 10));
+    gridChildren.innerHTML = '';
+    wrapChildren.hidden = (n === 0);
+    for(let i=0;i<n;i++){
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.placeholder = `Nome do filho ${i+1}`;
+      nameInput.className = 'kid-name';
+
+      const ageInput = document.createElement('input');
+      ageInput.type = 'number';
+      ageInput.min = '0';
+      ageInput.placeholder = 'Idade';
+      ageInput.className = 'kid-age';
+
+      gridChildren.appendChild(nameInput);
+      gridChildren.appendChild(ageInput);
+    }
+  }
+  qtdEl.addEventListener('input', rebuildChildren);
 
   // Enviar para WhatsApp
   sendBtn.addEventListener('click', ()=>{
     const nome = (nameEl.value||'').trim();
     if(!nome){ nameEl.focus(); return; }
-    if(vai===null){ return; }
-
-    const acomp = (acompEl.value||'').trim();
-    const nfilhos = parseInt(qtdEl.value||'0',10) || 0;
-    const idades = (idadesEl.value||'').trim();
+    if(vai === null){ btnYes.focus(); return; }
 
     let msg = `Olá! Confirmo minha presença no aniversário da Isabella.%0A`;
     msg += `Nome: ${encodeURIComponent(nome)}%0A`;
-    msg += `Vou: ${vai?'Sim':'Não'}%0A`;
-    if(acomp){ msg += `Acompanhante: ${encodeURIComponent(acomp)}%0A`; }
-    msg += `Filhos: ${nfilhos}`;
-    if(nfilhos>0 && idades){ msg += ` (idades: ${encodeURIComponent(idades)})`; }
+    msg += `Vou: ${vai ? 'Sim' : 'Não'}%0A`;
 
-    // Abre WhatsApp
+    if(vai){
+      const acomp = (acompEl.value||'').trim();
+      if(acomp){ msg += `Acompanhante: ${encodeURIComponent(acomp)}%0A`; }
+
+      const n = Math.max(0, parseInt(qtdEl.value||'0',10));
+      msg += `Filhos: ${n}%0A`;
+      if(n>0){
+        const pairs = [];
+        const inputs = gridChildren.querySelectorAll('input');
+        for(let i=0;i<inputs.length;i+=2){
+          const nomeF = (inputs[i].value||'').trim();
+          const idade = (inputs[i+1].value||'').trim();
+          if(nomeF || idade){
+            pairs.push(`${nomeF || '—'} (${idade || '?'})`);
+          }
+        }
+        if(pairs.length){ msg += `Detalhes: ${encodeURIComponent(pairs.join(', '))}%0A`; }
+      }
+    }
+
     const phone = '5521993835163';
     const href = `https://wa.me/${phone}?text=${msg}`;
     window.open(href, '_blank','noopener');
@@ -429,82 +545,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 })();
 
-/* ======= MURAL (Supabase + rotação + realtime) ======= */
-(function(){
-  const SUPABASE_URL  = 'https://kfoousycrqscvhivhmxu.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ';
-  const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-  const txt = document.getElementById('mural-rotating');
-  const openBtn = document.getElementById('btn-open-mural');
-  const modal = document.getElementById('mural-modal');
-  const closeBtn = document.getElementById('mural-close');
-  const cancelBtn = document.getElementById('mural-cancel');
-  const publishBtn = document.getElementById('mural-publish');
-  const ta = document.getElementById('mural-textarea');
-  const counter = document.getElementById('mural-count');
-  const err = document.getElementById('mural-error');
-
-  let messages = []; let idx = 0; let timer = null; const ROTATE_MS = 6000;
-
-  function showModal(){ modal.hidden = false; ta.value = ''; counter.textContent='0'; err.hidden = true; ta.focus(); }
-  function hideModal(){ modal.hidden = true; }
-  function setQuote(q){ txt.classList.remove('show'); setTimeout(()=>{ txt.textContent=q; txt.classList.add('show'); },120); }
-  function startRotation(){
-    if(!messages.length){ setQuote('Seja o primeiro a deixar um recado 💜'); return; }
-    setQuote(messages[idx % messages.length]);
-    clearInterval(timer);
-    timer = setInterval(()=>{ idx=(idx+1)%messages.length; setQuote(messages[idx]); }, ROTATE_MS);
-  }
-
-  async function loadMessages(){
-    try{
-      const { data, error } = await client.from('messages').select('mensagem,created_at').order('created_at',{ascending:false}).limit(30);
-      if(error) throw error;
-      messages = (data||[]).map(r=>r.mensagem).filter(Boolean);
-      idx=0; startRotation();
-    }catch(e){ console.error(e); setQuote('Não foi possível carregar as mensagens agora.'); }
-  }
-
-  function listenRealtime(){
-    client
-      .channel('public:messages')
-      .on('postgres_changes', { event:'INSERT', schema:'public', table:'messages' }, payload=>{
-        const msg = payload.new?.mensagem;
-        if(typeof msg === 'string' && msg.trim()){
-          messages.unshift(msg.trim());
-          if(messages.length===1){ idx=0; startRotation(); }
-        }
-      })
-      .subscribe();
-  }
-
-  async function publish(){
-    const v = (ta.value||'').trim();
-    if(!v){ err.textContent='Digite uma mensagem.'; err.hidden=false; return; }
-    if(v.length>140){ err.textContent='Limite de 140 caracteres.'; err.hidden=false; return; }
-    publishBtn.disabled=true; err.hidden=true;
-    try{
-      const { error } = await client.from('messages').insert([{ mensagem:v }]);
-      if(error) throw error;
-      hideModal();
-      messages.unshift(v); idx=0; startRotation();
-    }catch(e){ console.error(e); err.textContent='Não foi possível publicar agora. Tente de novo.'; err.hidden=false; }
-    finally{ publishBtn.disabled=false; }
-  }
-
-  openBtn?.addEventListener('click', showModal);
-  closeBtn?.addEventListener('click', hideModal);
-  cancelBtn?.addEventListener('click', hideModal);
-  modal?.addEventListener('click', (ev)=>{ if(ev.target===modal) hideModal(); });
-  publishBtn?.addEventListener('click', publish);
-  ta?.addEventListener('input', ()=>{ counter.textContent=(ta.value||'').length; });
-
-  txt && txt.classList.remove('show');
-  loadMessages(); listenRealtime();
-})();
-
-/* ======= Tempo ======= */
+/* ====== TEMPO ====== */
 (function(){
   const EVENT_DATE_DEFAULT = '2025-11-22';
   const LAT = -22.606, LON = -43.490;
@@ -581,8 +622,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setSourceStamp('Open‑Meteo (climatologia 1991–2020)');
       }
     }catch(e){
-      console.warn('Tempo: fallback estático', e);
-      elText.textContent = 'Nesta época do ano, a temperatura varia entre 20° e 27°.';
+      elText.textContent = 'Nesta época do ano, a temperatura costuma variar entre 20° e 27°.';
       setSourceStamp('Open‑Meteo');
     }
   })();
