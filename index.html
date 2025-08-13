@@ -20,7 +20,7 @@
   .hero h1{position:relative;font-size:2.5rem;margin-bottom:.4rem;font-weight:800;letter-spacing:-.02em}
   .hero p{position:relative;font-size:1.1rem;opacity:.95}
 
-  /* Cards (globais e centralizados) */
+  /* Cards */
   .card{background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-radius:16px;padding:22px;margin:20px 0;box-shadow:0 4px 10px rgba(0,0,0,.06);text-align:center}
   .card h2{color:var(--roxo);font-weight:800;letter-spacing:-.02em;font-size:clamp(1.4rem,1.1rem + 1vw,1.9rem);margin-bottom:12px}
   .card p{margin:8px auto 0;max-width:62ch;color:#4a4a4a}
@@ -37,7 +37,11 @@
   .btn-secondary:hover{filter:brightness(.97)}
   .btn-lg{font-size:1.05rem;padding:15px 24px}
 
-  /* Álbum (3x2 com molduras levemente inclinadas) */
+  /* Dois botões lado a lado (e responsivo) */
+  .button-row.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  @media (max-width:520px){ .button-row.duo{grid-template-columns:1fr} }
+
+  /* Álbum */
   .album-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-items:center;margin:4px auto 12px}
   .album-preview .frame{position:relative;overflow:hidden;border-radius:14px;aspect-ratio:1/1;width:120px;box-shadow:0 6px 10px rgba(0,0,0,.08);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
   .album-preview img{width:100%;height:100%;object-fit:cover}
@@ -47,7 +51,7 @@
   iframe{width:100%;height:100%;border:0}
   .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:14px;border:0}
 
-  /* Card Tempo */
+  /* Tempo */
   .weather-wrapper{display:flex;justify-content:center;margin:18px 0 90px}
   .weather-card{width:min(680px,92vw);padding:22px 18px;border-radius:16px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);box-shadow:0 4px 10px rgba(0,0,0,.06);text-align:center}
   .weather-app{color:var(--roxo);font-weight:800;letter-spacing:-.02em}
@@ -61,7 +65,7 @@
   .welcome-card{width:min(92vw,520px);background:#fff;border-radius:18px;padding:28px;text-align:center;box-shadow:0 12px 28px rgba(0,0,0,.25)}
   .welcome-card h2{font-size:1.7rem;color:var(--roxo);margin-bottom:8px}
 
-  /* Modal genérico */
+  /* Modais */
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9998}
   .modal.open{display:flex}
   .modal-card{width:min(92vw,640px);background:#fff;border-radius:16px;padding:20px;box-shadow:0 12px 28px rgba(0,0,0,.25)}
@@ -80,9 +84,8 @@
   .remove{background:#eee;border-radius:10px;padding:10px 12px;border:1px solid #ddd;cursor:pointer}
   .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
 
-  /* Mural */
-  .mural-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-  .mural-list{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px;min-height:48px}
+  /* Mural (layout anterior) */
+  .mural-list{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px;min-height:48px}
   .mural-item{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px 14px;color:#444;box-shadow:0 2px 6px rgba(0,0,0,.03);opacity:0;transform:translateY(6px);animation:fadeIn .5s forwards}
   @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
 
@@ -120,13 +123,15 @@
        Esperamos você para comemorar conosco esse dia tão importante! 🥳✨</p>
   </section>
 
-  <!-- Mural (logo abaixo de Boas‑vindas) -->
+  <!-- Mural (título centralizado, lista e botão embaixo) -->
   <section class="card" id="mural-card">
-    <div class="mural-head">
-      <h2 style="margin:0">Mural 💌</h2>
+    <h2>Mural 💌</h2>
+    <div id="mural-list" class="mural-list">
+      <div class="mural-item">Carregando mensagens…</div>
+    </div>
+    <div class="button-row">
       <button class="btn btn-primary" id="open-mural">Deixar mensagem 💌</button>
     </div>
-    <div id="mural-list" class="mural-list"><div class="mural-item">Carregando mensagens…</div></div>
   </section>
 
   <!-- Informações -->
@@ -140,9 +145,9 @@
       </li>
       <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
     </ul>
-    <div class="button-row">
+    <div class="button-row duo">
       <button class="btn btn-primary btn-lg" id="confirmar-presenca">Confirmar presença</button>
-      <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
+      <a class="btn btn-secondary btn-lg" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
     </div>
   </section>
 
@@ -175,13 +180,13 @@
     </div>
   </section>
 
-  <!-- Presentes sugeridos (no mesmo lugar de sempre: após o mapa) -->
+  <!-- Presentes sugeridos (mantido no mesmo lugar) -->
   <section class="card">
     <h2>Sugestão de presentes 💝</h2>
     <ul class="details-list">
       <li class="details-item"><span class="icon">🧸</span>Brinquedos educativos</li>
       <li class="details-item"><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
-      <li class="details-item"><span class="icon">🩰</span>Calçados tamanho 22</li>
+      <li class="details-item"><span class="icon">🩰</span>Calçados a partir do tamanho 22</li>
     </ul>
     <div class="button-row">
       <a class="btn btn-secondary" target="_blank" rel="noopener"
@@ -263,7 +268,7 @@
     <div class="form-grid">
       <div>
         <label>Mensagem*</label>
-        <textarea id="mural-text" maxlength="220" placeholder="Ex.: Parabéns, Isabella! Que Deus abençoe sua vida. — Hugo"></textarea>
+        <textarea id="mural-text" maxlength="220" placeholder="Ex.: Parabéns, Isabella! Que Deus abençoe sua vida. — Seu nome"></textarea>
       </div>
     </div>
     <div class="modal-actions">
@@ -274,8 +279,8 @@
 </div>
 
 <script>
-/* ===== Config do Supabase (MURAL) ===== */
-const SUPABASE_URL = "YOUR_SUPABASE_URL";          // ex.: https://abcxyz.supabase.co
+/* ===== Supabase (MURAL) – preencha com seus dados ===== */
+const SUPABASE_URL = "YOUR_SUPABASE_URL";          // ex.: https://xxxx.supabase.co
 const SUPABASE_ANON = "YOUR_SUPABASE_ANON_KEY";    // anon key
 const MURAL_TABLE = "mural";
 
@@ -284,12 +289,12 @@ const bgAudio = new Audio("assets/kids-children-baby-music-363272.mp3");
 bgAudio.loop = true;
 const welcome = document.getElementById('welcome');
 document.getElementById('start-music')?.addEventListener('click', async () => {
-  try { await bgAudio.play(); } catch(e){}
+  try { await bgAudio.play(); } catch(e){ console.warn(e); }
   welcome.style.display = 'none';
 });
 document.getElementById('enter-silent')?.addEventListener('click', ()=> welcome.style.display='none');
 
-/* ===== Álbum (rotaciona 6 fotos) ===== */
+/* ===== Álbum ===== */
 document.addEventListener('DOMContentLoaded', ()=>{
   const previewImages = [
     'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
@@ -391,10 +396,6 @@ document.getElementById('send-rsvp')?.addEventListener('click',()=>{
 });
 
 /* ===== Mural (Supabase) ===== */
-const modalMural = document.getElementById('modal-mural');
-document.getElementById('open-mural')?.addEventListener('click',()=>modalMural.classList.add('open'));
-document.getElementById('close-mural')?.addEventListener('click',()=>modalMural.classList.remove('open'));
-
 async function sbFetch(path, opts={}){
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...opts,
@@ -405,53 +406,66 @@ async function sbFetch(path, opts={}){
       ...opts.headers
     }
   });
-  if(!r.ok) throw new Error(await r.text());
+  if(!r.ok){
+    const txt = await r.text().catch(()=>String(r.status));
+    throw new Error(txt || `HTTP ${r.status}`);
+  }
   return r.json();
 }
 
 const listEl = document.getElementById('mural-list');
+const exemplos = [
+  "Parabéns, Isabella! Muita saúde e alegria! — Família Silva",
+  "Que seu dia seja tão doce quanto o seu sorriso! 💜 — Tia Ana",
+  "Feliz 1º aninho! Deus abençoe sempre! — Pedro & Lu",
+  "Estamos muito felizes por celebrar com vocês! — João e Maria"
+];
+
 async function loadMural(){
   try{
     const rows = await sbFetch(`${MURAL_TABLE}?select=message,created_at&order=created_at.desc&limit=20`);
-    listEl.innerHTML = '';
-    if(!rows.length){ listEl.innerHTML = '<div class="mural-item">Seja o(a) primeiro(a) a deixar um recado! 💜</div>'; return; }
-    rows.forEach((r,i)=>{
-      const div = document.createElement('div');
-      div.className = 'mural-item';
-      div.style.animationDelay = (i*0.06)+'s';
-      div.textContent = r.message;
-      listEl.appendChild(div);
-    });
-    // troca suave (carrossel simples)
-    let idx = 0;
-    setInterval(()=>{
-      const items = Array.from(listEl.children);
-      if(items.length<=3) return; // mostra todos quando poucos
-      items.forEach(el=>el.style.display='none');
-      for(let i=0;i<3;i++){
-        const show = items[(idx+i)%items.length];
-        show.style.display='block';
-        show.style.opacity='0'; show.style.transform='translateY(6px)';
-        requestAnimationFrame(()=>{ show.style.transition='all .45s'; show.style.opacity='1'; show.style.transform='translateY(0)';});
-      }
-      idx = (idx+1)%items.length;
-    }, 4000);
+    renderList(rows.length ? rows.map(r=>r.message) : exemplos);
   }catch(e){
-    listEl.innerHTML = '<div class="mural-item">Não foi possível carregar as mensagens agora.</div>';
-    console.warn(e);
+    console.warn('Mural load error:', e);
+    renderList(exemplos);
   }
 }
+
+function renderList(messages){
+  listEl.innerHTML = '';
+  messages.forEach((m,i)=>{
+    const div = document.createElement('div');
+    div.className='mural-item';
+    div.style.animationDelay = (i*0.06)+'s';
+    div.textContent = m;
+    listEl.appendChild(div);
+  });
+}
+
 loadMural();
+
+/* Publicar mensagem */
+const modalMural = document.getElementById('modal-mural');
+document.getElementById('open-mural')?.addEventListener('click',()=>modalMural.classList.add('open'));
+document.getElementById('close-mural')?.addEventListener('click',()=>modalMural.classList.remove('open'));
 
 document.getElementById('save-mural')?.addEventListener('click', async ()=>{
   const txt = document.getElementById('mural-text').value.trim();
   if(!txt){ alert('Escreva sua mensagem.'); return; }
+
+  // Optimistic UI: mostra já na tela
+  const temp = document.createElement('div');
+  temp.className='mural-item';
+  temp.textContent = txt;
+  listEl.prepend(temp);
+
   try{
     await sbFetch(MURAL_TABLE, { method:'POST', body: JSON.stringify([{ message: txt }]) });
     document.getElementById('mural-text').value = '';
     modalMural.classList.remove('open');
-    loadMural();
-  }catch(e){ alert('Não foi possível publicar agora. Tente de novo.'); }
+  }catch(e){
+    alert('Não foi possível publicar agora.\n\nDica: verifique no Supabase se a tabela "mural" tem policies de SELECT e INSERT liberadas para o anon.\n\nDetalhes: ' + e.message);
+  }
 });
 </script>
 </body>
