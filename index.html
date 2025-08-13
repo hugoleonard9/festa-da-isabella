@@ -104,6 +104,9 @@
 </head>
 <body>
 
+  <!-- Música ambiente (MP3 local) -->
+  <audio id="ambient-music" src="assets/kids-children-baby-music-363272.mp3" preload="auto" loop></audio>
+
   <!-- Tela de Boas‑vindas para iniciar música -->
   <div class="welcome-overlay" id="welcome">
     <div class="welcome-card">
@@ -146,13 +149,12 @@
         <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
       </ul>
       <div class="button-row">
-        <!-- abre o popup -->
         <button class="btn btn-primary" id="open-rsvp">Confirmar presença</button>
         <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
       </div>
     </section>
 
-    <!-- Álbum (sem subtítulo) -->
+    <!-- Álbum -->
     <section class="card card--tight">
       <h2>Álbum de fotos</h2>
       <div class="album-preview">
@@ -170,7 +172,7 @@
       </div>
     </section>
 
-    <!-- Mapa (sem subtítulo) -->
+    <!-- Mapa -->
     <section class="card card--tight">
       <h2>Como chegar</h2>
       <div class="map-container">
@@ -183,7 +185,7 @@
            href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
            target="_blank" rel="noopener">Traçar rota</a>
         <a class="btn btn-secondary"
-           href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+           href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil"
            target="_blank" rel="noopener">Abrir no Google Maps</a>
       </div>
     </section>
@@ -204,12 +206,13 @@
       </div>
     </section>
 
-    <!-- Playlist (sem subtítulo) -->
+    <!-- Playlist (Apple Music embed) -->
     <section class="card card--tight" id="playlist-section">
       <h2>Playlist da festa</h2>
       <iframe class="playlist-iframe"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              src="https://open.spotify.com/embed/playlist/6FLOrumhEmeIucB1VJAjjV?utm_source=generator"
+              allow="autoplay *; encrypted-media *; fullscreen *"
+              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+              src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
               title="Playlist da Festa"></iframe>
     </section>
 
@@ -303,17 +306,28 @@
       fillPreview();
       setInterval(fillPreview, 8000);
 
-      /* Música: solicitar e iniciar */
+      /* Música: tocar MP3 local (sem redirecionar/rolar) */
       const welcome = document.getElementById('welcome');
       const startBtn = document.getElementById('start-music');
       const enterSilent = document.getElementById('enter-silent');
-      const playlistURL = 'https://open.spotify.com/playlist/6FLOrumhEmeIucB1VJAjjV?si=MQvJD6S6SmCULNFSvCiO_Q&pi=5RTA_JNLSuiCQ';
+      const audio = document.getElementById('ambient-music');
+      audio.volume = 0.35;
+
       function closeWelcome(){ welcome.style.display='none'; }
-      startBtn?.addEventListener('click', () => {
-        window.open(playlistURL, '_blank', 'noopener');
+
+      startBtn?.addEventListener('click', async () => {
+        try {
+          await audio.play(); // reprodução inicia por gesto do usuário (compatível com iOS)
+        } catch(e) {
+          console.warn('Falha ao iniciar áudio:', e);
+        }
         closeWelcome();
       });
-      enterSilent?.addEventListener('click', () => { closeWelcome(); });
+
+      enterSilent?.addEventListener('click', () => {
+        try { audio.pause(); audio.currentTime = 0; } catch(_) {}
+        closeWelcome();
+      });
 
       /* ===== Modal RSVP (WhatsApp) ===== */
       const openRsvp = document.getElementById('open-rsvp');
@@ -403,7 +417,7 @@
       });
     });
 
-    /* Tempo: previsão perto da data, climatologia fora da janela */
+    /* Tempo: previsão/climatologia */
     (function(){
       const EVENT_DATE_DEFAULT = '2025-11-22';
       const LAT = -22.606, LON = -43.490;
