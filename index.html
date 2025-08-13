@@ -34,8 +34,8 @@
   .details li{display:flex;gap:.55rem;align-items:center;justify-content:center}
   .icon{color:var(--roxo);font-size:1.1rem;transform:translateY(1px)}
 
-  /* Buttons */
-  .btn{appearance:none;border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer}
+  /* Buttons (tamanho unificado) */
+  .btn{appearance:none;border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-size:16px;line-height:1}
   .btn-primary{background:var(--roxo);color:#fff}
   .btn-primary:hover{background:var(--roxo-esc)}
   .btn-soft{background:var(--roxo-cl);color:var(--roxo)}
@@ -86,12 +86,9 @@
   .fade-in{opacity:1;transform:translateY(0)}
   .muted{color:var(--muted);font-size:.95rem}
 
-  /* Same-size buttons em Info */
+  /* Mesmo tamanho dos botões de “Informações” */
   .row .btn{min-width:240px}
-
-  @media(min-width:720px){
-    .row.row-2 .btn{min-width:260px}
-  }
+  @media(min-width:720px){ .row.row-2 .btn{min-width:260px} }
 
   /* Evitar scroll com overlay aberto */
   body.modal-open{overflow:hidden}
@@ -112,7 +109,7 @@
 </div>
 
 <!-- Player escondido -->
-<audio id="bg-audio" preload="auto" playsinline webkit-playsinline crossOrigin="anonymous">
+<audio id="bg-audio" preload="auto" playsinline webkit-playsinline>
   <source src="assets/kids-children-baby-music-363272.mp3" type="audio/mpeg">
 </audio>
 
@@ -125,7 +122,7 @@
 
 <main class="container">
 
-  <!-- Boas‑vindas (primeiro card) -->
+  <!-- Boas‑vindas -->
   <section class="card center" id="boas-vindas">
     <h2>Boas‑vindas</h2>
     <p>É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖</p>
@@ -144,7 +141,7 @@
     </div>
   </section>
 
-  <!-- Informações da festa -->
+  <!-- Informações -->
   <section class="card center">
     <h2>Informações da festa</h2>
     <ul class="details">
@@ -201,12 +198,13 @@
     </div>
   </section>
 
-  <!-- Playlist Apple Music -->
+  <!-- Playlist Apple Music (corrigida) -->
   <section class="card center">
     <h2>Playlist da festa</h2>
-    <iframe class="apple-embed" allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+    <iframe class="apple-embed"
+      allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
       sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-      src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-76oNNX6tLeVZNj"></iframe>
+      src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-76oNNkYtqByeMy"></iframe>
   </section>
 
   <!-- Tempo -->
@@ -288,26 +286,23 @@
 <script>
 /* ---------------- Overlay música ---------------- */
 (function(){
+  const WELCOME_KEY = 'welcomeDone_v2'; // <- nova chave para voltar a exibir
   const overlay = document.getElementById('welcome-overlay');
   const btnPlay = document.getElementById('start-music');
   const btnSilent = document.getElementById('enter-silent');
   const audio = document.getElementById('bg-audio');
 
-  // só mostra uma vez por sessão
-  const done = sessionStorage.getItem('welcomeDone')==='1';
+  const done = sessionStorage.getItem(WELCOME_KEY)==='1';
   if(done) overlay.classList.add('hide'); else document.body.classList.add('modal-open');
 
   function closeOverlay(){
     overlay.classList.add('hide');
     document.body.classList.remove('modal-open');
-    sessionStorage.setItem('welcomeDone','1');
+    sessionStorage.setItem(WELCOME_KEY,'1');
   }
 
   btnPlay?.addEventListener('click', async ()=>{
-    try{
-      audio.pause(); audio.currentTime=0; audio.muted=false;
-      await audio.play(); // gesto do usuário ⇒ iOS libera
-    }catch(e){ console.warn('Audio play falhou:', e); }
+    try{ audio.pause(); audio.currentTime=0; audio.muted=false; await audio.play(); }catch(e){}
     closeOverlay();
   });
   btnSilent?.addEventListener('click', closeOverlay);
@@ -339,20 +334,15 @@ const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 
 let supabaseClient;
 (function(){
-  // client light (sem sdk grande)
   window.supabase = null;
   const s = document.createElement('script');
   s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
   s.onload = () => {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
-      auth: { persistSession:false }
-    });
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth:{persistSession:false} });
     loadMural();
-    // realtime
-    try {
+    try{
       supabaseClient.channel('public:messages')
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},
-          () => loadMural(true))
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'}, ()=>loadMural(true))
         .subscribe();
     }catch(_){}
   };
@@ -378,7 +368,6 @@ async function loadMural(isRealtime){
       return;
     }
     muralBox.classList.remove('muted');
-    // rotacionar suavemente
     let idx = 0;
     function show(i){
       muralBox.classList.add('fade-out');
@@ -392,10 +381,7 @@ async function loadMural(isRealtime){
     show(0);
     if(!isRealtime){
       clearInterval(window._muralTimer);
-      window._muralTimer = setInterval(()=>{
-        idx = (idx+1) % list.length;
-        show(idx);
-      }, 4000);
+      window._muralTimer = setInterval(()=>{ idx=(idx+1)%list.length; show(idx); }, 4000);
     }
   }catch(e){
     muralBox.textContent = "Não foi possível carregar as mensagens agora.";
@@ -408,7 +394,6 @@ function openModal(id){ document.getElementById(id).classList.add('open'); docum
 function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.classList.remove('modal-open'); }
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
 
-/* Abrir modais pelos botões corretos */
 document.getElementById('open-mural')?.addEventListener('click',()=>openModal('modal-mural'));
 document.getElementById('open-rsvp')?.addEventListener('click',()=>openModal('modal-rsvp'));
 
