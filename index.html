@@ -50,7 +50,6 @@
     .btn-primary:hover{background:var(--roxo-esc)}
     .btn-secondary{background:var(--roxo-cl);color:var(--roxo)}
     .btn-secondary:hover{filter:brightness(.97)}
-    /* Confirmar presença mais chamativo */
     .btn-prominent{font-size:1.12rem;padding:14px 24px;box-shadow:0 8px 20px rgba(91,63,162,.32)}
 
     /* Álbum (grade 3x2, moldura inclinada) */
@@ -80,25 +79,16 @@
     /* Marca d'água */
     footer{position:fixed;bottom:20px;width:100%;text-align:center;font-size:12px;color:#999;}
 
-    /* ===== Modal RSVP ===== */
+    /* ===== Modal genérico ===== */
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9998}
     .modal.show{display:flex}
-    .modal-card{width:min(92vw,640px);background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:20px}
+    .modal-card{width:min(92vw,560px);background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:20px}
     .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .modal-header h3{color:var(--roxo);font-size:1.4rem}
+    .modal-header h3{color:var(--roxo);font-size:1.3rem}
     .modal-close{background:#eee;border:none;border-radius:10px;padding:8px 12px;cursor:pointer}
     .form-row{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
     .form-row label{font-weight:600;font-size:.95rem}
-    .form-row input, .form-row select, .form-row textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:1rem}
-    .form-row textarea{resize:none}
-    .rsvp-options{display:flex;gap:10px;margin-top:8px;justify-content:center}
-    .pill{border:1px solid var(--roxo);color:var(--roxo);padding:8px 12px;border-radius:999px;cursor:pointer}
-    .pill.active{background:var(--roxo);color:#fff}
-    .children-list{display:flex;flex-direction:column;gap:8px}
-    .child-row{display:grid;grid-template-columns:2fr 1fr auto;gap:8px}
-    .child-row button{border:none;background:#f3f3f3;border-radius:10px;padding:0 10px;cursor:pointer}
-    .modal-actions{display:flex;justify-content:center;gap:12px;margin-top:8px}
-    .hint{font-size:.9rem;color:#666;margin-top:6px;text-align:center}
+    .form-row textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:1rem;resize:none}
 
     /* Mural */
     .mural-list{min-height:72px;display:flex;align-items:center;justify-content:center}
@@ -120,7 +110,7 @@
       <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
       <p>Toque a música para entrar no clima da celebração.</p>
       <div class="welcome-actions">
-        <button class="btn btn-primary btn-prominent" id="start-music">Entrar e tocar playlist</button>
+        <button class="btn btn-primary btn-prominent" id="start-music">Entrar e tocar música</button>
         <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
       </div>
     </div>
@@ -150,6 +140,9 @@
       <div class="mural-list">
         <div class="mural-msg" id="muralMsg">Carregando mensagens…</div>
       </div>
+      <div class="button-row" style="margin-top:10px">
+        <button class="btn btn-primary" id="open-mural-modal">Deixar mensagem 💌</button>
+      </div>
     </section>
 
     <!-- Informações -->
@@ -164,7 +157,9 @@
         <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
       </ul>
       <div class="button-row">
-        <button class="btn btn-primary btn-prominent" id="open-rsvp">Confirmar presença</button>
+        <a class="btn btn-primary btn-prominent"
+           href="https://wa.me/5521993835163?text=Ol%C3%A1%2C%20confirmo%20minha%20presen%C3%A7a%20no%20anivers%C3%A1rio%20da%20Isabella!"
+           target="_blank" rel="noopener">Confirmar presença</a>
         <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
       </div>
     </section>
@@ -192,12 +187,12 @@
       <h2>Como chegar</h2>
       <div class="map-container">
         <iframe
-          src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"
+          src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"
           allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="button-row">
         <a class="btn btn-secondary"
-           href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+           href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil"
            target="_blank" rel="noopener">Traçar rota</a>
         <a class="btn btn-secondary"
            href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil"
@@ -245,100 +240,33 @@
   <!-- Marca d'água -->
   <footer>© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
 
-  <!-- ===== Modal RSVP ===== -->
-  <div class="modal" id="rsvpModal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="rsvpTitle">
+  <!-- ===== Modal do Mural ===== -->
+  <div class="modal" id="muralModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="muralTitle">
       <div class="modal-header">
-        <h3 id="rsvpTitle">Confirmação de presença ✨</h3>
-        <button class="modal-close" id="rsvpClose">Fechar</button>
+        <h3 id="muralTitle">Deixar mensagem 💌</h3>
+        <button class="modal-close" id="muralClose">Fechar</button>
       </div>
-
-      <p class="hint">
-        Olá! Este espaço é exclusivo para sua confirmação de presença no aniversário da Isabella.
-        Seu nome já está na lista oficial — aqui é apenas para registrar seus dados, o nome do seu acompanhante e dos seus filhos.
-      </p>
-
-      <!-- Sim / Não -->
-      <div class="rsvp-options" id="rsvpChoices">
-        <button type="button" class="pill active" data-value="sim">Sim</button>
-        <button type="button" class="pill" data-value="nao">Não</button>
+      <div class="form-row">
+        <label for="muralMsgInput">Escreva sua mensagem (máx. 200 caracteres). Se quiser, assine no final. ✨</label>
+        <textarea id="muralMsgInput" rows="2" maxlength="200" placeholder="Ex.: Parabéns, Isabella! — Família Silva"></textarea>
       </div>
-
-      <form id="rsvpForm" class="form-row">
-        <div>
-          <label for="nome">Seu nome *</label>
-          <input id="nome" name="nome" required placeholder="Ex.: Maria Silva">
-        </div>
-        <div>
-          <label for="acomp">Nome do acompanhante *</label>
-          <input id="acomp" name="acomp" required placeholder="Ex.: João Souza">
-        </div>
-
-        <div>
-          <label for="temFilhos">Levará filhos? *</label>
-          <select id="temFilhos" required>
-            <option value="">Selecione…</option>
-            <option value="nao">Não</option>
-            <option value="sim">Sim</option>
-          </select>
-        </div>
-
-        <div id="childrenBox" style="display:none">
-          <label>Filhos (nome e idade) *</label>
-          <div class="children-list" id="childrenList"></div>
-          <div class="button-row" style="margin-top:6px">
-            <button type="button" class="btn btn-secondary" id="addChild">+ Adicionar filho</button>
-          </div>
-        </div>
-
-        <div>
-          <label for="mensagem">Mensagem para o Mural (até 2 linhas) </label>
-          <textarea id="mensagem" rows="2" maxlength="160" placeholder="Deixe um recadinho carinhoso 💜"></textarea>
-        </div>
-
-        <div class="modal-actions">
-          <button type="submit" class="btn btn-primary btn-prominent">Enviar pelo WhatsApp</button>
-        </div>
-      </form>
+      <div class="button-row" style="margin-top:10px">
+        <button class="btn btn-primary" id="muralSend">Enviar</button>
+      </div>
     </div>
   </div>
 
+  <!-- Supabase JS -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+
   <script>
-    /* =================== CONFIG MURAL (Supabase) =================== */
-    const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co'; // <<< PREENCHER
-    const SUPABASE_ANON_KEY = 'ey...';                       // <<< PREENCHER
-    const MURAL_TABLE = 'mural_messages';
-
-    async function muralFetchLatest(limit=50){
-      if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return [];
-      const url = `${SUPABASE_URL}/rest/v1/${MURAL_TABLE}?select=message,name,created_at&order=created_at.desc&limit=${limit}`;
-      const r = await fetch(url, {
-        headers:{
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: 'Bearer ' + SUPABASE_ANON_KEY
-        }
-      });
-      if(!r.ok) throw new Error('fetch mural');
-      return r.json();
-    }
-
-    async function muralInsert(name, message){
-      if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
-      const url = `${SUPABASE_URL}/rest/v1/${MURAL_TABLE}`;
-      const r = await fetch(url, {
-        method: 'POST',
-        headers:{
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-          'Content-Type':'application/json',
-          Prefer: 'return=representation'
-        },
-        body: JSON.stringify({ name, message })
-      });
-      if(!r.ok) throw new Error('insert mural');
-      return r.json();
-    }
-    /* =============================================================== */
+    /* =================== CONFIG SUPABASE (preencher) =================== */
+    const SUPABASE_URL  = 'https://SEU-PROJECT-ID.supabase.co'; // <-- COLE AQUI
+    const SUPABASE_ANON = 'SUA-ANON-KEY';                        // <-- COLE AQUI
+    const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const MURAL_TABLE = 'mural';
+    /* ================================================================== */
 
     document.addEventListener('DOMContentLoaded', function () {
       /* Álbum (10 fotos fonte, 6 visíveis) */
@@ -372,151 +300,98 @@
       startBtn?.addEventListener('click', async () => { try { await audio.play(); } catch(_){}; closeWelcome(); });
       enterSilent?.addEventListener('click', () => { try{audio.pause();audio.currentTime=0;}catch(_){}; closeWelcome(); });
 
-      /* ===== Modal RSVP (WhatsApp) ===== */
-      const openRsvp = document.getElementById('open-rsvp');
-      const modal = document.getElementById('rsvpModal');
-      const closeBtn = document.getElementById('rsvpClose');
-      const pills = document.querySelectorAll('.pill');
-      const form = document.getElementById('rsvpForm');
-      const temFilhos = document.getElementById('temFilhos');
-      const childrenBox = document.getElementById('childrenBox');
-      const childrenList = document.getElementById('childrenList');
-      const addChild = document.getElementById('addChild');
-      let status = 'sim'; // default
-      function toggleModal(show){ modal.classList.toggle('show', !!show); document.body.style.overflow = show ? 'hidden' : ''; }
-      openRsvp.addEventListener('click', ()=> toggleModal(true));
-      closeBtn.addEventListener('click', ()=> toggleModal(false));
-      modal.addEventListener('click', (e)=>{ if(e.target === modal) toggleModal(false); });
-      pills.forEach(p=>{ p.addEventListener('click', ()=>{ pills.forEach(x=>x.classList.remove('active')); p.classList.add('active'); status = p.dataset.value; }); });
-      temFilhos.addEventListener('change', ()=>{ if(temFilhos.value === 'sim'){ childrenBox.style.display=''; if(childrenList.children.length===0) addChildRow(); } else { childrenBox.style.display='none'; childrenList.innerHTML=''; } });
-      function addChildRow(name='', age=''){
-        const row = document.createElement('div');
-        row.className = 'child-row';
-        row.innerHTML = `
-          <input placeholder="Nome da criança" required value="${name}">
-          <input placeholder="Idade" type="number" min="0" max="17" required value="${age}">
-          <button type="button" aria-label="Remover filho">✕</button>
-        `;
-        row.querySelector('button').addEventListener('click', ()=> row.remove());
-        childrenList.appendChild(row);
-      }
-      addChild.addEventListener('click', ()=> addChildRow());
-
-      /* ====== Mural (compartilhado via Supabase + animação) ====== */
+      /* ======= Mural: carregar, inserir e realtime ======= */
       const muralEl = document.getElementById('muralMsg');
-      let muralMsgs = []; // {message, name, created_at}
+      const openMuralBtn = document.getElementById('open-mural-modal');
+      const muralModal = document.getElementById('muralModal');
+      const muralClose = document.getElementById('muralClose');
+      const muralSend = document.getElementById('muralSend');
+      const muralInput = document.getElementById('muralMsgInput');
+
+      let muralMsgs = []; // array de { mensagem, created_at }
       let muralIdx = 0;
+      let lastPostAt = 0;
+
       function showMural(text){
         muralEl.classList.remove('show');
-        // dá um pequeno tempo para reflow e animação
         setTimeout(()=>{ muralEl.textContent = text; muralEl.classList.add('show'); }, 50);
       }
-      async function muralRefresh(){
+
+      async function fetchMural(){
         try{
-          const rows = await muralFetchLatest(50);
-          muralMsgs = (rows || []).reverse(); // mais antigas primeiro para rotacionar
+          const { data, error } = await _sb
+            .from(MURAL_TABLE)
+            .select('mensagem,created_at')
+            .order('created_at', { ascending:false })
+            .limit(50);
+          if(error) throw error;
+          muralMsgs = (data || []).reverse(); // mais antigas primeiro para a rotação
           muralIdx = 0;
-          if(muralMsgs.length === 0){
+          if(muralMsgs.length === 0) {
             showMural('Seja o primeiro a deixar uma mensagem para a Isabella! ✨');
           } else {
-            showMural(`"${muralMsgs[0].message}" — ${muralMsgs[0].name}`);
+            showMural(muralMsgs[0].mensagem);
           }
         }catch(e){
-          // fallback local se não tiver Supabase configurado
-          if(muralMsgs.length===0){
-            muralMsgs = [
-              {message:'Estamos felizes por celebrar com vocês! 💜', name:'Família Santos'},
-              {message:'Parabéns, Isabella! Que Deus abençoe sempre! ✨', name:'Tia Ana'},
-              {message:'Mal podemos esperar pela festa! 🎉', name:'Primos'}
-            ];
-            showMural(`"${muralMsgs[0].message}" — ${muralMsgs[0].name}`);
-          }
+          console.warn('Erro ao carregar mural:', e);
+          showMural('Não foi possível carregar as mensagens agora.');
         }
       }
-      function muralRotate(){
-        if(muralMsgs.length===0) return;
+
+      function rotateMural(){
+        if(muralMsgs.length === 0) return;
         muralIdx = (muralIdx + 1) % muralMsgs.length;
-        const m = muralMsgs[muralIdx];
-        showMural(`"${m.message}" — ${m.name}`);
+        showMural(muralMsgs[muralIdx].mensagem);
       }
-      // inicia mural
-      muralRefresh();
-      setInterval(muralRotate, 6000);   // troca mensagem
-      setInterval(muralRefresh, 20000); // atualiza da base periodicamente
 
-      /* Envio do RSVP -> WhatsApp + insere no Mural (Supabase) + atualiza na hora */
-      form.addEventListener('submit', async (e)=>{
-        e.preventDefault();
-        const nome = document.getElementById('nome').value.trim();
-        const acomp = document.getElementById('acomp').value.trim();
-        const msgInput = document.getElementById('mensagem').value.trim();
-        if(!nome || !acomp){ alert('Preencha todos os campos obrigatórios.'); return; }
+      // modal helpers
+      function toggleMuralModal(show){
+        muralModal.classList.toggle('show', !!show);
+        document.body.style.overflow = show ? 'hidden' : '';
+        if(show){ muralInput.value=''; muralInput.focus(); }
+      }
+      openMuralBtn.addEventListener('click', ()=> toggleMuralModal(true));
+      muralClose.addEventListener('click', ()=> toggleMuralModal(false));
+      muralModal.addEventListener('click', (e)=>{ if(e.target === muralModal) toggleMuralModal(false); });
 
-        let filhosTxt = 'Sem filhos.';
-        if(temFilhos.value === 'sim'){
-          const rows = [...childrenList.querySelectorAll('.child-row')];
-          if(rows.length === 0){ alert('Adicione pelo menos 1 filho.'); return; }
-          const list = [];
-          for(const r of rows){
-            const n = r.children[0].value.trim();
-            const i = r.children[1].value.trim();
-            if(!n || !i){ alert('Informe nome e idade de cada filho.'); return; }
-            list.push(`${n} (${i} anos)`);
-          }
-          filhosTxt = list.join(', ');
+      // enviar mensagem
+      muralSend.addEventListener('click', async ()=>{
+        const texto = (muralInput.value || '').trim();
+        if(!texto){ alert('Escreva sua mensagem.'); return; }
+        // rate limit simples: 10s
+        const now = Date.now();
+        if(now - lastPostAt < 10_000){ alert('Aguarde alguns segundos antes de enviar outra mensagem.'); return; }
+        try{
+          const { error } = await _sb.from(MURAL_TABLE).insert([{ mensagem: texto }]);
+          if(error) throw error;
+          // adiciona local e mostra na hora
+          muralMsgs.push({ mensagem: texto, created_at: new Date().toISOString() });
+          muralIdx = muralMsgs.length - 1;
+          showMural(texto);
+          lastPostAt = now;
+          toggleMuralModal(false);
+        }catch(e){
+          console.warn('Erro ao enviar mensagem:', e);
+          alert('Não foi possível enviar sua mensagem agora.');
         }
-
-        const vai = (status === 'sim');
-        const header = vai
-          ? 'Olá! Confirmo minha presença no aniversário da Isabella 🎉'
-          : 'Olá! Infelizmente não poderei comparecer ao aniversário da Isabella 😔';
-
-        const msgWhats =
-`${header}
-
-• Nome: ${nome}
-• Acompanhante: ${acomp}
-• Filhos: ${filhosTxt}
-${msgInput ? '• Mensagem: ' + msgInput : ''}`;
-
-        // Abre WhatsApp
-        const url = 'https://wa.me/5521993835163?text=' + encodeURIComponent(msgWhats);
-        window.open(url, '_blank', 'noopener');
-
-        // Se deixou mensagem, salva na base e mostra no mural imediatamente
-        if(msgInput){
-          try{
-            await muralInsert(nome, msgInput);
-            muralMsgs.push({name:nome, message:msgInput, created_at:new Date().toISOString()});
-            // mostra já a mensagem enviada
-            muralIdx = muralMsgs.length - 1;
-            showMural(`"${msgInput}" — ${nome}`);
-          }catch(e){
-            console.warn('Falha ao gravar mensagem no mural (Supabase):', e);
-          }
-        }
-
-        // Fecha modal
-        toggleModal(false);
       });
 
-      /* Helpers do modal dentro do escopo */
-      function toggleModal(show){ modal.classList.toggle('show', !!show); document.body.style.overflow = show ? 'hidden' : ''; }
-      function addChildRow(name='', age=''){
-        const row = document.createElement('div');
-        row.className = 'child-row';
-        row.innerHTML = `
-          <input placeholder="Nome da criança" required value="${name}">
-          <input placeholder="Idade" type="number" min="0" max="17" required value="${age}">
-          <button type="button" aria-label="Remover filho">✕</button>
-        `;
-        row.querySelector('button').addEventListener('click', ()=> row.remove());
-        childrenList.appendChild(row);
-      }
-    });
+      // realtime: ao inserir, aparece automaticamente (de outros visitantes)
+      _sb.channel('mural-ins')
+        .on('postgres_changes', { event:'INSERT', schema:'public', table:MURAL_TABLE }, (payload)=>{
+          const novo = payload.new;
+          muralMsgs.push({ mensagem: novo.mensagem, created_at: novo.created_at });
+          // se quiser mostrar imediatamente a que chegou:
+          muralIdx = muralMsgs.length - 1;
+          showMural(novo.mensagem);
+        })
+        .subscribe();
 
-    /* Tempo: previsão/climatologia */
-    (function(){
+      // inicia mural
+      fetchMural();
+      setInterval(rotateMural, 6000);
+
+      /* ===== Tempo: previsão/climatologia ===== */
       const EVENT_DATE_DEFAULT = '2025-11-22';
       const LAT = -22.606, LON = -43.490;
       const TZ = 'America/Sao_Paulo';
@@ -597,7 +472,7 @@ ${msgInput ? '• Mensagem: ' + msgInput : ''}`;
           setSourceStamp('Open‑Meteo');
         }
       })();
-    })();
+    });
   </script>
 </body>
 </html>
