@@ -6,501 +6,586 @@
 <title>Festa da Isabella</title>
 <style>
   :root{
-    --roxo:#5b3fa2; --roxo-esc:#493183; --roxo-cl:#f1eaff;
-    --bg:#fdfdfe; --txt:#333; --sombra:0 4px 6px rgba(0,0,0,.05);
+    --roxo:#5b3fa2;
+    --roxo-esc:#493183;
+    --roxo-cl:#f1eaff;
+    --bg:#fdfdfe;
+    --txt:#333;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;line-height:1.5;background:var(--bg);color:var(--txt)}
   a{color:var(--roxo);text-decoration:none}
   .container{max-width:960px;margin:0 auto;padding:20px}
 
-  /* Overlay boas-vindas (música) */
+  /* Overlay de boas‑vindas (solicitar música) */
   .welcome-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
   .welcome-card{width:min(92vw,520px);background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-  .welcome-card h2{font-size:1.8rem;color:var(--roxo);margin-bottom:.5rem}
-  .welcome-card p{color:#444;margin:.25rem 0 1rem}
+  .welcome-card h2{font-size:1.6rem;color:var(--roxo);margin-bottom:8px}
+  .welcome-card p{color:#444;margin-bottom:18px}
   .welcome-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .btn{display:inline-block;padding:12px 20px;border-radius:10px;font-weight:700;cursor:pointer;border:none}
+
+  /* Hero */
+  .hero{position:relative;background:url('hero.jpg') center/cover no-repeat;height:60vh;min-height:320px;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center}
+  .hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2)}
+  .hero h1{position:relative;font-size:2.5rem;margin-bottom:.5rem;font-weight:700}
+  .hero p{position:relative;font-size:1.2rem;margin-bottom:0}
+
+  /* Cards padrão (global centralizado) */
+  .card{background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border-radius:12px;padding:20px;margin:20px 0;box-shadow:0 4px 6px rgba(0,0,0,.05); text-align:center}
+  .card h2{color:var(--roxo);font-weight:800;letter-spacing:-0.02em;font-size:clamp(1.4rem,1.2rem + 1vw,1.8rem);margin-bottom:10px}
+  .card p{margin:8px auto 0;max-width:60ch;color:#4a4a4a}
+  .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.5rem;justify-items:center}
+  .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem;justify-content:center}
+  .details-item .icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:1.4em;height:1.4em;font-size:1.2rem;line-height:1;
+    transform:translateY(1px);color:var(--roxo);
+  }
+
+  /* Botões */
+  .button-row{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px;justify-content:center}
+  .btn{display:inline-block;padding:12px 20px;border-radius:12px;font-weight:700;cursor:pointer;transition:background .2s, transform .05s;text-align:center;border:none;font-size:1.05rem}
+  .btn:active{transform:translateY(1px)}
   .btn-primary{background:var(--roxo);color:#fff}
   .btn-primary:hover{background:var(--roxo-esc)}
   .btn-secondary{background:var(--roxo-cl);color:var(--roxo)}
   .btn-secondary:hover{filter:brightness(.97)}
 
-  /* Hero */
-  .hero{position:relative;background:url('hero.jpg') center/cover no-repeat;height:60vh;min-height:320px;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center}
-  .hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.2)}
-  .hero h1{position:relative;font-size:2.6rem;font-weight:800;margin-bottom:.4rem;text-shadow:0 2px 10px rgba(0,0,0,.3)}
-  .hero p{position:relative;font-size:1.1rem}
+  /* Álbum (grade 3x2, moldura inclinada) */
+  .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin:4px auto 12px}
+  .album-preview .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
+  .album-preview .frame img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
 
-  /* Cards (centrados) */
-  .card{background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-radius:16px;padding:22px;margin:20px 0;box-shadow:var(--sombra);text-align:center}
-  .card h2{color:var(--roxo);font-weight:900;letter-spacing:-.02em;font-size:clamp(1.6rem,1.2rem + 1.2vw,2rem);margin-bottom:10px}
-  .card p{margin:8px auto 0;max-width:60ch;color:#4a4a4a}
-  .details-list{list-style:none;display:grid;grid-template-columns:1fr;gap:.6rem;justify-items:center}
-  .details-item{display:flex;align-items:center;gap:.5rem;font-size:1rem;justify-content:center}
-  .icon{display:inline-flex;align-items:center;justify-content:center;width:1.4em;height:1.4em;font-size:1.2rem;line-height:1;transform:translateY(1px);color:var(--roxo)}
+  /* Ajustes de espaçamento para cards "limpos" (sem subtítulo) */
+  .card--tight .album-preview{margin-top:6px}
+  .card--tight .playlist-iframe{margin-top:6px}
+  .card--tight .map-container{margin-top:6px}
 
-  .button-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:15px;justify-content:center}
-  .btn-lg{padding:14px 24px;font-size:1.05rem;border-radius:12px}
-  .btn-outline{background:var(--roxo-cl);color:var(--roxo)}
-
-  /* Dupla na mesma linha (responsivo) */
-  .row-2{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px}
-  @media (min-width:560px){ .row-2{grid-template-columns:1fr 1fr} }
-
-  /* Álbum 3x2 */
-  .album-preview{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;justify-items:center;margin:6px auto 10px}
-  .frame{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;width:120px;box-shadow:0 4px 6px rgba(0,0,0,.1);transform:rotate(var(--tilt,0deg));transition:transform .5s ease}
-  .frame img{width:100%;height:100%;object-fit:cover;object-position:center}
+  /* Responsivo */
+  @media (min-width:600px){.details-list{grid-template-columns:repeat(2,1fr)}}
+  @media (min-width:900px){.details-list{grid-template-columns:repeat(3,1fr)}}
 
   /* Mapa + Playlist */
   .map-container{width:100%;height:300px;border-radius:12px;overflow:hidden}
   iframe{width:100%;height:100%;border:0}
-  .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:12px;border:none}
+  .playlist-iframe{width:100%;max-width:600px;height:180px;border-radius:12px;overflow:hidden;border:none}
 
   /* Tempo */
   .weather-wrapper{display:flex;justify-content:center;margin:18px 0 90px}
-  .weather-card{width:min(680px,92vw);padding:22px;border-radius:12px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);box-shadow:var(--sombra)}
-  .weather-app{color:var(--roxo);font-weight:900;letter-spacing:-.02em}
+  .weather-card{width:min(680px,92vw);padding:22px 18px;border-radius:12px;background:rgba(255,255,255,.8);backdrop-filter:blur(8px);box-shadow:0 4px 6px rgba(0,0,0,.05);color:var(--txt);text-align:center}
+  .weather-app{color:var(--roxo);font-weight:800;letter-spacing:-0.02em;}
   .weather-date{margin-top:6px;font-size:1rem;color:#666}
-  .weather-text{margin:14px auto 8px;font-size:1rem;line-height:1.5;max-width:60ch;color:#4a4a4a}
+  .weather-text{margin:14px auto 8px;font-size:1rem;line-height:1.5;max-width:60ch;color:#4a4a4a;font-weight:400}
   .weather-source{margin-top:6px;font-size:.9rem;color:#7a7a7a}
-  .weather-source a{color:var(--roxo)}
+  .weather-source a{color:var(--roxo);text-decoration:none}
+  .weather-source a:hover{text-decoration:underline}
 
-  /* Marca d’água */
-  footer{position:fixed;bottom:20px;width:100%;text-align:center;font-size:12px;color:#999}
+  /* Marca d'água */
+  footer{position:fixed;bottom:20px;width:100%;text-align:center;font-size:12px;color:#999;}
 
-  /* ========= MURAL ========= */
-  .mural-wrap{display:flex;justify-content:center}
-  .mural-card{width:min(800px,92vw)}
-  .mural-list{position:relative;min-height:92px;margin:10px 0 0}
+  /* ======= MURAL ======= */
+  .mural-viewport{position:relative;min-height:84px;margin:12px auto 8px;width:min(680px,92vw)}
   .mural-msg{
-    position:absolute;inset:0;opacity:0;transform:translateY(8px);transition:opacity .6s ease, transform .6s ease;
-    display:flex;align-items:center;justify-content:center;padding:8px 10px;color:#2f2f2f
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:12px 16px;background:#fff;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.06);
+    opacity:0;transform:translateY(4px);transition:opacity .6s ease, transform .6s ease;
+    color:#3f3f3f
   }
   .mural-msg.active{opacity:1;transform:translateY(0)}
-  .mural-text{font-size:clamp(1rem,.96rem + .4vw,1.25rem);max-width:38ch}
-  .mural-empty{color:#888}
-  .mural-actions{margin-top:14px}
-  .mural-actions .btn{min-width:230px}
+  .mural-empty{color:#7a7a7a}
 
-  /* ========= Modal (confirmação & mensagem) ========= */
-  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:9998;padding:16px}
+  /* Modal base */
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:10000;padding:18px}
   .modal.open{display:flex}
-  .modal-card{width:min(92vw,560px);background:#fff;border-radius:14px;box-shadow:0 12px 28px rgba(0,0,0,.25);padding:18px}
-  .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-  .modal-title{font-size:1.3rem;font-weight:800;color:var(--roxo)}
-  .modal-close{background:transparent;border:none;font-size:1.6rem;cursor:pointer;color:#777}
-  .form-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}
-  @media (min-width:520px){ .form-2{grid-template-columns:1fr 1fr} }
-  label{display:block;text-align:left;font-weight:600;font-size:.92rem;color:#333;margin-bottom:4px}
-  input[type="text"], input[type="number"], textarea, select{
-    width:100%; padding:11px 12px; border-radius:10px; border:1px solid #e1dff4; outline:none;
-    background:#faf8ff
+  .modal-card{width:min(92vw,560px);background:#fff;border-radius:16px;padding:22px 18px;box-shadow:0 12px 28px rgba(0,0,0,.25)}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .modal-title{font-size:1.5rem;font-weight:800;color:var(--roxo)}
+  .modal-close{background:transparent;border:none;font-size:1.4rem;cursor:pointer;color:#777}
+  .modal p.helper{color:#555;margin-bottom:14px}
+
+  .form-grid{display:grid;gap:12px}
+  .field{display:flex;flex-direction:column;gap:6px;text-align:left}
+  .field label{font-weight:600;color:#444}
+  .field input,.field select,.field textarea{
+    border:2px solid #eee;background:#f7f2ff4f;border-radius:12px;padding:12px 14px;font-size:1rem;outline:none
   }
-  textarea{resize:vertical;min-height:70px;max-height:120px}
-  .inline{display:flex;gap:12px;align-items:center}
-  .help{font-size:.85rem;color:#777}
-  .divider{height:1px;background:#eee;margin:10px 0}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:#d6c7ff;background:#fff}
+  .row-actions{display:flex;gap:12px;justify-content:flex-start;margin-top:6px}
+  .btn-ghost{background:#efe8ff;color:var(--roxo);border:none;padding:10px 16px;border-radius:999px;font-weight:700}
+  .hidden{display:none}
+
+  /* linha dupla dos dois botões na infos (quando couber) */
+  .info-actions{display:grid;grid-template-columns:1fr;gap:12px}
+  @media (min-width:560px){ .info-actions{grid-template-columns:1fr 1fr} }
 </style>
 </head>
 <body>
 
-<!-- Música: áudio escondido -->
-<audio id="bg-audio" src="assets/kids-children-baby-music-363272.mp3" preload="auto"></audio>
-
-<!-- Boas-vindas -->
-<div class="welcome-overlay" id="welcome">
-  <div class="welcome-card">
-    <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
-    <p>Toque a música para entrar no clima da celebração.</p>
-    <div class="welcome-actions">
-      <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
-      <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
+  <!-- Tela de Boas‑vindas para iniciar música -->
+  <div class="welcome-overlay" id="welcome">
+    <div class="welcome-card">
+      <h2>Bem‑vindo(a) à Festa da Isabella! 🎶</h2>
+      <p>Toque a música para entrar no clima da celebração.</p>
+      <div class="welcome-actions">
+        <button class="btn btn-primary" id="start-music">Entrar e tocar playlist</button>
+        <button class="btn btn-secondary" id="enter-silent">Entrar sem música</button>
+      </div>
     </div>
   </div>
-</div>
 
-<header class="hero">
-  <div>
-    <h1>Festa da Isabella</h1>
-    <p>Celebrando seu 1º aniversário</p>
-  </div>
-</header>
+  <!-- áudio de prévia (oculto) -->
+  <audio id="preview-audio" preload="auto" loop>
+    <source src="assets/kids-children-baby-music-363272.mp3" type="audio/mpeg">
+  </audio>
 
-<main class="container">
+  <header class="hero">
+    <div>
+      <h1>Festa da Isabella</h1>
+      <p>Celebrando seu 1º aniversário</p>
+    </div>
+  </header>
 
-  <!-- MURAL -->
-  <section class="card mural-wrap">
-    <div class="mural-card">
+  <main class="container">
+
+    <!-- 1) Boas‑vindas (PRIMEIRO CARD) -->
+    <section class="card intro-card">
+      <h2>Boas‑vindas</h2>
+      <p>
+        É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖<br>
+        Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
+        Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
+      </p>
+    </section>
+
+    <!-- 2) Mural -->
+    <section class="card" id="mural-card">
       <h2>Mural 💌</h2>
-      <div id="muralList" class="mural-list">
-        <div class="mural-msg active"><div class="mural-text">“Que a festa seja tão doce quanto esse sorriso! 💜”</div></div>
-      </div>
-      <div class="mural-actions">
-        <button class="btn btn-primary btn-lg" id="openMural">Deixar mensagem 💌</button>
-      </div>
-      <p class="help" style="margin-top:10px">Dica: pode assinar sua mensagem no final, se quiser. Ex.: “Parabéns! — Ana e João”.</p>
-    </div>
-  </section>
 
-  <!-- Boas‑vindas -->
-  <section class="card intro-card">
-    <h2>Boas‑vindas</h2>
-    <p>
-      É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖<br>
-      Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.<br>
-      Esperamos você para comemorar conosco esse dia tão importante! 🥳✨
-    </p>
-  </section>
-
-  <!-- Informações -->
-  <section class="card">
-    <h2>Informações da festa</h2>
-    <ul class="details-list">
-      <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
-      <li class="details-item"><span class="icon">📍</span>Sítio Verdes Encantos – Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil</li>
-      <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
-    </ul>
-    <div class="row-2">
-      <button class="btn btn-primary btn-lg" id="openConfirm">Confirmar presença</button>
-      <a class="btn btn-outline btn-lg" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
-    </div>
-  </section>
-
-  <!-- Álbum -->
-  <section class="card">
-    <h2>Álbum de fotos</h2>
-    <div class="album-preview">
-      <div class="frame"><img alt=""></div>
-      <div class="frame"><img alt=""></div>
-      <div class="frame"><img alt=""></div>
-      <div class="frame"><img alt=""></div>
-      <div class="frame"><img alt=""></div>
-      <div class="frame"><img alt=""></div>
-    </div>
-    <div class="button-row"><a class="btn btn-secondary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">Abrir álbum completo</a></div>
-  </section>
-
-  <!-- Como chegar -->
-  <section class="card">
-    <h2>Como chegar</h2>
-    <div class="map-container">
-      <iframe src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen loading="lazy"></iframe>
-    </div>
-    <div class="button-row">
-      <a class="btn btn-secondary" target="_blank" rel="noopener"
-         href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
-      <a class="btn btn-secondary" target="_blank" rel="noopener"
-         href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
-    </div>
-  </section>
-
-  <!-- Sugestão de presentes -->
-  <section class="card">
-    <h2>Sugestão de presentes 💝</h2>
-    <ul class="details-list">
-      <li class="details-item"><span class="icon">🧸</span>Brinquedos educativos</li>
-      <li class="details-item"><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
-      <li class="details-item"><span class="icon">🩰</span>Calçados a partir do tamanho 22</li>
-    </ul>
-    <div class="button-row">
-      <a class="btn btn-secondary" target="_blank" rel="noopener"
-         href="https://wa.me/5521993835163?text=Oi%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20presente%20da%20Isabella">Dúvidas sobre o presente</a>
-    </div>
-  </section>
-
-  <!-- Playlist Apple -->
-  <section class="card" id="playlist-section">
-    <h2>Playlist da festa</h2>
-    <iframe class="playlist-iframe"
-            allow="autoplay *; encrypted-media *; fullscreen *"
-            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-            src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
-            title="Playlist da Festa"></iframe>
-  </section>
-
-  <!-- Tempo -->
-  <section class="weather-wrapper">
-    <div class="weather-card">
-      <h2 class="weather-app">Tempo</h2>
-      <div class="weather-date" id="weatherDate">—</div>
-      <div class="weather-text" id="weatherText">Carregando…</div>
-      <div class="weather-source" id="weatherSource">Fonte: —</div>
-    </div>
-  </section>
-</main>
-
-<footer>© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
-
-<!-- MODAL: Confirmar presença -->
-<div class="modal" id="confirmModal" aria-hidden="true">
-  <div class="modal-card">
-    <div class="modal-header">
-      <div class="modal-title">Confirmação de presença ✨</div>
-      <button class="modal-close" data-close-confirm>&times;</button>
-    </div>
-    <p class="help" style="text-align:left">Preencha seus dados e envie — abriremos o WhatsApp com a mensagem pronta.</p>
-    <div class="divider"></div>
-
-    <form id="confirmForm">
-      <div class="form-grid">
-        <div>
-          <label for="c_nome">Seu nome *</label>
-          <input id="c_nome" type="text" required placeholder="Nome completo">
-        </div>
-
-        <div>
-          <label for="c_vai">Você vai?</label>
-          <select id="c_vai" required>
-            <option value="" selected disabled>Selecione…</option>
-            <option value="Sim">Sim</option>
-            <option value="Não">Não</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="c_acomp">Acompanhante</label>
-          <input id="c_acomp" type="text" placeholder="Nome do(a) acompanhante (se houver)">
-        </div>
-
-        <div class="form-2 form-grid">
-          <div>
-            <label for="c_qtd_filhos">Qtd. filhos</label>
-            <input id="c_qtd_filhos" type="number" min="0" max="6" value="0">
-          </div>
-          <div>
-            <label for="c_idades">Idades dos filhos</label>
-            <input id="c_idades" type="text" placeholder="Ex.: 5, 2">
-          </div>
-        </div>
+      <!-- viewport das mensagens com animação -->
+      <div class="mural-viewport">
+        <div class="mural-msg mural-empty active" id="muralEmpty">Seja o primeiro a deixar um recado 💜</div>
       </div>
 
       <div class="button-row" style="margin-top:14px">
-        <button type="submit" class="btn btn-primary btn-lg">Enviar pelo WhatsApp</button>
-        <button type="button" class="btn btn-secondary btn-lg" data-close-confirm>Cancelar</button>
+        <button class="btn btn-primary" id="openMural">Deixar mensagem 💌</button>
       </div>
-    </form>
-  </div>
-</div>
+    </section>
 
-<!-- MODAL: Deixar mensagem (Mural) -->
-<div class="modal" id="muralModal" aria-hidden="true">
-  <div class="modal-card">
-    <div class="modal-header">
-      <div class="modal-title">Deixar mensagem 💌</div>
-      <button class="modal-close" data-close-mural>&times;</button>
+    <!-- 3) Informações -->
+    <section class="card">
+      <h2>Informações da festa</h2>
+      <ul class="details-list">
+        <li class="details-item"><span class="icon">📅</span>22 de novembro de 2025, 14h00–18h00</li>
+        <li class="details-item">
+          <span class="icon">📍</span>
+          Sítio Verdes Encantos – Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil
+        </li>
+        <li class="details-item"><span class="icon">👗</span>Traje: casual festivo</li>
+      </ul>
+
+      <div class="info-actions">
+        <button class="btn btn-primary" id="openRsvp">Confirmar presença</button>
+        <a class="btn btn-secondary" href="festa_da_isabella.ics" download>Adicionar ao calendário</a>
+      </div>
+    </section>
+
+    <!-- 4) Álbum (sem subtítulo) -->
+    <section class="card card--tight">
+      <h2>Álbum de fotos</h2>
+      <div class="album-preview">
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+        <div class="frame"><img alt=""></div>
+      </div>
+      <div class="button-row" style="margin-top:10px">
+        <a class="btn btn-secondary" href="https://www.icloud.com/sharedalbum/#B2RJEsNWnGMlnHa" target="_blank" rel="noopener">
+          Abrir álbum completo
+        </a>
+      </div>
+    </section>
+
+    <!-- 5) Mapa (sem subtítulo) -->
+    <section class="card card--tight">
+      <h2>Como chegar</h2>
+      <div class="map-container">
+        <iframe
+          src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="button-row">
+        <a class="btn btn-secondary"
+           href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+           target="_blank" rel="noopener">Traçar rota</a>
+        <a class="btn btn-secondary"
+           href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil"
+           target="_blank" rel="noopener">Abrir no Google Maps</a>
+      </div>
+    </section>
+
+    <!-- 6) Sugestão de presentes -->
+    <section class="card">
+      <h2>Sugestão de presentes 💝</h2>
+      <ul class="details-list">
+        <li class="details-item"><span class="icon">🧸</span>Brinquedos educativos</li>
+        <li class="details-item"><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
+        <li class="details-item"><span class="icon">🩰</span>Calçados a partir do tamanho 22</li>
+      </ul>
+      <div class="button-row">
+        <a class="btn btn-secondary" target="_blank" rel="noopener"
+           href="https://wa.me/5521993835163?text=Oi%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20presente%20da%20Isabella">
+          Dúvidas sobre o presente
+        </a>
+      </div>
+    </section>
+
+    <!-- 7) Playlist (Apple Music) -->
+    <section class="card card--tight" id="playlist-section">
+      <h2>Playlist da festa</h2>
+      <iframe class="playlist-iframe"
+              allow="autoplay *; encrypted-media *; fullscreen *"
+              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+              src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"
+              title="Playlist da Festa"></iframe>
+    </section>
+
+    <!-- 8) Card de Tempo -->
+    <section class="weather-wrapper">
+      <div class="weather-card">
+        <h2 class="weather-app">Tempo</h2>
+        <div class="weather-date" id="weatherDate">—</div>
+        <div class="weather-text" id="weatherText">Carregando…</div>
+        <div class="weather-source" id="weatherSource">Fonte: —</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Marca d'água -->
+  <footer>© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
+
+  <!-- MODAL: Deixar mensagem -->
+  <div class="modal" id="muralModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title">Deixar mensagem 💌</div>
+        <button class="modal-close" data-close="muralModal">✕</button>
+      </div>
+      <p class="helper">Máx. 140 caracteres. Se quiser, assine no final (ex.: “— Família Silva”).</p>
+      <div class="form-grid">
+        <div class="field">
+          <label for="muralText">Mensagem *</label>
+          <textarea id="muralText" rows="3" maxlength="140" placeholder="Ansioso para comemorar junto com vocês! 🎉" required></textarea>
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-primary" id="publishMsg">Publicar</button>
+          <button class="btn btn-ghost" data-close="muralModal">Cancelar</button>
+        </div>
+        <div id="muralErr" class="field" style="color:#a33;display:none">Não foi possível publicar agora. Tente de novo.</div>
+      </div>
     </div>
-    <p class="help" style="text-align:left">Máx. 140 caracteres. Se quiser, assine no final (ex.: “— Família Silva”).</p>
-    <div class="divider"></div>
-
-    <form id="muralForm">
-      <label for="m_text">Mensagem *</label>
-      <textarea id="m_text" maxlength="140" required placeholder="Escreva sua mensagem (ex.: Felicidades, Isabella! — Ana)"></textarea>
-
-      <div class="button-row" style="margin-top:12px">
-        <button type="submit" class="btn btn-primary btn-lg">Publicar</button>
-        <button type="button" class="btn btn-secondary btn-lg" data-close-mural>Cancelar</button>
-      </div>
-      <div class="help" id="muralStatus" style="margin-top:8px"></div>
-    </form>
   </div>
-</div>
+
+  <!-- MODAL: Confirmar presença -->
+  <div class="modal" id="rsvpModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title">Confirmação de presença ✨</div>
+        <button class="modal-close" data-close="rsvpModal">✕</button>
+      </div>
+      <p class="helper">Preencha seus dados e envie — abriremos o WhatsApp com a mensagem pronta.</p>
+
+      <div class="form-grid" id="rsvpForm">
+        <div class="field">
+          <label for="nome">Seu nome *</label>
+          <input id="nome" type="text" placeholder="Nome completo" required>
+        </div>
+
+        <div class="field">
+          <label>Você vai?</label>
+          <div class="row-actions">
+            <button type="button" class="btn btn-secondary" data-rsvp="sim">Sim</button>
+            <button type="button" class="btn btn-secondary" data-rsvp="nao">Não</button>
+          </div>
+        </div>
+
+        <div id="rsvpExtras" class="hidden">
+          <div class="field">
+            <label for="acompanha">Acompanhante</label>
+            <input id="acompanha" type="text" placeholder="Nome do(a) acompanhante (se houver)">
+          </div>
+
+          <div class="field">
+            <label for="qtd">Qtd. filhos</label>
+            <input id="qtd" type="number" min="0" value="0">
+          </div>
+
+          <div class="field">
+            <label for="idades">Idades dos filhos</label>
+            <input id="idades" type="text" placeholder="Ex.: 5, 2">
+          </div>
+        </div>
+
+        <div class="row-actions" style="margin-top:10px">
+          <button class="btn btn-primary" id="sendRsvp">Enviar</button>
+          <button class="btn btn-ghost" data-close="rsvpModal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
-/* ===== Config Supabase (usar suas chaves) ===== */
-const SUPABASE_URL  = "https://kfoousycrqscvhivhmxu.supabase.co";
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
+/* ====== Config Supabase (mural) ====== */
+const SUPABASE_URL = 'https://kfoousycrqscvhivhmxu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ';
 
-/* ===== Álbum (rotativo) ===== */
-document.addEventListener('DOMContentLoaded', () => {
-  const imgsSrc = [
+/* Util */
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+document.addEventListener('DOMContentLoaded', function () {
+  /* ===== Álbum (10 fotos fonte, 6 visíveis) ===== */
+  const previewImages = [
     'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
     'album2/IMG_4765.jpeg','album2/IMG_4639.jpeg','album2/IMG_6911.jpeg',
     'album2/IMG_4450.jpeg','album2/IMG_4352.jpeg','album2/IMG_3056.jpeg',
     'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
   ];
-  const frames = document.querySelectorAll('.album-preview .frame');
-  const shuffle = a => a.slice().sort(()=>Math.random()-.5);
-  function fill(){ const s=shuffle(imgsSrc); frames.forEach((fr,i)=>{fr.querySelector('img').src=s[i% s.length]; fr.style.setProperty('--tilt', (Math.random()*10-5)+'deg');});}
-  fill(); setInterval(fill,8000);
-});
-
-/* ===== Música (só MP3 local, sem rolar a página) ===== */
-(() => {
-  const welcome = document.getElementById('welcome');
-  const audio = document.getElementById('bg-audio');
-  document.getElementById('start-music')?.addEventListener('click', async () => {
-    try { await audio.play(); } catch(e){}
-    welcome.style.display='none';
-  });
-  document.getElementById('enter-silent')?.addEventListener('click', () => { welcome.style.display='none'; });
-})();
-
-/* ===== Confirmar presença -> WhatsApp ===== */
-(() => {
-  const modal = document.getElementById('confirmModal');
-  const openBtn = document.getElementById('openConfirm');
-  const closeBtns = modal.querySelectorAll('[data-close-confirm]');
-
-  openBtn.addEventListener('click', () => modal.classList.add('open'));
-  closeBtns.forEach(b => b.addEventListener('click', () => modal.classList.remove('open')));
-
-  document.getElementById('confirmForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const nome = document.getElementById('c_nome').value.trim();
-    const vai = document.getElementById('c_vai').value;
-    const acomp = document.getElementById('c_acomp').value.trim();
-    const qtd = document.getElementById('c_qtd_filhos').value || '0';
-    const idades = document.getElementById('c_idades').value.trim();
-
-    if(!nome || !vai){ alert('Preencha seu nome e se você vai ou não.'); return; }
-
-    let msg = `Olá! Eu sou ${nome}. Minha confirmação para o aniversário da Isabella: ${vai}.`;
-    if(acomp) msg += `%0A• Acompanhante: ${acomp}`;
-    if(qtd !== '0' || idades) msg += `%0A• Filhos: ${qtd}${idades?` (idades: ${idades})`:''}`;
-
-    const wa = `https://wa.me/5521993835163?text=${msg}`;
-    window.open(wa,'_blank','noopener');
-    modal.classList.remove('open');
-  });
-})();
-
-/* ===== Mural (carrossel/rotativo) ===== */
-const mural = (() => {
-  const listEl = document.getElementById('muralList');
-  let msgs = []; let idx = 0; let timer;
-
-  function showMessage(i){
-    const nodes = listEl.querySelectorAll('.mural-msg');
-    nodes.forEach(n=>n.classList.remove('active'));
-    if(nodes[i]) nodes[i].classList.add('active');
-  }
-  function render(messages){
-    listEl.innerHTML = '';
-    if(!messages.length){
-      const div = document.createElement('div');
-      div.className='mural-msg active mural-empty';
-      div.innerHTML = '<div class="mural-text">Seja o primeiro a deixar um recado 💜</div>';
-      listEl.appendChild(div);
-      return;
-    }
-    messages.forEach((m, k) => {
-      const div = document.createElement('div');
-      div.className = 'mural-msg' + (k===0?' active':'');
-      div.innerHTML = `<div class="mural-text">“${m.message}”</div>`;
-      listEl.appendChild(div);
+  const frames = $$('.album-preview .frame');
+  function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b;}
+  function fillPreview(){
+    const imgs = shuffle(previewImages);
+    frames.forEach((frame, idx) => {
+      const img = $('img', frame);
+      img.src = imgs[idx % imgs.length];
+      const angle = (Math.random()*10 - 5);
+      frame.style.setProperty('--tilt', angle + 'deg');
     });
   }
-  function start(){
-    clearInterval(timer);
-    if(msgs.length<=1) return;
-    idx = 0;
-    timer = setInterval(()=>{ idx=(idx+1)%msgs.length; showMessage(idx); }, 6000);
-  }
+  fillPreview();
+  setInterval(fillPreview, 8000);
+
+  /* ===== Música: solicitar e iniciar (MP3 local) ===== */
+  const welcome = $('#welcome');
+  const startBtn = $('#start-music');
+  const enterSilent = $('#enter-silent');
+  const audio = $('#preview-audio');
+  function closeWelcome(){ if (welcome) welcome.style.display='none'; }
+  startBtn?.addEventListener('click', async () => {
+    try{ await audio.play(); }catch(e){}
+    closeWelcome();
+  });
+  enterSilent?.addEventListener('click', () => { closeWelcome(); });
+
+  /* ====== MURAL: carregar, rotacionar, publicar ====== */
+  const viewport = $('.mural-viewport');
+  const empty = $('#muralEmpty');
+  let msgs = [];
+  let idx = 0;
+  let rotTimer = null;
+
   async function fetchMessages(){
     try{
-      const resp = await fetch(`${SUPABASE_URL}/rest/v1/mural_messages?select=message,created_at&order=created_at.desc&limit=10`, {
-        headers:{ apikey: SUPABASE_ANON, Authorization:`Bearer ${SUPABASE_ANON}` }
-      });
-      if(!resp.ok) throw new Error('HTTP '+resp.status);
-      msgs = await resp.json();
-      render(msgs);
-      start();
+      const url = new URL(SUPABASE_URL + '/rest/v1/messages');
+      url.search = new URLSearchParams({select:'id,created_at,text', order:'created_at.desc', limit:'20'});
+      const r = await fetch(url, { headers:{apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY} });
+      if(!r.ok) throw new Error('fetch mural');
+      msgs = await r.json();
+      startRotation();
     }catch(e){
-      render([]);
+      viewport.innerHTML = '<div class="mural-msg active">Não foi possível carregar as mensagens agora.</div>';
     }
   }
-  function pushLocal(text){
-    msgs.unshift({message:text, created_at:new Date().toISOString()});
-    render(msgs);
-    start();
+
+  function renderOne(messageText, activate=true){
+    const div = document.createElement('div');
+    div.className = 'mural-msg';
+    div.textContent = messageText;
+    viewport.appendChild(div);
+    // pequena espera p/ transição
+    requestAnimationFrame(()=>{ if(activate) div.classList.add('active'); });
+    return div;
   }
-  return { fetchMessages, pushLocal };
-})();
 
-/* ===== Modal Mural ===== */
-(() => {
-  const modal = document.getElementById('muralModal');
-  const openBtn = document.getElementById('openMural');
-  const closeBtns = modal.querySelectorAll('[data-close-mural]');
-  const form = document.getElementById('muralForm');
-  const status = document.getElementById('muralStatus');
+  function startRotation(){
+    // limpar
+    viewport.innerHTML = '';
+    if(!msgs || msgs.length===0){
+      viewport.appendChild(empty);
+      empty.classList.add('active');
+      return;
+    }
+    idx = 0;
+    const first = renderOne(msgs[idx].text);
+    if(rotTimer) clearInterval(rotTimer);
+    rotTimer = setInterval(()=>{
+      const current = $$('.mural-msg', viewport).pop();
+      if(current){ current.classList.remove('active'); setTimeout(()=>{ current.remove(); }, 600); }
+      idx = (idx+1) % msgs.length;
+      renderOne(msgs[idx].text, true);
+    }, 5000);
+  }
 
-  openBtn.addEventListener('click', ()=> modal.classList.add('open'));
-  closeBtns.forEach(b => b.addEventListener('click', ()=> { modal.classList.remove('open'); status.textContent=''; form.reset(); }));
+  fetchMessages();
 
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    status.textContent = 'Publicando…';
-    const text = document.getElementById('m_text').value.trim();
-    if(!text){ status.textContent='Escreva uma mensagem.'; return; }
+  // abrir / fechar modal do mural
+  $('#openMural')?.addEventListener('click', ()=> $('#muralModal').classList.add('open'));
+  $$('[data-close]').forEach(btn=>{
+    btn.addEventListener('click', ()=> { $('#'+btn.dataset.close).classList.remove('open'); });
+  });
+
+  // publicar mensagem
+  $('#publishMsg')?.addEventListener('click', async ()=>{
+    const txt = $('#muralText').value.trim();
+    $('#muralErr').style.display = 'none';
+    if(!txt){ $('#muralErr').style.display='block'; return; }
     try{
-      const resp = await fetch(`${SUPABASE_URL}/rest/v1/mural_messages`, {
+      const r = await fetch(SUPABASE_URL + '/rest/v1/messages',{
         method:'POST',
         headers:{
-          apikey: SUPABASE_ANON,
-          Authorization:`Bearer ${SUPABASE_ANON}`,
           'Content-Type':'application/json',
-          Prefer:'return=representation'
+          apikey: SUPABASE_KEY,
+          Authorization: 'Bearer '+SUPABASE_KEY,
+          Prefer: 'return=representation'
         },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ text: txt })
       });
-      if(!resp.ok) throw new Error('HTTP '+resp.status);
-      status.textContent = 'Publicado! 💜';
-      mural.pushLocal(text);
-      setTimeout(()=>{ modal.classList.remove('open'); status.textContent=''; form.reset(); }, 600);
+      if(!r.ok) throw new Error('post');
+      const saved = await r.json();
+      // atualiza lista local no topo
+      msgs.unshift(saved[0]);
+      $('#muralModal').classList.remove('open');
+      $('#muralText').value='';
+      startRotation();
     }catch(e){
-      status.textContent = 'Não foi possível publicar agora. Tente de novo.';
+      $('#muralErr').style.display='block';
     }
   });
-})();
 
-/* ===== Tempo (Open‑Meteo) ===== */
-(() => {
+  /* ====== RSVP (WhatsApp) ====== */
+  const rsvpModal = $('#rsvpModal');
+  $('#openRsvp')?.addEventListener('click', ()=> rsvpModal.classList.add('open'));
+  // escolha sim/não
+  let vai = null;
+  $$('[data-rsvp]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      vai = btn.dataset.rsvp; // "sim" | "nao"
+      // marca visual
+      $$('[data-rsvp]').forEach(b=>b.classList.remove('btn-primary'));
+      btn.classList.add('btn-primary');
+      // extras
+      $('#rsvpExtras').classList.toggle('hidden', vai!=='sim');
+    });
+  });
+
+  $('#sendRsvp')?.addEventListener('click', ()=>{
+    const nome = $('#nome').value.trim();
+    if(!nome || !vai){ alert('Informe seu nome e selecione se você vai ou não.'); return; }
+    const acomp = $('#acompanha').value.trim();
+    const qtd = $('#qtd').value.trim();
+    const idades = $('#idades').value.trim();
+
+    let txt = `Olá! Sou ${nome}. `;
+    txt += vai==='sim' ? 'Confirmo minha presença' : 'Não poderei ir';
+    if(vai==='sim'){
+      if(acomp) txt += ` com ${acomp}`;
+      if(qtd && Number(qtd)>0){
+        txt += ` e ${qtd} filho(s)`;
+        if(idades) txt += ` (idades: ${idades})`;
+      }
+    }
+    txt += ' na Festa da Isabella.';
+
+    const url = `https://wa.me/5521993835163?text=${encodeURIComponent(txt)}`;
+    window.open(url,'_blank','noopener');
+    rsvpModal.classList.remove('open');
+  });
+
+}); // DOMContentLoaded
+
+/* ====== Tempo: previsão perto da data, climatologia fora da janela ====== */
+(function(){
   const EVENT_DATE_DEFAULT = '2025-11-22';
-  const LAT = -22.606, LON = -43.490, TZ = 'America/Sao_Paulo';
+  const LAT = -22.606, LON = -43.490;
+  const TZ = 'America/Sao_Paulo';
   const qs = new URLSearchParams(location.search);
   const EVENT_DATE = qs.get('data') || EVENT_DATE_DEFAULT;
 
-  const weatherDate = document.getElementById('weatherDate');
-  const weatherText = document.getElementById('weatherText');
-  const weatherSource = document.getElementById('weatherSource');
-
-  function fmtDate(iso){ return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(iso+'T12:00:00')); }
-  function daysTo(iso){ const t=new Date(); t.setHours(0,0,0,0); const e=new Date(iso+'T00:00:00'); return Math.round((e-t)/86400000); }
-  function setSrc(name){
-    const now = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ}).format(new Date()).replace('.','');
-    weatherSource.innerHTML = `Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">${name}</a> • Atualizado em ${now} (BRT)`;
+  function formatPtBRDate(iso){
+    const d = new Date(iso + 'T12:00:00');
+    return new Intl.DateTimeFormat('pt-BR',{ day:'2-digit', month:'long'}).format(d);
   }
-  weatherDate.textContent = fmtDate(EVENT_DATE);
+  $('#weatherDate').textContent = formatPtBRDate(EVENT_DATE);
 
-  (async ()=>{
+  function daysTo(dateIso){
+    const today = new Date(); today.setHours(0,0,0,0);
+    const ev = new Date(dateIso+'T00:00:00');
+    return Math.round((ev - today)/86400000);
+  }
+  const dleft = daysTo(EVENT_DATE);
+  const elText = $('#weatherText');
+  const elSource = $('#weatherSource');
+
+  function setSourceStamp(sourceName){
+    const now = new Date();
+    const fmt = new Intl.DateTimeFormat('pt-BR', {
+      day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit',
+      timeZone: TZ
+    }).format(now).replace('.', '');
+    elSource.innerHTML = `Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">${sourceName}</a> • Atualizado em ${fmt} (BRT)`;
+  }
+
+  async function getDailyForecast(){
+    const url = new URL('https://api.open-meteo.com/v1/forecast');
+    url.search = new URLSearchParams({
+      latitude: LAT, longitude: LON, timezone: TZ,
+      daily: 'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',
+      start_date: EVENT_DATE, end_date: EVENT_DATE
+    });
+    const r = await fetch(url); if(!r.ok) throw new Error('forecast http');
+    return r.json();
+  }
+  async function getClimateNormals(month){
+    const url = new URL('https://climate-api.open-meteo.com/v1/climate');
+    url.search = new URLSearchParams({
+      latitude: LAT, longitude: LON,
+      start_year: 1991, end_year: 2020, models: 'ERA5',
+      monthly: 'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',
+      month: month
+    });
+    const r = await fetch(url); if(!r.ok) throw new Error('climate http');
+    return r.json();
+  }
+
+  (async () => {
     try{
-      if(daysTo(EVENT_DATE) >=0 && daysTo(EVENT_DATE) <=16){
-        const u = new URL('https://api.open-meteo.com/v1/forecast');
-        u.search = new URLSearchParams({latitude:LAT,longitude:LON,timezone:TZ,daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',start_date:EVENT_DATE,end_date:EVENT_DATE});
-        const r = await fetch(u); const j = await r.json();
-        const d = j.daily; const tmax=Math.round(d.temperature_2m_max[0]); const tmin=Math.round(d.temperature_2m_min[0]); const p=d.precipitation_probability_mean?.[0];
-        weatherText.textContent = typeof p==='number' ? `Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%` : `Previsão: entre ${tmin}° e ${tmax}°`;
-        setSrc('Open‑Meteo (previsão diária)');
+      if(dleft >= 0 && dleft <= 16){
+        const data = await getDailyForecast();
+        const d = data.daily;
+        const tmax = Math.round(d.temperature_2m_max[0]);
+        const tmin = Math.round(d.temperature_2m_min[0]);
+        const ppop = d.precipitation_probability_mean?.[0];
+        elText.textContent =
+          (typeof ppop === 'number')
+          ? `Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${ppop}%`
+          : `Previsão: entre ${tmin}° e ${tmax}°`;
+        setSourceStamp('Open‑Meteo (previsão diária)');
       }else{
-        const m = Number(EVENT_DATE.split('-')[1]);
-        const u = new URL('https://climate-api.open-meteo.com/v1/climate');
-        u.search = new URLSearchParams({latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',monthly:'temperature_2m_max_mean,temperature_2m_min_mean',month:m});
-        const r = await fetch(u); const j = await r.json();
-        const tmax=Math.round(j.monthly?.temperature_2m_max_mean?.[0] ?? 27); const tmin=Math.round(j.monthly?.temperature_2m_min_mean?.[0] ?? 20);
-        weatherText.textContent = `Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
-        setSrc('Open‑Meteo (climatologia 1991–2020)');
+        const month = Number(EVENT_DATE.split('-')[1]);
+        const clim = await getClimateNormals(month);
+        const m = clim.monthly || clim.daily || {};
+        const tmax = Math.round(m.temperature_2m_max_mean?.[0] ?? 27);
+        const tmin = Math.round(m.temperature_2m_min_mean?.[0] ?? 20);
+        elText.textContent = `Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
+        setSourceStamp('Open‑Meteo (climatologia 1991–2020)');
       }
     }catch(e){
-      weatherText.textContent = 'Nesta época do ano, a temperatura varia entre 20° e 27°.'; setSrc('Open‑Meteo');
+      elText.textContent = 'Nesta época do ano, a temperatura costuma variar entre 20° e 27°.';
+      setSourceStamp('Open‑Meteo');
     }
   })();
 })();
-
-/* ===== Carregar mural ao abrir ===== */
-mural.fetchMessages();
 </script>
 </body>
 </html>
