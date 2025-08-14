@@ -17,24 +17,51 @@
   a{color:var(--roxo);text-decoration:none}
   .container{max-width:980px;margin:0 auto;padding:22px 16px}
 
-  /* Hero */
+  /* ===================== Hero (com efeito) ===================== */
   .hero{
-    position:relative;height:58vh;min-height:340px;
+    --p: 0;                               /* progresso (0..1) controlado via JS */
+    --zoom: calc(8% * (1 - var(--p)));    /* zoom-out suave */
+    position:relative;
+    height:58vh; min-height:340px;
     background:url('hero.jpg') center/cover no-repeat;
-    display:flex;align-items:flex-end;justify-content:center;text-align:center
+    background-size: calc(100% + var(--zoom)) auto;   /* aplica o zoom */
+    display:flex; align-items:flex-end; justify-content:center;
+    text-align:center; overflow:hidden;
   }
-  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),rgba(0,0,0,.12))}
+  .hero::before{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(to top,rgba(0,0,0,.55),rgba(0,0,0,.12));
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center}
+  .hero-glow{
+    position:absolute; left:0; right:0; bottom:0; height:40%;
+    background:linear-gradient(to bottom, rgba(255,255,255,0) 0%,
+                                          rgba(255,255,255,.25) 35%,
+                                          rgba(247,247,251,1) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: calc(.6 + .4 * var(--p));
+    pointer-events:none;
+  }
+  .hero-title{
+    position:relative; z-index:1; padding-bottom:22px;
+    transform: translateY(calc(12px * (1 - var(--p))));
+    transition: transform .2s ease-out;
+  }
   .hero h1{
-    position:relative;color:#fff;margin:0 0 6px;
-    font-size:clamp(36px,6vw,56px); /* maior como antes */
-    letter-spacing:-.02em;text-shadow:0 6px 20px rgba(0,0,0,.4);font-weight:800
+    color:#fff; margin:0 0 6px;
+    font-size:clamp(36px,6vw,56px);  /* maior e central como você pediu */
+    letter-spacing:-.02em; font-weight:800;
+    text-shadow:0 6px 20px rgba(0,0,0,.45);
   }
   .hero p{
-    position:relative;color:#fff;margin:0 0 24px;font-weight:500;
-    font-size:clamp(16px,2.3vw,20px)
+    color:#fff; margin:0 0 24px; font-weight:500;
+    font-size:clamp(16px,2.3vw,20px);
+    text-shadow:0 4px 14px rgba(0,0,0,.35);
   }
 
-  /* Cards */
+  /* ===================== Cards ===================== */
   .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin:18px auto}
   .card h2{margin:0 0 10px;color:var(--roxo);font-size:clamp(22px,2.6vw,30px);letter-spacing:-.02em}
   .card p{margin:6px 0;color:#3b3b3b}
@@ -45,7 +72,7 @@
   .details li{display:flex;gap:.55rem;align-items:center;justify-content:center;text-align:center}
   .icon{color:var(--roxo);font-size:1.1rem;transform:translateY(1px)}
 
-  /* Buttons (tamanho unificado) */
+  /* ===================== Buttons (tamanho unificado) ===================== */
   .btn{appearance:none;border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-size:16px;line-height:1}
   .btn-primary{background:var(--roxo);color:#fff}
   .btn-primary:hover{background:var(--roxo-esc)}
@@ -55,7 +82,7 @@
   .row .btn{min-width:240px}
   @media(min-width:720px){ .row.row-2 .btn{min-width:260px} }
 
-  /* Grid simples */
+  /* Grid simples (álbum) */
   .album{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-items:center}
   .frame{width:120px;aspect-ratio:1;border-radius:12px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.08);transform:rotate(var(--tilt,0deg))}
   .frame img{width:100%;height:100%;object-fit:cover;display:block}
@@ -67,14 +94,14 @@
   /* Weather */
   .weather{max-width:700px;margin:0 auto}
 
-  /* Overlay Boas‑vindas (música) */
+  /* ===================== Overlay Boas‑vindas (música) ===================== */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
   .overlay.hide{display:none}
   .welcome{background:#fff;width:min(92vw,520px);border-radius:16px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
   .welcome h3{margin:0 0 8px;color:var(--roxo);font-size:clamp(22px,2.6vw,28px)}
   .welcome p{color:#444;margin:0 0 16px}
 
-  /* Generic modal */
+  /* ===================== Modal genérico ===================== */
   .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:9998}
   .modal.open{display:flex}
   .modal-card{background:#fff;border-radius:16px;width:min(92vw,620px);max-height:88vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -103,7 +130,7 @@
   footer.watermark{
     position:fixed;left:0;right:0;bottom:12px;
     text-align:center;font-size:12px;color:#9aa0a6;opacity:.9;
-    pointer-events:none; /* não bloqueia cliques */
+    pointer-events:none;
   }
 
   /* Evitar scroll com overlay aberto */
@@ -112,7 +139,7 @@
 </head>
 <body>
 
-<!-- Overlay Boas‑vindas (tocar MP3) -->
+<!-- ============ Overlay Boas‑vindas (tocar MP3) ============ -->
 <div id="welcome-overlay" class="overlay">
   <div class="welcome">
     <h3>Bem‑vindo(a) à Festa da Isabella! 🎶</h3>
@@ -125,14 +152,16 @@
 </div>
 
 <!-- Player escondido (src definido via JS com cache-buster) -->
-<audio id="bg-audio" preload="auto" playsinline webkit-playsinline>
-  <!-- src será setado por JS para forçar atualização -->
-</audio>
+<audio id="bg-audio" preload="auto" playsinline webkit-playsinline></audio>
 
+<!-- ===================== HERO ===================== -->
 <header class="hero">
-  <div class="center">
-    <h1>Festa da Isabella</h1>
-    <p>Celebrando seu 1º aniversário</p>
+  <div class="hero-inner">
+    <div class="hero-glow"></div>
+    <div class="hero-title">
+      <h1>Festa da Isabella</h1>
+      <p>Celebrando seu 1º aniversário</p>
+    </div>
   </div>
 </header>
 
@@ -214,7 +243,7 @@
     </div>
   </section>
 
-  <!-- Playlist Apple Music (restaurada) -->
+  <!-- Playlist Apple Music -->
   <section class="card center">
     <h2>Playlist da festa</h2>
     <iframe class="apple-embed"
@@ -233,10 +262,10 @@
 
 </main>
 
-<!-- Marca d’água fixa (como antes) -->
+<!-- Marca d’água fixa -->
 <footer class="watermark">© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
 
-<!-- Modal MURAL -->
+<!-- ===================== Modal MURAL ===================== -->
 <div id="modal-mural" class="modal" aria-hidden="true">
   <div class="modal-card">
     <div class="modal-header">
@@ -255,7 +284,7 @@
   </div>
 </div>
 
-<!-- Modal RSVP -->
+<!-- ===================== Modal RSVP ===================== -->
 <div id="modal-rsvp" class="modal" aria-hidden="true">
   <div class="modal-card">
     <div class="modal-header">
@@ -303,13 +332,13 @@
 <script>
 /* ---------------- Overlay música ---------------- */
 (function(){
-  const WELCOME_KEY = 'welcomeDone_v2'; // mantém aparecendo até o usuário escolher
+  const WELCOME_KEY = 'welcomeDone_v2';
   const overlay = document.getElementById('welcome-overlay');
   const btnPlay = document.getElementById('start-music');
   const btnSilent = document.getElementById('enter-silent');
   const audio = document.getElementById('bg-audio');
 
-  // define o src do MP3 com cache-buster para atualizar sempre que você trocar o arquivo
+  // MP3 local com cache-buster (garante atualizar após trocas)
   const mp3Path = 'assets/kids-children-baby-music-363272.mp3';
   audio.src = mp3Path + '?v=' + Date.now();
 
@@ -327,6 +356,23 @@
     closeOverlay();
   });
   btnSilent?.addEventListener('click', closeOverlay);
+})();
+
+/* -------- Efeito “lock screen” (zoom/parallax + glow + título sobe) -------- */
+(function(){
+  const hero = document.querySelector('.hero');
+  if(!hero) return;
+  let H = hero.offsetHeight;
+
+  function onScroll(){
+    H = hero.offsetHeight;
+    const y = Math.min(H, Math.max(0, window.scrollY));
+    const p = y / H;
+    hero.style.setProperty('--p', p.toFixed(3));
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
 })();
 
 /* ---------------- Álbum aleatório ---------------- */
