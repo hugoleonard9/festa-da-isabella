@@ -568,5 +568,150 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   })();
 })();
 </script>
+  <!-- === HOTFIX FESTA DA ISABELLA (colar antes de </body>) === -->
+<style>
+  /* 1) Remover card no título do herói, independente da classe usada */
+  header .hero, .hero { overflow: visible !important; margin-bottom: 0 !important; }
+  /* Caso o título esteja dentro de .card/.glass/.title-wrap/etc., neutraliza o “vidro” */
+  header .card, header .glass, header .title-wrap, header [class*="title"], header [class*="card"] {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+  }
+  /* Título e subtítulo legíveis sem card */
+  header h1, header .hero h1, header [class*="title"] h1 {
+    color: #fff !important;
+    text-shadow: 0 4px 14px rgba(0,0,0,.5) !important;
+    margin: 0 .5rem !important;
+  }
+  header h2, header p, header .subtitle {
+    color: #fff !important;
+    text-shadow: 0 3px 10px rgba(0,0,0,.45) !important;
+  }
+
+  /* 2) Remover qualquer faixa/separador/raio que crie o “corte” */
+  header.hero::before, header.hero::after,
+  header::before, header::after { content: none !important; }
+  /* Zera borda/raio no hero */
+  header, .hero {
+    border-radius: 0 !important;
+  }
+  /* Próxima seção fica colada de forma contínua */
+  main > section:first-of-type,
+  section#boas-vindas, section.boas-vindas, .section-boas-vindas {
+    background: transparent !important;
+    margin-top: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    padding-top: 24px !important; /* respiro suave, sem “degrau” */
+  }
+
+  /* 3) Marca d’água/direitos — descer um pouquinho */
+  .watermark, .copyright, footer .copyright {
+    position: relative !important;
+    top: 10px !important;       /* ajuste fino: desce um pouco */
+    margin-bottom: -4px !important;
+    text-align: center !important;
+    opacity: .6 !important;
+    font-size: .85rem !important;
+    user-select: none !important;
+  }
+
+  /* 4) Caso exista contêiner de mídia do herói, garante cobertura total */
+  .hero__media, header .media, header .cover, header .banner {
+    height: auto !important;
+    min-height: 56svh !important;
+  }
+  .hero__media img, header .media img, header .cover img, header .banner img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+</style>
+
+<script>
+/* === Hotfix JS: torna o ajuste à prova de classes diferentes === */
+(function () {
+  const byText = (sel, text) => {
+    const els = Array.from(document.querySelectorAll(sel));
+    return els.find(el => (el.textContent || '').trim().includes(text));
+  };
+
+  // 1) Remove “card” do título (mesmo se o título estiver embrulhado em vários níveis)
+  const titleEl = byText('h1, [class*="title"]', 'Festa da Isabella') || document.querySelector('header h1');
+  if (titleEl) {
+    // Sobe até um contêiner que costume receber o "glass"
+    let wrap = titleEl.parentElement;
+    for (let i = 0; i < 3 && wrap; i++) {
+      const cs = getComputedStyle(wrap);
+      const looksGlass =
+        (cs.backdropFilter && cs.backdropFilter !== 'none') ||
+        (cs.webkitBackdropFilter && cs.webkitBackdropFilter !== 'none') ||
+        (cs.backgroundColor && cs.backgroundColor !== 'rgba(0, 0, 0, 0)') ||
+        (parseFloat(cs.borderRadius) > 0) ||
+        (cs.boxShadow && cs.boxShadow !== 'none');
+      if (looksGlass) {
+        wrap.style.background = 'transparent';
+        wrap.style.backdropFilter = 'none';
+        wrap.style.webkitBackdropFilter = 'none';
+        wrap.style.boxShadow = 'none';
+        wrap.style.border = '0';
+        wrap.style.borderRadius = '0';
+        wrap.style.padding = '0';
+      }
+      wrap = wrap.parentElement;
+    }
+    // Garante sombra/legibilidade do texto
+    titleEl.style.color = '#fff';
+    titleEl.style.textShadow = '0 4px 14px rgba(0,0,0,.5)';
+    const sub = titleEl.nextElementSibling;
+    if (sub) {
+      sub.style.color = '#fff';
+      sub.style.textShadow = '0 3px 10px rgba(0,0,0,.45)';
+    }
+  }
+
+  // 2) Remove “corte” entre herói e a seção seguinte
+  const hero = document.querySelector('header.hero') || document.querySelector('header');
+  if (hero) {
+    hero.style.overflow = 'visible';
+    hero.style.marginBottom = '0';
+    hero.style.borderRadius = '0';
+    // remove pseudo via CSS já adicionado; aqui só reforça
+    const next = hero.nextElementSibling;
+    if (next && next.tagName.toLowerCase() === 'section') {
+      next.style.background = 'transparent';
+      next.style.marginTop = '0';
+      next.style.borderTopLeftRadius = '0';
+      next.style.borderTopRightRadius = '0';
+      // adiciona um pequeno padding só se não houver
+      if (parseInt(getComputedStyle(next).paddingTop, 10) < 16) {
+        next.style.paddingTop = '24px';
+      }
+    }
+  }
+
+  // 3) Marca d’água — desce um pouco independentemente da classe usada
+  const watermark =
+    byText('.watermark, .copyright, footer, section p, .card p',
+           '© 2025 Hugo Mattos') ||
+    byText('.watermark, .copyright, footer, section p, .card p',
+           'Todos os direitos reservados');
+  if (watermark) {
+    watermark.style.position = 'relative';
+    watermark.style.top = '10px';
+    watermark.style.marginBottom = '-4px';
+    watermark.style.textAlign = 'center';
+    watermark.style.opacity = '.6';
+    watermark.style.fontSize = '.85rem';
+    watermark.style.userSelect = 'none';
+  }
+})();
+</script>
+<!-- === /HOTFIX FESTA DA ISABELLA === -->
 </body>
 </html>
