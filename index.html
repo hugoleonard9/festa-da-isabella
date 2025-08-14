@@ -157,6 +157,16 @@
 
   body.modal-open{overflow:hidden}
 </style>
+  /* Ajuste para cards mais brancos e menos transparentes */
+.card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: saturate(1.05) blur(8px) !important;
+  -webkit-backdrop-filter: saturate(1.05) blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  border-radius: var(--radius, 18px) !important;
+  box-shadow: var(--shadow, 0 10px 25px rgba(17,17,17,.08)) !important;
+  padding: 28px 22px !important;
+}
 </head>
 <body>
 
