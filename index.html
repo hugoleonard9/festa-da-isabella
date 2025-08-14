@@ -5,90 +5,101 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Festa da Isabella</title>
 <meta name="theme-color" content="#5b3fa2"/>
+
 <style>
   :root{
     --roxo:#5b3fa2;--roxo-esc:#493183;--roxo-cl:#efe8ff;
-    --bg:#f7f7fb;--txt:#262626;--muted:#6b7280;--white:#fff;
-    --shadow:0 10px 25px rgba(17,17,17,.08);
+    --txt:#262626;--muted:#6b7280;--white:#fff;
     --radius:18px;
   }
-  *{box-sizing:border-box} html,body{margin:0}
+  *{box-sizing:border-box}
+  html,body{margin:0}
   body{
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
     color:var(--txt);line-height:1.55;background:transparent;
   }
   a{color:var(--roxo);text-decoration:none}
   .container{max-width:980px;margin:0 auto;padding:22px 16px}
 
-  /* —————————————————————————————————————————
-     Camada de FUNDO 100% desfocada (replica hero.jpg)
-     ————————————————————————————————————————— */
+  /* ————————— FUNDO 100% DESFOCADO ————————— */
   .bg-blur{
-    position:fixed; inset:0; z-index:-2;
+    position:fixed;inset:0;z-index:-2;
     background:url('hero.jpg') center/cover no-repeat;
     filter:blur(22px);
-    transform:scale(1.08);    /* evita bordas visíveis do blur */
+    transform:scale(1.08); /* evita bordas do blur */
   }
-  /* véu sutil para igualar o "depth" (opcional) */
   .bg-veil{
-    position:fixed; inset:0; z-index:-1;
+    position:fixed;inset:0;z-index:-1;
     background:linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.28) 45%, rgba(255,255,255,.35));
   }
 
-  /* —————————————————————————————————————————
-     HERO (foto nítida + título com efeito iOS)
-     ————————————————————————————————————————— */
+  /* ————————— HERO + TÍTULO “VIDRO” ————————— */
   .hero{
     position:relative;height:60vh;min-height:360px;
     background:url('hero.jpg') center/cover no-repeat;
     display:flex;align-items:flex-end;justify-content:center;
-    text-align:center; overflow:hidden;
+    text-align:center;overflow:hidden;
   }
+  /* vinheta superior para ícones do SO */
   .hero::before{
-    /* gradiente superior para leitura dos ícones do SO */
-    content:""; position:absolute; inset:0 0 40% 0;
+    content:"";position:absolute;inset:0 0 40% 0;
     background:linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,0));
     pointer-events:none;
   }
-  .hero .title-wrap{
-    position:relative; margin:0 16px 18px; padding:18px 18px 16px;
+
+  /* cápsula de vidro do título */
+  .title-wrap{
+    position:relative;margin:0 16px 18px;padding:18px 22px 16px;
     border-radius:26px;
-    background:rgba(0,0,0,.22);
-    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
-    box-shadow:0 20px 60px rgba(0,0,0,.25);
-    color:#fff;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.45);
+    color:#fff; box-shadow:0 18px 50px rgba(0,0,0,.32);
+    -webkit-backdrop-filter:blur(22px) saturate(120%);
+            backdrop-filter:blur(22px) saturate(120%);
+  }
+  /* brilho interno (halo) para ficar mais iOS-like */
+  .title-wrap::before{
+    content:"";position:absolute;inset:0;border-radius:26px;
+    background:
+      radial-gradient(120% 120% at 50% 0%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%) ,
+      linear-gradient(to bottom, rgba(255,255,255,.18), rgba(255,255,255,.06));
+    pointer-events:none;mix-blend:screen;opacity:.85;
+  }
+  /* sombra “borrada” no rodapé do título (transição suave) */
+  .title-wrap::after{
+    content:"";position:absolute;left:-6%;right:-6%;bottom:-26px;height:64px;
+    filter:blur(18px);
+    background:radial-gradient(120% 120% at 50% -10%, rgba(0,0,0,.45), transparent 70%);
+    pointer-events:none;
   }
   .hero h1{
-    margin:0 0 8px; font-weight:800;
-    font-size:clamp(36px,6vw,56px); letter-spacing:-.02em;
+    margin:0 0 8px;font-weight:800;
+    font-size:clamp(36px,6vw,56px);letter-spacing:-.02em;
     text-shadow:0 6px 22px rgba(0,0,0,.45);
   }
   .hero .sub{
-    margin:0; opacity:.95; font-weight:600;
+    margin:0;opacity:.98;font-weight:600;
     font-size:clamp(14px,2.4vw,18px);
   }
 
-  /* —————————————————————————————————————————
-     CARDS (limpos; sem blur no card)
-     ————————————————————————————————————————— */
+  /* ————————— CARDS (sem blur no próprio card) ————————— */
   .card{
     background:rgba(255,255,255,.92);
     border:1px solid rgba(255,255,255,.6);
     border-radius:var(--radius);
     box-shadow:0 20px 50px rgba(30,30,60,.18);
-    padding:22px; margin:18px auto;
-    backdrop-filter:saturate(140%);
+    padding:22px;margin:18px auto;
   }
   .card h2{margin:0 0 12px;color:var(--roxo);font-size:clamp(22px,2.6vw,30px);letter-spacing:-.02em}
   .card p{margin:6px 0;color:#3b3b3b}
   .center{text-align:center}
 
-  /* Lista de detalhes */
+  /* Detalhes */
   .details{list-style:none;padding:0;margin:0;display:grid;gap:.7rem;justify-items:center}
   .details li{display:flex;gap:.6rem;align-items:center;justify-content:center;text-align:center}
   .icon{color:var(--roxo);font-size:1.1rem;transform:translateY(1px)}
 
-  /* Botões – tamanho unificado */
+  /* Botões (tamanho consistente) */
   .btn{appearance:none;border:0;border-radius:12px;padding:14px 20px;font-weight:800;cursor:pointer;font-size:16px;line-height:1}
   .btn-primary{background:var(--roxo);color:#fff}
   .btn-primary:hover{background:var(--roxo-esc)}
@@ -96,7 +107,7 @@
   .btn-ghost{background:#f4f4f8;color:#333}
   .row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:14px}
   .row .btn{min-width:240px}
-  @media(min-width:720px){ .row.row-2 .btn{min-width:260px} }
+  @media(min-width:720px){.row.row-2 .btn{min-width:260px}}
 
   /* Álbum */
   .album{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-items:center}
@@ -111,7 +122,9 @@
   .weather{max-width:700px;margin:0 auto}
 
   /* Overlay Boas‑vindas (música) */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);
+           -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+           display:flex;align-items:center;justify-content:center;z-index:9999}
   .overlay.hide{display:none}
   .welcome{background:#fff;width:min(92vw,520px);border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
   .welcome h3{margin:0 0 8px;color:var(--roxo);font-size:clamp(22px,2.6vw,28px)}
@@ -134,31 +147,30 @@
   .yn .opt{flex:1;border-radius:12px;border:2px solid #ece9ff;background:#f7f5ff;padding:12px;text-align:center;font-weight:800;cursor:pointer}
   .yn .opt.active{background:var(--roxo);color:#fff;border-color:var(--roxo)}
 
-  /* Mural (rotativo) */
+  /* Mural rotativo */
   .mural-box{min-height:66px;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:14px;background:#faf8ff;color:#4a4a4a}
   .mural-msg{font-size:1.05rem;text-align:center;transition:opacity .6s ease, transform .6s ease}
   .fade-out{opacity:0;transform:translateY(8px)}
   .fade-in{opacity:1;transform:translateY(0)}
   .muted{color:var(--muted);font-size:.95rem}
 
-  /* Marca d’água fixa discreta */
+  /* Marca d’água fixa */
   footer.watermark{
-    position:fixed;left:0;right:0;bottom:12px;
-    text-align:center;font-size:12px;color:#9aa0a6;opacity:.9;
-    pointer-events:none;
+    position:fixed;left:0;right:0;bottom:12px;text-align:center;
+    font-size:12px;color:#9aa0a6;opacity:.9;pointer-events:none;
   }
 
-  /* Sem scroll ao abrir modal/overlay */
+  /* Evita rolagem com modal/overlay */
   body.modal-open{overflow:hidden}
 </style>
 </head>
 <body>
 
-<!-- FUNDO DESFOCADO -->
+<!-- Fundo 100% desfocado -->
 <div class="bg-blur" aria-hidden="true"></div>
 <div class="bg-veil" aria-hidden="true"></div>
 
-<!-- Overlay Boas‑vindas (tocar MP3) -->
+<!-- Overlay música -->
 <div id="welcome-overlay" class="overlay">
   <div class="welcome">
     <h3>Bem‑vindo(a) à Festa da Isabella! 🎶</h3>
@@ -170,10 +182,10 @@
   </div>
 </div>
 
-<!-- Player escondido (src por JS com cache-buster) -->
+<!-- Player (src definido via JS p/ atualizar o MP3) -->
 <audio id="bg-audio" preload="auto" playsinline webkit-playsinline></audio>
 
-<!-- HERO com efeito iOS no título -->
+<!-- HERO com título “vidro” -->
 <header class="hero" role="img" aria-label="Isabella sorrindo">
   <div class="title-wrap">
     <h1>Festa da Isabella</h1>
@@ -182,7 +194,6 @@
 </header>
 
 <main class="container">
-
   <!-- Boas‑vindas -->
   <section class="card center" id="boas-vindas">
     <h2>Boas‑vindas</h2>
@@ -277,10 +288,10 @@
   </section>
 </main>
 
-<!-- Marca d’água fixa -->
+<!-- Marca d’água -->
 <footer class="watermark">© 2025 Hugo Mattos. Todos os direitos reservados.</footer>
 
-<!-- Modal MURAL -->
+<!-- Modal Mural -->
 <div id="modal-mural" class="modal" aria-hidden="true">
   <div class="modal-card">
     <div class="modal-header">
@@ -345,7 +356,7 @@
 </div>
 
 <script>
-/* ---------------- Overlay música ---------------- */
+/* ————— Overlay música ————— */
 (function(){
   const WELCOME_KEY = 'welcomeDone_v2';
   const overlay = document.getElementById('welcome-overlay');
@@ -373,160 +384,151 @@
   btnSilent?.addEventListener('click', closeOverlay);
 })();
 
-/* ---------------- Álbum aleatório ---------------- */
+/* ————— Álbum (shuffle) ————— */
 (function(){
-  const srcs = [
+  const srcs=[
     'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
     'album2/IMG_4765.jpeg','album2/IMG_4639.jpeg','album2/IMG_6911.jpeg',
     'album2/IMG_4450.jpeg','album2/IMG_4352.jpeg','album2/IMG_3056.jpeg',
     'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
   ];
-  const frames = document.querySelectorAll('.frame img');
-  const shuf = a=>a.slice().sort(()=>Math.random()-0.5);
+  const frames=document.querySelectorAll('.frame img');
+  const shuf=a=>a.slice().sort(()=>Math.random()-0.5);
   function fill(){
-    const imgs = shuf(srcs);
+    const imgs=shuf(srcs);
     frames.forEach((img,i)=>{
-      img.src = imgs[i%imgs.length];
-      img.parentElement.style.setProperty('--tilt', (Math.random()*10-5)+'deg');
+      img.src=imgs[i%imgs.length];
+      img.parentElement.style.setProperty('--tilt',(Math.random()*10-5)+'deg');
     });
   }
-  fill(); setInterval(fill, 8000);
+  fill(); setInterval(fill,8000);
 })();
 
-/* ---------------- Supabase (Mural) ---------------- */
-const SUPABASE_URL = "https://kfoousycrqscvhivhmxu.supabase.co";
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
+/* ————— Supabase (mural) ————— */
+const SUPABASE_URL="https://kfoousycrqscvhivhmxu.supabase.co";
+const SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
 
 let supabaseClient;
 (function(){
-  window.supabase = null;
-  const s = document.createElement('script');
-  s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
-  s.onload = () => {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth:{persistSession:false} });
+  window.supabase=null;
+  const s=document.createElement('script');
+  s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+  s.onload=()=>{
+    supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON,{auth:{persistSession:false}});
     loadMural();
     try{
       supabaseClient.channel('public:messages')
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'}, ()=>loadMural(true))
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},()=>loadMural(true))
         .subscribe();
     }catch(_){}
   };
   document.head.appendChild(s);
 })();
 
-const muralBox = document.getElementById('muralMessage');
+const muralBox=document.getElementById('muralMessage');
 
 async function loadMural(isRealtime){
   if(!supabaseClient) return;
   try{
-    const { data, error } = await supabaseClient
-      .from('messages')
-      .select('mensagem, created_at')
-      .order('created_at',{ascending:false})
-      .limit(12);
+    const {data,error}=await supabaseClient
+      .from('messages').select('mensagem,created_at')
+      .order('created_at',{ascending:false}).limit(12);
     if(error) throw error;
 
-    const list = data?.map(d=>d.mensagem).filter(Boolean);
+    const list=data?.map(d=>d.mensagem).filter(Boolean);
     if(!list?.length){
-      muralBox.textContent = "Seja o primeiro a deixar um recado 💜";
-      muralBox.classList.remove('muted');
-      return;
+      muralBox.textContent="Seja o primeiro a deixar um recado 💜";
+      muralBox.classList.remove('muted');return;
     }
     muralBox.classList.remove('muted');
-    let idx = 0;
+    let idx=0;
     function show(i){
       muralBox.classList.add('fade-out');
       setTimeout(()=>{
-        muralBox.textContent = list[i];
+        muralBox.textContent=list[i];
         muralBox.classList.remove('fade-out');
         muralBox.classList.add('fade-in');
-        setTimeout(()=>muralBox.classList.remove('fade-in'), 600);
-      }, 300);
+        setTimeout(()=>muralBox.classList.remove('fade-in'),600);
+      },300);
     }
     show(0);
     if(!isRealtime){
       clearInterval(window._muralTimer);
-      window._muralTimer = setInterval(()=>{ idx=(idx+1)%list.length; show(idx); }, 4000);
+      window._muralTimer=setInterval(()=>{idx=(idx+1)%list.length;show(idx);},4000);
     }
   }catch(e){
-    muralBox.textContent = "Não foi possível carregar as mensagens agora.";
+    muralBox.textContent="Não foi possível carregar as mensagens agora.";
     muralBox.classList.add('muted');
   }
 }
 
-/* ---------------- Modais ---------------- */
-function openModal(id){ document.getElementById(id).classList.add('open'); document.body.classList.add('modal-open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.classList.remove('modal-open'); }
+/* ————— Modais ————— */
+function openModal(id){document.getElementById(id).classList.add('open');document.body.classList.add('modal-open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.classList.remove('modal-open');}
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
 document.getElementById('open-mural')?.addEventListener('click',()=>openModal('modal-mural'));
 document.getElementById('open-rsvp')?.addEventListener('click',()=>openModal('modal-rsvp'));
 
-/* ---------------- Enviar mural ---------------- */
-document.getElementById('mural-send')?.addEventListener('click', async ()=>{
-  const t = document.getElementById('mural-input').value.trim();
-  const err = document.getElementById('mural-error');
-  if(t.length<2){ err.textContent="Escreva ao menos 2 caracteres 🙂"; err.style.display='block'; return; }
+/* ————— Enviar mural ————— */
+document.getElementById('mural-send')?.addEventListener('click',async()=>{
+  const t=document.getElementById('mural-input').value.trim();
+  const err=document.getElementById('mural-error');
+  if(t.length<2){err.textContent="Escreva ao menos 2 caracteres 🙂";err.style.display='block';return;}
   err.style.display='none';
   try{
-    const { error } = await supabaseClient.from('messages').insert({ mensagem: t });
+    const {error}=await supabaseClient.from('messages').insert({mensagem:t});
     if(error) throw error;
     document.getElementById('mural-input').value='';
-    closeModal('modal-mural');
-    loadMural(true);
+    closeModal('modal-mural');loadMural(true);
   }catch(e){
     err.textContent="Não foi possível publicar agora. Tente de novo.";
     err.style.display='block';
   }
 });
 
-/* ---------------- RSVP (WhatsApp) ---------------- */
+/* ————— RSVP (WhatsApp) ————— */
 (function(){
-  const yn = document.getElementById('yn');
-  const extra = document.getElementById('rsvp-extra');
-  let going = 'sim';
+  const yn=document.getElementById('yn');
+  const extra=document.getElementById('rsvp-extra');
+  let going='sim';
   yn.querySelectorAll('.opt').forEach(opt=>{
     opt.addEventListener('click',()=>{
       yn.querySelectorAll('.opt').forEach(o=>o.classList.remove('active'));
-      opt.classList.add('active');
-      going = opt.dataset.val;
-      extra.style.display = (going==='sim')? 'block':'none';
+      opt.classList.add('active');going=opt.dataset.val;
+      extra.style.display=(going==='sim')?'block':'none';
     });
   });
   extra.style.display='block';
 
-  function wppLink(txt){
-    const phone = '5521993835163';
-    return `https://wa.me/${phone}?text=${encodeURIComponent(txt)}`;
-  }
+  function wppLink(txt){const phone='5521993835163';return `https://wa.me/${phone}?text=${encodeURIComponent(txt)}`;}
 
   document.getElementById('rsvp-send')?.addEventListener('click',()=>{
-    const nome = document.getElementById('rsvp-nome').value.trim();
-    if(!nome){ alert('Informe seu nome.'); return; }
+    const nome=document.getElementById('rsvp-nome').value.trim();
+    if(!nome){alert('Informe seu nome.');return;}
 
     if(going==='nao'){
-      const msg = `Olá! Aqui é ${nome}. Infelizmente, NÃO poderei ir ao aniversário da Isabella. 💜`;
-      window.open(wppLink(msg),'_blank','noopener'); closeModal('modal-rsvp'); return;
+      const msg=`Olá! Aqui é ${nome}. Infelizmente, NÃO poderei ir ao aniversário da Isabella. 💜`;
+      window.open(wppLink(msg),'_blank','noopener');closeModal('modal-rsvp');return;
     }
 
-    const acomp = document.getElementById('rsvp-acompanha').value.trim();
-    const qtd = document.getElementById('rsvp-qtd').value.trim()||'0';
-    const idades = document.getElementById('rsvp-idades').value.trim();
+    const acomp=document.getElementById('rsvp-acompanha').value.trim();
+    const qtd=document.getElementById('rsvp-qtd').value.trim()||'0';
+    const idades=document.getElementById('rsvp-idades').value.trim();
 
-    let msg = `Olá! Aqui é ${nome}. Confirmo presença no aniversário da Isabella. 🎉`;
-    if(acomp) msg += `\nAcompanhante: ${acomp}`;
-    msg += `\nFilhos: ${qtd}`;
-    if(idades) msg += `\nIdades: ${idades}`;
-    window.open(wppLink(msg),'_blank','noopener');
-    closeModal('modal-rsvp');
+    let msg=`Olá! Aqui é ${nome}. Confirmo presença no aniversário da Isabella. 🎉`;
+    if(acomp) msg+=`\nAcompanhante: ${acomp}`;
+    msg+=`\nFilhos: ${qtd}`;
+    if(idades) msg+=`\nIdades: ${idades}`;
+    window.open(wppLink(msg),'_blank','noopener');closeModal('modal-rsvp');
   });
 })();
 
-/* ---------------- Tempo (Open‑Meteo) ---------------- */
+/* ————— Tempo (Open‑Meteo) ————— */
 (function(){
-  const EVENT_DATE = '2025-11-22';
+  const EVENT_DATE='2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
   const elDate=document.getElementById('weatherDate'), elText=document.getElementById('weatherText'), elSrc=document.getElementById('weatherSource');
-  elDate.textContent = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(EVENT_DATE+'T12:00:00'));
+  elDate.textContent=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(EVENT_DATE+'T12:00:00'));
 
   function daysTo(iso){const t=new Date();t.setHours(0,0,0,0);const e=new Date(iso+'T00:00:00');return Math.round((e-t)/86400000);}
   const dLeft=daysTo(EVENT_DATE);
@@ -551,7 +553,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
     try{
       if(dLeft>=0 && dLeft<=16){
         const d=await daily(); const tmax=Math.round(d.daily.temperature_2m_max[0]); const tmin=Math.round(d.daily.temperature_2m_min[0]); const p=d.daily.precipitation_probability_mean?.[0];
-        elText.textContent = (typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`;
+        elText.textContent=(typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`;
         srcStamp('Open‑Meteo (previsão diária)');
       }else{
         const c=await clim(); const m=c.monthly||{}; const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27); const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
