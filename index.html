@@ -19,12 +19,13 @@
   a{color:var(--roxo);text-decoration:none}
   .container{max-width:980px;margin:0 auto;padding:22px 16px}
 
-  /* ===== Fundo contínuo: mesma foto “debaixo” dos cards ===== */
+  /* ===== Fundo contínuo 100% DESFOCADO atrás dos cards ===== */
   .page-bg{
     position:fixed; inset:0; z-index:-2;
     background:url('hero.jpg') center/cover no-repeat;
     background-size: calc(100% + var(--zoom)) auto;   /* sincroniza o zoom */
-    filter:saturate(105%);
+    filter: blur(20px) saturate(105%);                /* <<< blur forte */
+    transform: scale(1.05);                           /* evita bordas do blur */
   }
   .page-bg::after{
     content:""; position:absolute; inset:0;
@@ -72,11 +73,11 @@
     text-shadow:0 4px 14px rgba(0,0,0,.35);
   }
 
-  /* ===== Cards com “vidro” sobre a foto ===== */
+  /* ===== Cards brancos com leve transparência (vidro discreto) ===== */
   .card{
-    background:rgba(255,255,255,.78);
-    backdrop-filter: blur(14px) saturate(125%);
-    -webkit-backdrop-filter: blur(14px) saturate(125%);
+    background:rgba(255,255,255,0.85);      /* branco translúcido */
+    backdrop-filter: saturate(125%);
+    -webkit-backdrop-filter: saturate(125%);
     border:1px solid rgba(255,255,255,.6);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
@@ -158,7 +159,7 @@
 </head>
 <body>
 
-<!-- Fundo contínuo sob os cards -->
+<!-- Fundo contínuo (embaçado) sob os cards -->
 <div class="page-bg" aria-hidden="true"></div>
 
 <!-- Overlay Boas‑vindas (MP3) -->
