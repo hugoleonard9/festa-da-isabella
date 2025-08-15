@@ -73,7 +73,7 @@
 
   /* ===== Cards ===== */
   .card{
-    background:rgba(255,255,255,0.68);      /* mais translúcido (como você queria nos cards) */
+    background:rgba(255,255,255,0.68);      /* mais translúcido (cards) */
     backdrop-filter: saturate(125%);
     -webkit-backdrop-filter: saturate(125%);
     border:1px solid rgba(255,255,255,.5);
@@ -123,7 +123,7 @@
   .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:9998}
   .modal.open{display:flex}
   .modal-card{
-    background:rgba(255,255,255,0.95);      /* <<< MAIS BRANCO (menos transparente) */
+    background:rgba(255,255,255,0.95);      /* MAIS BRANCO (menos transparente) */
     backdrop-filter:saturate(125%);
     -webkit-backdrop-filter:saturate(125%);
     border:1px solid rgba(255,255,255,.9);
@@ -532,7 +532,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   }
 });
 
-/* ---------- RSVP (WhatsApp) ---------- */
+/* ---------- RSVP (WhatsApp) – mensagens no formato solicitado ---------- */
 (function(){
   const yn = document.getElementById('yn');
   const extra = document.getElementById('rsvp-extra');
@@ -558,18 +558,25 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
     if(!going){ alert('Escolha se você vai ou não.'); return; }
 
     if(going==='nao'){
-      const msg = `Olá! Aqui é ${nome}. Infelizmente, NÃO poderei ir ao aniversário da Isabella. 💜`;
-      window.open(wppLink(msg),'_blank','noopener'); closeModal('modal-rsvp'); return;
+      const msg = `Olá! Infelizmente não poderei comparecer ao aniversário da Isabella 😔
+
+• Nome: ${nome}`;
+      window.open(wppLink(msg),'_blank','noopener');
+      closeModal('modal-rsvp');
+      return;
     }
 
-    const acomp = document.getElementById('rsvp-acompanha').value.trim();
-    const qtd = document.getElementById('rsvp-qtd').value.trim()||'0';
-    const idades = document.getElementById('rsvp-idades').value.trim();
+    const acomp  = (document.getElementById('rsvp-acompanha').value.trim() || '—');
+    const qtd    = (document.getElementById('rsvp-qtd').value.trim() || '—');
+    const idades = (document.getElementById('rsvp-idades').value.trim() || '—');
 
-    let msg = `Olá! Aqui é ${nome}. Confirmo presença no aniversário da Isabella. 🎉`;
-    if(acomp) msg += `\nAcompanhante: ${acomp}`;
-    msg += `\nFilhos: ${qtd}`;
-    if(idades) msg += `\nIdades: ${idades}`;
+    const msg = `Olá! Confirmo minha presença no aniversário da Isabella 🎉
+
+• Nome: ${nome}
+• Acompanhante: ${acomp}
+• Qtd Filhos: ${qtd}
+• Idade dos Filhos: ${idades}`;
+
     window.open(wppLink(msg),'_blank','noopener');
     closeModal('modal-rsvp');
   });
