@@ -8,97 +8,90 @@
 <style>
   :root{
     --roxo:#5b3fa2;--roxo-esc:#493183;--roxo-cl:#efe8ff;
-    --txt:#262626;--muted:#6b7280;
-    --radius:22px;
+    --txt:#262626;--muted:#6b7280;--white:#fff;
+    --radius:18px;
   }
-  *{box-sizing:border-box} html,body{margin:0}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
   body{
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;
     color:var(--txt);line-height:1.55;background:transparent;
   }
   a{color:var(--roxo);text-decoration:none}
-  .container{max-width:980px;margin:0 auto;padding:22px 16px}
 
-  /* FUNDO 100% DESFOCADO (replica a hero.jpg) */
+  /* FUNDO 100% DESFOCADO (replica hero.jpg) */
   .bg-blur{
     position:fixed; inset:0; z-index:-2;
     background:url('hero.jpg') center/cover no-repeat;
-    filter:blur(22px); transform:scale(1.08);
+    filter:blur(22px);
+    transform:scale(1.08);
   }
+  /* Véu sutil (bem leve, sem criar “faixa”) */
   .bg-veil{
     position:fixed; inset:0; z-index:-1;
-    background:linear-gradient(to bottom, rgba(255,255,255,.06), rgba(255,255,255,.28) 45%, rgba(255,255,255,.35));
+    background:linear-gradient(to bottom, rgba(255,255,255,.04), rgba(255,255,255,.24) 50%, rgba(255,255,255,.28));
+    pointer-events:none;
   }
 
-  /* HERO + TÍTULO ESTILO iOS */
+  /* HERO — foto nítida + pill de título (sem card de seção) */
   .hero{
-    position:relative;height:60vh;min-height:360px;
+    position:relative; height:62vh; min-height:380px;
     background:url('hero.jpg') center/cover no-repeat;
-    display:flex;align-items:flex-end;justify-content:center;text-align:center;overflow:hidden;
+    display:flex; align-items:flex-end; justify-content:center;
+    text-align:center; overflow:hidden;
   }
+  /* topo escurecido p/ status bar */
   .hero::before{
-    content:"";position:absolute;inset:0 0 40% 0;
+    content:""; position:absolute; inset:0 0 40% 0;
     background:linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,0));
     pointer-events:none;
   }
-  .title-wrap{
-    position:relative;
-    margin:0 16px 18px;
-    padding:20px 22px 16px;
-    border-radius:28px;
-    /* vidro com mais corpo */
-    background:rgba(255,255,255,.20);
-    border:1px solid rgba(255,255,255,.55);
-    -webkit-backdrop-filter:blur(22px) saturate(140%);
-    backdrop-filter:blur(22px) saturate(140%);
-    /* sombra e “glow” para o texto destacar */
-    box-shadow:
-      0 30px 70px rgba(0,0,0,.35),
-      0 6px 18px rgba(0,0,0,.20),
-      inset 0 1px 0 rgba(255,255,255,.5);
-    color:#fff;
-  }
-  /* halo de neblina sob o título (igual ao exemplo) */
-  .title-wrap::after{
-    content:""; position:absolute; left:6%; right:6%; bottom:-22px; height:36px;
-    background:radial-gradient(120% 100% at 50% 0,
-               rgba(255,255,255,.35) 0, rgba(255,255,255,0) 70%);
-    filter:blur(10px);
+  /* fade no rodapé do hero para “sumir” na mesma textura do fundo desfocado */
+  .hero::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:80px;
+    background:linear-gradient(to bottom, rgba(0,0,0,0), rgba(255,255,255,0));
+    /* sem cor — apenas remove qualquer sensação de borda; o fundo blur continua */
     pointer-events:none;
   }
-  .hero h1{
+  .title-wrap{
+    position:relative; margin:0 16px 18px; padding:18px 18px 14px;
+    border-radius:26px;
+    background:rgba(255,255,255,.16);
+    -webkit-backdrop-filter:blur(22px) saturate(140%);
+    backdrop-filter:blur(22px) saturate(140%);
+    color:#fff; box-shadow:0 18px 50px rgba(0,0,0,.28);
+  }
+  .title-wrap h1{
     margin:0 0 8px; font-weight:800;
     font-size:clamp(36px,6vw,56px); letter-spacing:-.02em;
-    text-shadow:
-      0 8px 28px rgba(0,0,0,.45),
-      0 2px 6px rgba(0,0,0,.35);
+    text-shadow:0 6px 22px rgba(0,0,0,.45);
   }
-  .hero .sub{
-    margin:0; opacity:.98; font-weight:700;
-    font-size:clamp(14px,2.4vw,18px);
-    text-shadow:0 3px 10px rgba(0,0,0,.35);
-  }
+  .title-wrap .sub{margin:0; opacity:.98; font-weight:700; font-size:clamp(14px,2.3vw,18px)}
 
-  /* CARDS EM “VIDRO” (leve blur) */
+  /* CONTEÚDO */
+  .container{max-width:980px;margin:0 auto;padding:0 16px}
+  /* aproxima primeiro card do hero para sensação contínua */
+  .container > .card:first-of-type{margin-top:14px}
+
+  /* Cards (vidro leve; sem embaçar o card, embaça o fundo) */
   .card{
-    background:rgba(255,255,255,.22);
-    border:1px solid rgba(255,255,255,.60);
+    background:rgba(255,255,255,.92);
+    border:1px solid rgba(255,255,255,.6);
     border-radius:var(--radius);
-    -webkit-backdrop-filter:blur(12px) saturate(140%);
-    backdrop-filter:blur(12px) saturate(140%);
     box-shadow:0 20px 50px rgba(30,30,60,.18);
-    padding:24px; margin:20px auto;
+    padding:22px; margin:18px auto;
+    backdrop-filter:saturate(140%);
   }
   .card h2{margin:0 0 12px;color:var(--roxo);font-size:clamp(22px,2.6vw,30px);letter-spacing:-.02em}
-  .card p{margin:6px 0;color:#2f2f2f}
+  .card p{margin:6px 0;color:#3b3b3b}
   .center{text-align:center}
 
   .details{list-style:none;padding:0;margin:0;display:grid;gap:.7rem;justify-items:center}
   .details li{display:flex;gap:.6rem;align-items:center;justify-content:center;text-align:center}
   .icon{color:var(--roxo);font-size:1.1rem;transform:translateY(1px)}
 
-  /* Botões */
-  .btn{appearance:none;border:0;border-radius:14px;padding:14px 20px;font-weight:800;cursor:pointer;font-size:16px;line-height:1}
+  /* Botões unificados (mesmo tamanho de fonte) */
+  .btn{appearance:none;border:0;border-radius:12px;padding:14px 20px;font-weight:800;cursor:pointer;font-size:16px;line-height:1}
   .btn-primary{background:var(--roxo);color:#fff}
   .btn-primary:hover{background:var(--roxo-esc)}
   .btn-soft{background:var(--roxo-cl);color:var(--roxo)}
@@ -109,25 +102,27 @@
 
   /* Álbum */
   .album{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;justify-items:center}
-  .frame{width:120px;aspect-ratio:1;border-radius:16px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.08);transform:rotate(var(--tilt,0deg))}
+  .frame{width:120px;aspect-ratio:1;border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.08);transform:rotate(var(--tilt,0deg))}
   .frame img{width:100%;height:100%;object-fit:cover;display:block}
 
+  /* Iframes */
   .map{width:100%;height:300px;border:0;border-radius:16px;overflow:hidden}
   .apple-embed{width:100%;max-width:680px;height:260px;border:0;border-radius:16px}
 
+  /* Tempo */
   .weather{max-width:700px;margin:0 auto}
 
   /* Overlay música */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
   .overlay.hide{display:none}
-  .welcome{background:#fff;width:min(92vw,520px);border-radius:20px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .welcome{background:#fff;width:min(92vw,520px);border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
   .welcome h3{margin:0 0 8px;color:var(--roxo);font-size:clamp(22px,2.6vw,28px)}
   .welcome p{color:#444;margin:0 0 16px}
 
   /* Modais */
   .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:9998}
   .modal.open{display:flex}
-  .modal-card{background:#fff;border-radius:20px;width:min(92vw,620px);max-height:88vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .modal-card{background:#fff;border-radius:18px;width:min(92vw,620px);max-height:88vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
   .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .modal-title{font-size:22px;color:var(--roxo);font-weight:800;letter-spacing:-.02em}
   .close{background:#f2effd;border:0;color:var(--roxo);width:36px;height:36px;border-radius:9px;font-size:18px;cursor:pointer}
@@ -141,8 +136,8 @@
   .yn .opt{flex:1;border-radius:12px;border:2px solid #ece9ff;background:#f7f5ff;padding:12px;text-align:center;font-weight:800;cursor:pointer}
   .yn .opt.active{background:var(--roxo);color:#fff;border-color:var(--roxo)}
 
-  /* Mural */
-  .mural-box{min-height:66px;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:16px;background:#faf8ff;color:#4a4a4a}
+  /* Mural rotativo */
+  .mural-box{min-height:66px;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:14px;background:#faf8ff;color:#4a4a4a}
   .mural-msg{font-size:1.05rem;text-align:center;transition:opacity .6s ease, transform .6s ease}
   .fade-out{opacity:0;transform:translateY(8px)}
   .fade-in{opacity:1;transform:translateY(0)}
@@ -154,7 +149,6 @@
     text-align:center;font-size:12px;color:#9aa0a6;opacity:.9;
     pointer-events:none;
   }
-
   body.modal-open{overflow:hidden}
 </style>
 </head>
@@ -164,7 +158,7 @@
 <div class="bg-blur" aria-hidden="true"></div>
 <div class="bg-veil" aria-hidden="true"></div>
 
-<!-- Overlay Boas‑vindas (música) -->
+<!-- Overlay de música -->
 <div id="welcome-overlay" class="overlay">
   <div class="welcome">
     <h3>Bem‑vindo(a) à Festa da Isabella! 🎶</h3>
@@ -247,7 +241,7 @@
       <a class="btn btn-soft" target="_blank" rel="noopener"
         href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
+        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
     </div>
   </section>
 
@@ -352,110 +346,74 @@
 <script>
 /* Overlay música */
 (function(){
-  const WELCOME_KEY = 'welcomeDone_v2';
-  const overlay = document.getElementById('welcome-overlay');
-  const btnPlay = document.getElementById('start-music');
-  const btnSilent = document.getElementById('enter-silent');
-  const audio = document.getElementById('bg-audio');
+  const KEY='welcomeDone_v2';
+  const overlay=document.getElementById('welcome-overlay');
+  const btnPlay=document.getElementById('start-music');
+  const btnSilent=document.getElementById('enter-silent');
+  const audio=document.getElementById('bg-audio');
 
-  const mp3Path = 'assets/kids-children-baby-music-363272.mp3';
-  audio.src = mp3Path + '?v=' + Date.now();
+  audio.src='assets/kids-children-baby-music-363272.mp3?v='+Date.now();
 
-  const done = sessionStorage.getItem(WELCOME_KEY)==='1';
+  const done=sessionStorage.getItem(KEY)==='1';
   if(done) overlay.classList.add('hide'); else document.body.classList.add('modal-open');
 
-  function closeOverlay(){
-    overlay.classList.add('hide');
-    document.body.classList.remove('modal-open');
-    sessionStorage.setItem(WELCOME_KEY,'1');
-  }
-
-  btnPlay?.addEventListener('click', async ()=>{
-    try{ audio.pause(); audio.currentTime=0; audio.muted=false; await audio.play(); }catch(e){}
-    closeOverlay();
-  });
+  function closeOverlay(){ overlay.classList.add('hide'); document.body.classList.remove('modal-open'); sessionStorage.setItem(KEY,'1'); }
+  btnPlay?.addEventListener('click', async ()=>{ try{ audio.pause(); audio.currentTime=0; audio.muted=false; await audio.play(); }catch(e){} closeOverlay(); });
   btnSilent?.addEventListener('click', closeOverlay);
 })();
 
 /* Álbum aleatório */
 (function(){
-  const srcs = [
+  const srcs=[
     'album2/IMG_5139.jpeg','album2/IMG_5010.jpeg','album2/IMG_4772.jpeg',
     'album2/IMG_4765.jpeg','album2/IMG_4639.jpeg','album2/IMG_6911.jpeg',
     'album2/IMG_4450.jpeg','album2/IMG_4352.jpeg','album2/IMG_3056.jpeg',
     'album2/96f8947a-603d-43c7-b498-292922662164.jpeg'
   ];
-  const frames = document.querySelectorAll('.frame img');
-  const shuf = a=>a.slice().sort(()=>Math.random()-0.5);
-  function fill(){
-    const imgs = shuf(srcs);
-    frames.forEach((img,i)=>{
-      img.src = imgs[i%imgs.length];
-      img.parentElement.style.setProperty('--tilt', (Math.random()*10-5)+'deg');
-    });
-  }
-  fill(); setInterval(fill, 8000);
+  const frames=document.querySelectorAll('.frame img');
+  const shuf=a=>a.slice().sort(()=>Math.random()-0.5);
+  function fill(){ const imgs=shuf(srcs); frames.forEach((img,i)=>{ img.src=imgs[i%imgs.length]; img.parentElement.style.setProperty('--tilt',(Math.random()*10-5)+'deg'); }); }
+  fill(); setInterval(fill,8000);
 })();
 
 /* Supabase (Mural) */
-const SUPABASE_URL = "https://kfoousycrqscvhivhmxu.supabase.co";
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
-
+const SUPABASE_URL="https://kfoousycrqscvhivhmxu.supabase.co";
+const SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
 let supabaseClient;
 (function(){
-  window.supabase = null;
-  const s = document.createElement('script');
-  s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
-  s.onload = () => {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth:{persistSession:false} });
+  window.supabase=null;
+  const s=document.createElement('script');
+  s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+  s.onload=()=>{
+    supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON,{auth:{persistSession:false}});
     loadMural();
     try{
       supabaseClient.channel('public:messages')
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'}, ()=>loadMural(true))
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},()=>loadMural(true))
         .subscribe();
     }catch(_){}
   };
   document.head.appendChild(s);
 })();
-
-const muralBox = document.getElementById('muralMessage');
+const muralBox=document.getElementById('muralMessage');
 
 async function loadMural(isRealtime){
   if(!supabaseClient) return;
   try{
-    const { data, error } = await supabaseClient
-      .from('messages')
-      .select('mensagem, created_at')
-      .order('created_at',{ascending:false})
-      .limit(12);
+    const {data,error}=await supabaseClient.from('messages')
+      .select('mensagem, created_at').order('created_at',{ascending:false}).limit(12);
     if(error) throw error;
-
-    const list = data?.map(d=>d.mensagem).filter(Boolean);
-    if(!list?.length){
-      muralBox.textContent = "Seja o primeiro a deixar um recado 💜";
-      muralBox.classList.remove('muted');
-      return;
-    }
+    const list=data?.map(d=>d.mensagem).filter(Boolean);
+    if(!list?.length){ muralBox.textContent="Seja o primeiro a deixar um recado 💜"; muralBox.classList.remove('muted'); return; }
     muralBox.classList.remove('muted');
-    let idx = 0;
+    let idx=0;
     function show(i){
       muralBox.classList.add('fade-out');
-      setTimeout(()=>{
-        muralBox.textContent = list[i];
-        muralBox.classList.remove('fade-out');
-        muralBox.classList.add('fade-in');
-        setTimeout(()=>muralBox.classList.remove('fade-in'), 600);
-      }, 300);
+      setTimeout(()=>{ muralBox.textContent=list[i]; muralBox.classList.remove('fade-out'); muralBox.classList.add('fade-in'); setTimeout(()=>muralBox.classList.remove('fade-in'),600); },300);
     }
     show(0);
-    if(!isRealtime){
-      clearInterval(window._muralTimer);
-      window._muralTimer = setInterval(()=>{ idx=(idx+1)%list.length; show(idx); }, 4000);
-    }
-  }catch(e){
-    muralBox.textContent = "Não foi possível carregar as mensagens agora.";
-    muralBox.classList.add('muted');
-  }
+    if(!isRealtime){ clearInterval(window._muralTimer); window._muralTimer=setInterval(()=>{ idx=(idx+1)%list.length; show(idx); },4000); }
+  }catch(e){ muralBox.textContent="Não foi possível carregar as mensagens agora."; muralBox.classList.add('muted'); }
 }
 
 /* Modais */
@@ -466,106 +424,62 @@ document.getElementById('open-mural')?.addEventListener('click',()=>openModal('m
 document.getElementById('open-rsvp')?.addEventListener('click',()=>openModal('modal-rsvp'));
 
 /* Enviar mural */
-document.getElementById('mural-send')?.addEventListener('click', async ()=>{
-  const t = document.getElementById('mural-input').value.trim();
-  const err = document.getElementById('mural-error');
+document.getElementById('mural-send')?.addEventListener('click',async ()=>{
+  const t=document.getElementById('mural-input').value.trim();
+  const err=document.getElementById('mural-error');
   if(t.length<2){ err.textContent="Escreva ao menos 2 caracteres 🙂"; err.style.display='block'; return; }
   err.style.display='none';
   try{
-    const { error } = await supabaseClient.from('messages').insert({ mensagem: t });
+    const {error}=await supabaseClient.from('messages').insert({mensagem:t});
     if(error) throw error;
     document.getElementById('mural-input').value='';
-    closeModal('modal-mural');
-    loadMural(true);
-  }catch(e){
-    err.textContent="Não foi possível publicar agora. Tente de novo.";
-    err.style.display='block';
-  }
+    closeModal('modal-mural'); loadMural(true);
+  }catch(e){ err.textContent="Não foi possível publicar agora. Tente de novo."; err.style.display='block'; }
 });
 
 /* RSVP (WhatsApp) */
 (function(){
-  const yn = document.getElementById('yn');
-  const extra = document.getElementById('rsvp-extra');
-  let going = 'sim';
+  const yn=document.getElementById('yn');
+  const extra=document.getElementById('rsvp-extra');
+  let going='sim';
   yn.querySelectorAll('.opt').forEach(opt=>{
     opt.addEventListener('click',()=>{
       yn.querySelectorAll('.opt').forEach(o=>o.classList.remove('active'));
-      opt.classList.add('active');
-      going = opt.dataset.val;
-      extra.style.display = (going==='sim')? 'block':'none';
+      opt.classList.add('active'); going=opt.dataset.val; extra.style.display=(going==='sim')?'block':'none';
     });
   });
   extra.style.display='block';
-
-  function wppLink(txt){
-    const phone = '5521993835163';
-    return `https://wa.me/${phone}?text=${encodeURIComponent(txt)}`;
-  }
-
+  function wppLink(txt){ const phone='5521993835163'; return `https://wa.me/${phone}?text=${encodeURIComponent(txt)}`; }
   document.getElementById('rsvp-send')?.addEventListener('click',()=>{
-    const nome = document.getElementById('rsvp-nome').value.trim();
+    const nome=document.getElementById('rsvp-nome').value.trim();
     if(!nome){ alert('Informe seu nome.'); return; }
-
     if(going==='nao'){
-      const msg = `Olá! Aqui é ${nome}. Infelizmente, NÃO poderei ir ao aniversário da Isabella. 💜`;
+      const msg=`Olá! Aqui é ${nome}. Infelizmente, NÃO poderei ir ao aniversário da Isabella. 💜`;
       window.open(wppLink(msg),'_blank','noopener'); closeModal('modal-rsvp'); return;
     }
-
-    const acomp = document.getElementById('rsvp-acompanha').value.trim();
-    const qtd = document.getElementById('rsvp-qtd').value.trim()||'0';
-    const idades = document.getElementById('rsvp-idades').value.trim();
-
-    let msg = `Olá! Aqui é ${nome}. Confirmo presença no aniversário da Isabella. 🎉`;
-    if(acomp) msg += `\nAcompanhante: ${acomp}`;
-    msg += `\nFilhos: ${qtd}`;
-    if(idades) msg += `\nIdades: ${idades}`;
-    window.open(wppLink(msg),'_blank','noopener');
-    closeModal('modal-rsvp');
+    const acomp=document.getElementById('rsvp-acompanha').value.trim();
+    const qtd=document.getElementById('rsvp-qtd').value.trim()||'0';
+    const idades=document.getElementById('rsvp-idades').value.trim();
+    let msg=`Olá! Aqui é ${nome}. Confirmo presença no aniversário da Isabella. 🎉`;
+    if(acomp) msg+=`\nAcompanhante: ${acomp}`;
+    msg+=`\nFilhos: ${qtd}`;
+    if(idades) msg+=`\nIdades: ${idades}`;
+    window.open(wppLink(msg),'_blank','noopener'); closeModal('modal-rsvp');
   });
 })();
 
 /* Tempo (Open‑Meteo) */
 (function(){
-  const EVENT_DATE = '2025-11-22';
+  const EVENT_DATE='2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
   const elDate=document.getElementById('weatherDate'), elText=document.getElementById('weatherText'), elSrc=document.getElementById('weatherSource');
-  elDate.textContent = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(EVENT_DATE+'T12:00:00'));
-
+  elDate.textContent=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(EVENT_DATE+'T12:00:00'));
   function daysTo(iso){const t=new Date();t.setHours(0,0,0,0);const e=new Date(iso+'T00:00:00');return Math.round((e-t)/86400000);}
   const dLeft=daysTo(EVENT_DATE);
-
-  async function daily(){
-    const u=new URL('https://api.open-meteo.com/v1/forecast');
-    u.search=new URLSearchParams({latitude:LAT,longitude:LON,timezone:TZ,daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',start_date:EVENT_DATE,end_date:EVENT_DATE});
-    const r=await fetch(u); if(!r.ok) throw 0; return r.json();
-  }
-  async function clim(){
-    const u=new URL('https://climate-api.open-meteo.com/v1/climate');
-    u.search=new URLSearchParams({latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',month:11});
-    const r=await fetch(u); if(!r.ok) throw 0; return r.json();
-  }
-  function srcStamp(name){
-    const now=new Date();
-    const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ}).format(now).replace('.','');
-    elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">${name}</a> • Atualizado em ${stamp} (BRT)`;
-  }
-
-  (async()=>{
-    try{
-      if(dLeft>=0 && dLeft<=16){
-        const d=await daily(); const tmax=Math.round(d.daily.temperature_2m_max[0]); const tmin=Math.round(d.daily.temperature_2m_min[0]); const p=d.daily.precipitation_probability_mean?.[0];
-        elText.textContent = (typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`;
-        srcStamp('Open‑Meteo (previsão diária)');
-      }else{
-        const c=await clim(); const m=c.monthly||{}; const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27); const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
-        elText.textContent=`Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
-        srcStamp('Open‑Meteo (climatologia 1991–2020)');
-      }
-    }catch(e){
-      elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; srcStamp('Open‑Meteo');
-    }
-  })();
+  async function daily(){ const u=new URL('https://api.open-meteo.com/v1/forecast'); u.search=new URLSearchParams({latitude:LAT,longitude:LON,timezone:TZ,daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',start_date:EVENT_DATE,end_date:EVENT_DATE}); const r=await fetch(u); if(!r.ok) throw 0; return r.json(); }
+  async function clim(){ const u=new URL('https://climate-api.open-meteo.com/v1/climate'); u.search=new URLSearchParams({latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',month:11}); const r=await fetch(u); if(!r.ok) throw 0; return r.json(); }
+  function stamp(name){const now=new Date(); const s=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ}).format(now).replace('.',''); elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">${name}</a> • Atualizado em ${s} (BRT)`;}
+  (async()=>{ try{ if(dLeft>=0 && dLeft<=16){ const d=await daily(); const tmax=Math.round(d.daily.temperature_2m_max[0]); const tmin=Math.round(d.daily.temperature_2m_min[0]); const p=d.daily.precipitation_probability_mean?.[0]; elText.textContent=(typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`; stamp('Open‑Meteo (previsão diária)'); }else{ const c=await clim(); const m=c.monthly||{}; const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27); const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20); elText.textContent=`Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`; stamp('Open‑Meteo (climatologia 1991–2020)'); } }catch(e){ elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; stamp('Open‑Meteo'); } })();
 })();
 </script>
 </body>
