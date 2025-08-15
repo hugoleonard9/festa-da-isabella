@@ -175,7 +175,7 @@
 </div>
 
 <!-- Player escondido -->
-<audio id="bg-audio" preload="auto" playsinline webkit-playsinline></audio>
+<audio id="bg-audio" preload="auto" playsinline webkit-playsinline crossorigin="anonymous"></audio>
 
 <!-- HERO -->
 <header class="hero">
@@ -258,7 +258,7 @@
     <ul class="details">
       <li><span class="icon">🧸</span>Brinquedos educativos</li>
       <li><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
-      <li><span class="icon">🥿</span>Calçados a partir do tamanho 22</li>
+      <li><span class="icon">🩰</span>Calçados a partir do tamanho 22</li>
     </ul>
     <div class="row">
       <a class="btn btn-soft" target="_blank" rel="noopener"
@@ -352,31 +352,74 @@
 </div>
 
 <script>
-/* ---------- Overlay música ---------- */
+/* ---------- Overlay música (robusto) ---------- */
 (function(){
   const WELCOME_KEY = 'welcomeDone_v2';
-  const overlay = document.getElementById('welcome-overlay');
-  const btnPlay = document.getElementById('start-music');
+  const overlay   = document.getElementById('welcome-overlay');
+  const btnPlay   = document.getElementById('start-music');
   const btnSilent = document.getElementById('enter-silent');
-  const audio = document.getElementById('bg-audio');
+  const audio     = document.getElementById('bg-audio');
 
+  // configurações do player
   const mp3Path = 'assets/kids-children-baby-music-363272.mp3';
-  audio.src = mp3Path + '?v=' + Date.now();  // cache-buster
+  audio.loop = true;                 // repetir
+  audio.volume = 0.9;                // ajuste fino
+  audio.src = mp3Path + '?v=' + Date.now(); // cache-buster
 
-  const done = sessionStorage.getItem(WELCOME_KEY)==='1';
-  if(done) overlay.classList.add('hide'); else document.body.classList.add('modal-open');
+  // mostra o overlay até o usuário escolher
+  const done = sessionStorage.getItem(WELCOME_KEY) === '1';
+  if (done) {
+    overlay.classList.add('hide');
+  } else {
+    document.body.classList.add('modal-open');
+  }
 
-  function closeOverlay(){
+  function finishWelcome() {
     overlay.classList.add('hide');
     document.body.classList.remove('modal-open');
     sessionStorage.setItem(WELCOME_KEY,'1');
   }
 
-  btnPlay?.addEventListener('click', async ()=>{
-    try{ audio.pause(); audio.currentTime=0; audio.muted=false; await audio.play(); }catch(e){}
-    closeOverlay();
+  async function tryPlay() {
+    try {
+      audio.load();           // ajuda alguns navegadores antes do play()
+      await audio.play();
+      return true;
+    } catch (e) {
+      console.warn('Falha ao tocar áudio:', e?.message || e);
+      return false;
+    }
+  }
+
+  btnPlay?.addEventListener('click', async () => {
+    const ok = await tryPlay();
+    // Mesmo que falhe, já fecha o overlay para não travar a navegação
+    finishWelcome();
+
+    // Fallback: se falhou, tenta novamente no próximo clique em qualquer lugar
+    if (!ok) {
+      const onceClick = async () => {
+        const ok2 = await tryPlay();
+        document.removeEventListener('click', onceClick, true);
+        document.removeEventListener('touchend', onceClick, true);
+      };
+      document.addEventListener('click', onceClick, true);
+      document.addEventListener('touchend', onceClick, true);
+    }
   });
-  btnSilent?.addEventListener('click', closeOverlay);
+
+  btnSilent?.addEventListener('click', finishWelcome);
+
+  // Fallback adicional: se o usuário ignorar o botão e tocar na página
+  const globalFirstTap = async () => {
+    if (overlay.classList.contains('hide')) return;
+    const ok = await tryPlay();
+    if (ok) finishWelcome();
+    document.removeEventListener('click', globalFirstTap, true);
+    document.removeEventListener('touchend', globalFirstTap, true);
+  };
+  document.addEventListener('click', globalFirstTap, true);
+  document.addEventListener('touchend', globalFirstTap, true);
 })();
 
 /* ---------- Efeito lock-screen sincronizado com fundo contínuo ---------- */
