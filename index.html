@@ -11,8 +11,8 @@
     --bg:#f7f7fb;--txt:#262626;--muted:#6b7280;--white:#fff;
     --shadow:0 10px 25px rgba(17,17,17,.08);
     --radius:14px;
-    --p:0;                                   /* progresso do scroll (0..1) */
-    --zoom: calc(8% * (1 - var(--p)));       /* usado no hero e no fundo fixo */
+    --p:0;
+    --zoom: calc(8% * (1 - var(--p)));
   }
   *{box-sizing:border-box} html,body{margin:0}
   body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;color:var(--txt);line-height:1.55;background:var(--bg)}
@@ -23,20 +23,19 @@
   .page-bg{
     position:fixed; inset:0; z-index:-2;
     background:url('hero.jpg') center/cover no-repeat;
-    background-size: calc(100% + var(--zoom)) auto;   /* sincroniza o zoom */
-    filter: blur(20px) saturate(105%);                /* <<< blur forte */
-    transform: scale(1.05);                           /* evita bordas do blur */
+    background-size: calc(100% + var(--zoom)) auto;
+    filter: blur(20px) saturate(105%);
+    transform: scale(1.05);
   }
   .page-bg::after{
     content:""; position:absolute; inset:0;
-    /* desvanecer para o fundo claro conforme desce */
     background:linear-gradient(to bottom,
       rgba(247,247,251,0) 0%,
       rgba(247,247,251,.65) 40vh,
       rgba(247,247,251,1) 65vh);
   }
 
-  /* ===== Hero com efeito lock-screen ===== */
+  /* ===== Hero ===== */
   .hero{
     height:58vh; min-height:340px; position:relative; overflow:hidden;
     display:flex; align-items:flex-end; justify-content:center; text-align:center;
@@ -72,9 +71,9 @@
     text-shadow:0 4px 14px rgba(0,0,0,.35);
   }
 
-  /* ===== Cards brancos com leve transparência (vidro discreto) ===== */
+  /* ===== Cards ===== */
   .card{
-    background:rgba(255,255,255,0.68);      /* mais translúcido */
+    background:rgba(255,255,255,0.68);      /* mais translúcido (como você queria nos cards) */
     backdrop-filter: saturate(125%);
     -webkit-backdrop-filter: saturate(125%);
     border:1px solid rgba(255,255,255,.5);
@@ -91,7 +90,7 @@
   .details li{display:flex;gap:.55rem;align-items:center;justify-content:center;text-align:center}
   .icon{color:var(--roxo);font-size:1.1rem;transform:translateY(1px)}
 
-  /* Botões unificados */
+  /* Botões */
   .btn{appearance:none;border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-size:16px;line-height:1}
   .btn-primary{background:var(--roxo);color:#fff}
   .btn-primary:hover{background:var(--roxo-esc)}
@@ -120,17 +119,17 @@
   .welcome h3{margin:0 0 8px;color:var(--roxo);font-size:clamp(22px,2.6vw,28px)}
   .welcome p{color:#444;margin:0 0 16px}
 
-  /* ===== Modal “de vidro” com conteúdo centralizado ===== */
+  /* ===== Modal “de vidro” ===== */
   .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:9998}
   .modal.open{display:flex}
   .modal-card{
-    background:rgba(255,255,255,0.68);                 /* mesma transparência dos cards */
+    background:rgba(255,255,255,0.95);      /* <<< MAIS BRANCO (menos transparente) */
     backdrop-filter:saturate(125%);
     -webkit-backdrop-filter:saturate(125%);
-    border:1px solid rgba(255,255,255,.5);
+    border:1px solid rgba(255,255,255,.9);
     border-radius:16px;width:min(92vw,620px);max-height:88vh;overflow:auto;
     padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25);
-    text-align:center;                                  /* centraliza conteúdo */
+    text-align:center;
   }
   .modal-header{display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative}
   .modal-title{font-size:22px;color:var(--roxo);font-weight:800;letter-spacing:-.02em}
@@ -141,7 +140,7 @@
   .label{display:block;margin:0 0 6px;font-weight:700}
   .input,.textarea,select{
     width:100%;border:2px solid #ece9ff;background:#f7f5ff;border-radius:10px;
-    padding:12px 12px;font:inherit;text-align:center; /* centra o texto */
+    padding:12px 12px;font:inherit;text-align:center;
   }
   .textarea{min-height:96px;resize:vertical}
 
@@ -158,14 +157,13 @@
   .fade-in{opacity:1;transform:translateY(0)}
   .muted{color:var(--muted);font-size:.95rem}
 
-  /* Marca d’água fixa (baixada ~1 parágrafo) */
+  /* Marca d’água fixa */
   footer.watermark{
-    position:fixed;left:0;right:0;bottom:4px;  /* ↓ mais baixo */
+    position:fixed;left:0;right:0;bottom:4px;
     text-align:center;font-size:12px;color:#9aa0a6;opacity:.9;
     pointer-events:none;
   }
 
-  /* Sem scroll quando modal/overlay aberto */
   body.modal-open{overflow:hidden}
 </style>
 </head>
@@ -372,19 +370,13 @@
   const btnSilent = document.getElementById('enter-silent');
   const audio     = document.getElementById('bg-audio');
 
-  // configurações do player
   const mp3Path = 'assets/kids-children-baby-music-363272.mp3';
-  audio.loop = true;                 // repetir
-  audio.volume = 0.9;                // ajuste fino
-  audio.src = mp3Path + '?v=' + Date.now(); // cache-buster
+  audio.loop = true;
+  audio.volume = 0.9;
+  audio.src = mp3Path + '?v=' + Date.now();
 
-  // mostra o overlay até o usuário escolher
   const done = sessionStorage.getItem(WELCOME_KEY) === '1';
-  if (done) {
-    overlay.classList.add('hide');
-  } else {
-    document.body.classList.add('modal-open');
-  }
+  if (done) { overlay.classList.add('hide'); } else { document.body.classList.add('modal-open'); }
 
   function finishWelcome() {
     overlay.classList.add('hide');
@@ -393,28 +385,14 @@
   }
 
   async function tryPlay() {
-    try {
-      audio.load();           // ajuda alguns navegadores antes do play()
-      await audio.play();
-      return true;
-    } catch (e) {
-      console.warn('Falha ao tocar áudio:', e?.message || e);
-      return false;
-    }
+    try { audio.load(); await audio.play(); return true; }
+    catch (e) { console.warn('Falha ao tocar áudio:', e?.message || e); return false; }
   }
 
   btnPlay?.addEventListener('click', async () => {
-    const ok = await tryPlay();
-    // Mesmo que falhe, já fecha o overlay para não travar a navegação
-    finishWelcome();
-
-    // Fallback: se falhou, tenta novamente no próximo clique em qualquer lugar
+    const ok = await tryPlay(); finishWelcome();
     if (!ok) {
-      const onceClick = async () => {
-        const ok2 = await tryPlay();
-        document.removeEventListener('click', onceClick, true);
-        document.removeEventListener('touchend', onceClick, true);
-      };
+      const onceClick = async () => { await tryPlay(); document.removeEventListener('click', onceClick, true); document.removeEventListener('touchend', onceClick, true); };
       document.addEventListener('click', onceClick, true);
       document.addEventListener('touchend', onceClick, true);
     }
@@ -422,7 +400,6 @@
 
   btnSilent?.addEventListener('click', finishWelcome);
 
-  // Fallback adicional: se o usuário ignorar o botão e tocar na página
   const globalFirstTap = async () => {
     if (overlay.classList.contains('hide')) return;
     const ok = await tryPlay();
@@ -434,7 +411,7 @@
   document.addEventListener('touchend', globalFirstTap, true);
 })();
 
-/* ---------- Efeito lock-screen sincronizado com fundo contínuo ---------- */
+/* ---------- Efeito lock-screen ---------- */
 (function(){
   function onScroll(){
     const hero = document.querySelector('.hero');
