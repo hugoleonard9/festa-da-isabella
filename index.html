@@ -120,20 +120,33 @@
   .welcome h3{margin:0 0 8px;color:var(--roxo);font-size:clamp(22px,2.6vw,28px)}
   .welcome p{color:#444;margin:0 0 16px}
 
-  /* Modal genérico */
+  /* ===== Modal “de vidro” com conteúdo centralizado ===== */
   .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:9998}
   .modal.open{display:flex}
-  .modal-card{background:#fff;border-radius:16px;width:min(92vw,620px);max-height:88vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-  .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .modal-card{
+    background:rgba(255,255,255,0.68);                 /* mesma transparência dos cards */
+    backdrop-filter:saturate(125%);
+    -webkit-backdrop-filter:saturate(125%);
+    border:1px solid rgba(255,255,255,.5);
+    border-radius:16px;width:min(92vw,620px);max-height:88vh;overflow:auto;
+    padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25);
+    text-align:center;                                  /* centraliza conteúdo */
+  }
+  .modal-header{display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative}
   .modal-title{font-size:22px;color:var(--roxo);font-weight:800;letter-spacing:-.02em}
-  .close{background:#f2effd;border:0;color:var(--roxo);width:36px;height:36px;border-radius:9px;font-size:18px;cursor:pointer}
+  .close{position:absolute;right:8px;top:0;background:#f2effd;border:0;color:var(--roxo);width:36px;height:36px;border-radius:9px;font-size:18px;cursor:pointer}
 
   /* Form */
   .field{margin:10px 0}
   .label{display:block;margin:0 0 6px;font-weight:700}
-  .input,.textarea,select{width:100%;border:2px solid #ece9ff;background:#f7f5ff;border-radius:10px;padding:12px 12px;font:inherit}
+  .input,.textarea,select{
+    width:100%;border:2px solid #ece9ff;background:#f7f5ff;border-radius:10px;
+    padding:12px 12px;font:inherit;text-align:center; /* centra o texto */
+  }
   .textarea{min-height:96px;resize:vertical}
-  .yn{display:flex;gap:10px}
+
+  /* RSVP – “Sim” primeiro e nada selecionado inicialmente */
+  .yn{display:flex;gap:10px;justify-content:center}
   .yn .opt{flex:1;border-radius:10px;border:2px solid #ece9ff;background:#f7f5ff;padding:10px 12px;text-align:center;font-weight:700;cursor:pointer}
   .yn .opt.active{background:var(--roxo);color:#fff;border-color:var(--roxo)}
   .hide{display:none}
@@ -147,7 +160,7 @@
 
   /* Marca d’água fixa (baixada ~1 parágrafo) */
   footer.watermark{
-    position:fixed;left:0;right:0;bottom:4px;  /* ↓ desce mais que 12px */
+    position:fixed;left:0;right:0;bottom:4px;  /* ↓ mais baixo */
     text-align:center;font-size:12px;color:#9aa0a6;opacity:.9;
     pointer-events:none;
   }
@@ -245,9 +258,9 @@
       src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
     <div class="row">
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
+        href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
+        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
     </div>
   </section>
 
@@ -323,12 +336,12 @@
     <div class="field">
       <span class="label">Você vai?</span>
       <div class="yn" id="yn">
+        <div data-val="sim" class="opt">Sim</div>
         <div data-val="nao" class="opt">Não</div>
-        <div data-val="sim" class="opt active">Sim</div>
       </div>
     </div>
 
-    <div id="rsvp-extra">
+    <div id="rsvp-extra" class="hide">
       <div class="field">
         <label class="label" for="rsvp-acompanha">Acompanhante</label>
         <input id="rsvp-acompanha" class="input" placeholder="Nome do(a) acompanhante (se houver)" />
@@ -546,16 +559,16 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
 (function(){
   const yn = document.getElementById('yn');
   const extra = document.getElementById('rsvp-extra');
-  let going = 'sim';
+  let going = null;                        // começa sem seleção
+
   yn.querySelectorAll('.opt').forEach(opt=>{
     opt.addEventListener('click',()=>{
       yn.querySelectorAll('.opt').forEach(o=>o.classList.remove('active'));
       opt.classList.add('active');
       going = opt.dataset.val;
-      extra.style.display = (going==='sim')? 'block':'none';
+      extra.classList.toggle('hide', going!=='sim');
     });
   });
-  extra.style.display='block';
 
   function wppLink(txt){
     const phone = '5521993835163';
@@ -565,6 +578,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   document.getElementById('rsvp-send')?.addEventListener('click',()=>{
     const nome = document.getElementById('rsvp-nome').value.trim();
     if(!nome){ alert('Informe seu nome.'); return; }
+    if(!going){ alert('Escolha se você vai ou não.'); return; }
 
     if(going==='nao'){
       const msg = `Olá! Aqui é ${nome}. Infelizmente, NÃO poderei ir ao aniversário da Isabella. 💜`;
