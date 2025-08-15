@@ -40,7 +40,6 @@
   .hero{
     height:58vh; min-height:340px; position:relative; overflow:hidden;
     display:flex; align-items:flex-end; justify-content:center; text-align:center;
-    /* o próprio hero também usa a foto e o zoom, para ficar idêntico ao fundo */
     background:url('hero.jpg') center/cover no-repeat;
     background-size: calc(100% + var(--zoom)) auto;
   }
@@ -75,10 +74,10 @@
 
   /* ===== Cards brancos com leve transparência (vidro discreto) ===== */
   .card{
-    background:rgba(255,255,255,0.85);      /* branco translúcido */
+    background:rgba(255,255,255,0.68);      /* mais translúcido */
     backdrop-filter: saturate(125%);
     -webkit-backdrop-filter: saturate(125%);
-    border:1px solid rgba(255,255,255,.6);
+    border:1px solid rgba(255,255,255,.5);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     padding:20px; margin:18px auto;
@@ -146,9 +145,9 @@
   .fade-in{opacity:1;transform:translateY(0)}
   .muted{color:var(--muted);font-size:.95rem}
 
-  /* Marca d’água fixa (baixada) */
+  /* Marca d’água fixa (baixada ~1 parágrafo) */
   footer.watermark{
-    position:fixed;left:0;right:0;bottom:6px;   /* ↓ estava 12px */
+    position:fixed;left:0;right:0;bottom:-18px;  /* ↓ desce mais que 12px */
     text-align:center;font-size:12px;color:#9aa0a6;opacity:.9;
     pointer-events:none;
   }
@@ -246,9 +245,9 @@
       src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
     <div class="row">
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
+        href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
+        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
     </div>
   </section>
 
