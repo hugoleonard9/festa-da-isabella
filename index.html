@@ -496,32 +496,32 @@
   fill(); setInterval(fill, 8000);
 })();
 
-/* ---------- Supabase (Mural) – robusto ---------- */
-const SUPABASE_URL = "https://kfoousycrqscvhivhmxu.supabase.co";
-/* ATENÇÃO: corrigido 'I1' -> 'I1' (token válido com 'I1') */
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ".replace(/^(.+?)\./,"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.");
+/* ---------- Supabase (Mural) — resiliente + diagnóstico ---------- */
+const SUPABASE_URL  = "https://kfoousycrqscvhivhmxu.supabase.co";
+/* USE sua anon key completa, como no dashboard: */
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
 
 let supabaseClient = null;
 let supaReady = false;
 const muralBox = document.getElementById('muralMessage');
 
-(function loadSupabaseLib(){
-  if (typeof window.supabase?.createClient === 'function') return initSupabase();
+(function loadSupabase(){
   const s = document.createElement('script');
   s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
   s.async = true;
   s.onload = initSupabase;
-  s.onerror = () => {
-    console.error('Falha ao carregar @supabase/supabase-js');
-    muralBox.textContent = "Falha ao carregar as mensagens. Recarregue a página.";
-    muralBox.classList.add('muted');
-  };
+  s.onerror = () => showError("Falha ao carregar a biblioteca do Supabase.");
   document.head.appendChild(s);
 })();
 
+function showError(msg, details){
+  muralBox.textContent = msg + (details ? ` (${details})` : "");
+  muralBox.classList.add('muted');
+}
+
 function initSupabase(){
   try{
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth:{ persistSession:false } });
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth:{persistSession:false} });
     supaReady = true;
     loadMural();
 
@@ -529,30 +529,40 @@ function initSupabase(){
       supabaseClient.channel('public:messages')
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'}, ()=>loadMural(true))
         .subscribe();
-    }catch(e){
-      console.warn('Realtime não disponível:', e?.message || e);
-    }
+    }catch(e){}
   }catch(e){
-    console.error('Erro ao iniciar Supabase:', e);
-    muralBox.textContent = "Não foi possível iniciar o mural.";
-    muralBox.classList.add('muted');
+    showError("Não foi possível iniciar o mural.", e?.message);
   }
 }
 
 async function loadMural(isRealtime=false){
-  if(!supaReady || !supabaseClient) return;
+  if(!supaReady) return;
   try{
-    const { data, error } = await supabaseClient
+    // 1ª tentativa: created_at
+    let { data, error } = await supabaseClient
       .from('messages')
       .select('mensagem, message, created_at')
       .order('created_at',{ascending:false})
       .limit(12);
 
+    // Fallback: inserted_at
+    if(error && error.code === '42703'){
+      ({ data, error } = await supabaseClient
+        .from('messages')
+        .select('mensagem, message, inserted_at')
+        .order('inserted_at',{ascending:false})
+        .limit(12));
+    }
+    // Fallback: sem ordem
+    if(error){
+      ({ data, error } = await supabaseClient
+        .from('messages')
+        .select('mensagem, message')
+        .limit(12));
+    }
     if(error) throw error;
 
-    const list = (data||[])
-      .map(d => d.mensagem ?? d.message ?? '')
-      .filter(Boolean);
+    const list = (data||[]).map(r => r.mensagem ?? r.message ?? "").filter(Boolean);
 
     if(!list.length){
       muralBox.textContent = "Seja o primeiro a deixar um recado 💜";
@@ -562,32 +572,37 @@ async function loadMural(isRealtime=false){
     }
 
     muralBox.classList.remove('muted');
-    let idx = 0;
-    function show(i){
+    let i = 0;
+    const show = (idx)=>{
       muralBox.classList.add('fade-out');
       setTimeout(()=>{
-        muralBox.textContent = list[i];
+        muralBox.textContent = list[idx];
         muralBox.classList.remove('fade-out');
         muralBox.classList.add('fade-in');
         setTimeout(()=>muralBox.classList.remove('fade-in'), 600);
-      }, 300);
-    }
+      },300);
+    };
     show(0);
 
     if(!isRealtime){
       clearInterval(window._muralTimer);
-      window._muralTimer = setInterval(()=>{ idx=(idx+1)%list.length; show(idx); }, 4000);
+      window._muralTimer = setInterval(()=>{ i=(i+1)%list.length; show(i); }, 4000);
     }
   }catch(e){
-    console.error('Erro ao carregar mural:', e);
-    muralBox.textContent = "Não foi possível carregar as mensagens agora.";
-    muralBox.classList.add('muted');
+    showError("Não foi possível carregar as mensagens agora.", e?.message || e);
   }
 }
 
-/* Enviar mural (com fallback de coluna 'mensagem' -> 'message') */
+/* ---------- Modais ---------- */
+function openModal(id){ document.getElementById(id).classList.add('open'); document.body.classList.add('modal-open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.classList.remove('modal-open'); }
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
+document.getElementById('open-mural')?.addEventListener('click',()=>openModal('modal-mural'));
+document.getElementById('open-rsvp')?.addEventListener('click',()=>openModal('modal-rsvp'));
+
+/* ---------- Enviar mural (fallback mensagem/message) ---------- */
 document.getElementById('mural-send')?.addEventListener('click', async ()=>{
-  if(!supaReady){ alert('Mural ainda iniciando. Tente novamente em instantes.'); return; }
+  if(!supaReady){ alert('Mural iniciando, tente novamente.'); return; }
   const t = document.getElementById('mural-input').value.trim();
   const err = document.getElementById('mural-error');
   if(t.length<2){ err.textContent="Escreva ao menos 2 caracteres 🙂"; err.style.display='block'; return; }
@@ -602,8 +617,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
     closeModal('modal-mural');
     loadMural(true);
   }catch(e){
-    console.error('Erro ao publicar mensagem:', e);
-    err.textContent="Não foi possível publicar agora. Tente de novo.";
+    err.textContent="Não foi possível publicar agora. " + (e?.message || "");
     err.style.display='block';
   }
 });
