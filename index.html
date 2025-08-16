@@ -113,9 +113,10 @@
   .weather{max-width:700px;margin:0 auto}
   #weatherText{
     display:flex; align-items:center; justify-content:center; gap:10px;
-    font-size:1.1rem; font-weight:700; color:var(--roxo);
+    font-size:1.6rem; font-weight:800; color:var(--txt);
   }
-  .wx-emoji{ font-size:1.6rem; line-height:1; }
+  .temp-highlight{ color:var(--roxo); font-weight:800; }
+  .wx-emoji{ font-size:1.8rem; line-height:1; }
   #weatherDate{ color:var(--muted); }
   #weatherSource{ color:var(--muted); font-size:12px; line-height:1.4; } /* igual à marca d’água */
 
@@ -489,7 +490,6 @@
 
 /* ---------- Supabase (Mural) — usa apenas 'mensagem' ---------- */
 const SUPABASE_URL  = "https://kfoousycrqscvhivhmxu.supabase.co";
-/* USE sua anon key completa, como no dashboard: */
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
 
 let supabaseClient = null;
@@ -529,14 +529,12 @@ function initSupabase(){
 async function loadMural(isRealtime=false){
   if(!supaReady) return;
   try{
-    // 1ª tentativa: ordenar por created_at
     let { data, error } = await supabaseClient
       .from('messages')
       .select('mensagem, created_at')
       .order('created_at',{ascending:false})
       .limit(12);
 
-    // Fallback: ordenar por inserted_at (se created_at não existir)
     if(error && error.code === '42703'){
       ({ data, error } = await supabaseClient
         .from('messages')
@@ -544,7 +542,6 @@ async function loadMural(isRealtime=false){
         .order('inserted_at',{ascending:false})
         .limit(12));
     }
-    // Fallback final: sem ordenação (pega os últimos 12 que vierem)
     if(error){
       ({ data, error } = await supabaseClient
         .from('messages')
@@ -712,7 +709,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   setInterval(tick, 60000);
 })();
 
-/* ---------- Tempo (Open-Meteo) — card atualizado com emojis e fonte no tamanho da marca d’água ---------- */
+/* ---------- Tempo (Open-Meteo) — clean + “Mín • Máx” em roxo com emoji automático ---------- */
 (function(){
   const EVENT_DATE = '2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
@@ -746,7 +743,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
     });
     const r=await fetch(u); if(!r.ok) throw 0; return r.json();
   }
-  function srcStamp(name){
+  function srcStamp(){
     const now=new Date();
     const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ}).format(now).replace('.','');
     elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> • Atualizado em ${stamp} (BRT)`;
@@ -760,25 +757,36 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
         const tmin=Math.round(d.daily.temperature_2m_min[0]);
         const p=d.daily.precipitation_probability_mean?.[0];
 
-        // Emoji automático (chuva se >= 40% de chance)
-        const emoji = (typeof p==='number' && p>=40) ? '🌧️' : '☀️';
+        // Emoji automático: ☀️ (<20%), 🌥️ (20–59%), 🌧️ (>=60%)
+        let emoji='☀️';
+        if(typeof p==='number'){
+          if(p>=60) emoji='🌧️';
+          else if(p>=20) emoji='🌥️';
+        }
 
         elText.innerHTML = `
           <span class="wx-emoji">${emoji}</span>
-          <span>Previsão: ${tmin}° – ${tmax}°${typeof p==='number' ? `, chance de chuva ${p}%` : ''}</span>
+          <span class="temp-highlight">Mín ${tmin}° • Máx ${tmax}°</span>
         `;
-        srcStamp('previsão diária');
+        srcStamp();
       }else{
         const c=await clim(); const m=c.monthly||{};
         const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27);
         const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
 
-        elText.innerHTML = `<span class="wx-emoji">☀️</span><span>Nesta época do ano, costuma fazer entre ${tmin}° e ${tmax}°.</span>`;
-        srcStamp('climatologia 1991–2020');
+        elText.innerHTML = `
+          <span class="wx-emoji">☀️</span>
+          <span class="temp-highlight">Mín ${tmin}° • Máx ${tmax}°</span>
+        `;
+        srcStamp();
       }
     }catch(e){
-      elText.innerHTML = `<span class="wx-emoji">☀️</span><span>Nesta época do ano, a temperatura costuma variar entre 20° e 27°.</span>`;
-      srcStamp('Open-Meteo');
+      // Fallback estático
+      elText.innerHTML = `
+        <span class="wx-emoji">☀️</span>
+        <span class="temp-highlight">Mín 20° • Máx 27°</span>
+      `;
+      srcStamp();
     }
   })();
 })();
