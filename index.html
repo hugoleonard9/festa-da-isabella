@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -75,7 +73,7 @@
 
   /* ===== Cards ===== */
   .card{
-    background:rgba(255,255,255,0.68);      /* mais translúcido (cards) */
+    background:rgba(255,255,255,0.68);
     backdrop-filter: saturate(125%);
     -webkit-backdrop-filter: saturate(125%);
     border:1px solid rgba(255,255,255,.5);
@@ -125,7 +123,7 @@
   .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:9998}
   .modal.open{display:flex}
   .modal-card{
-    background:rgba(255,255,255,0.95);      /* MAIS BRANCO (menos transparente) */
+    background:rgba(255,255,255,0.95);
     backdrop-filter:saturate(125%);
     -webkit-backdrop-filter:saturate(125%);
     border:1px solid rgba(255,255,255,.9);
@@ -146,7 +144,7 @@
   }
   .textarea{min-height:96px;resize:vertical}
 
-  /* RSVP – “Sim” primeiro e nada selecionado inicialmente */
+  /* RSVP */
   .yn{display:flex;gap:10px;justify-content:center}
   .yn .opt{flex:1;border-radius:10px;border:2px solid #ece9ff;background:#f7f5ff;padding:10px 12px;text-align:center;font-weight:700;cursor:pointer}
   .yn .opt.active{background:var(--roxo);color:#fff;border-color:var(--roxo)}
@@ -167,6 +165,33 @@
   }
 
   body.modal-open{overflow:hidden}
+
+  /* ===== Countdown (meses : dias : horas) – tema roxo ===== */
+  .countdown{ display:grid; gap:14px; justify-items:center; }
+  .cd-title{ margin:0; color:var(--roxo); font-weight:800; letter-spacing:-.02em }
+  .cd-grid{ display:flex; align-items:center; justify-content:center; gap:10px; }
+  .cd-sep{
+    font-weight:800; font-size:clamp(22px,5vw,32px);
+    color:var(--roxo); transform:translateY(-2px); opacity:.95;
+  }
+  .cd-unit{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .cd-box{
+    min-width:72px; padding:10px 12px; border-radius:12px;
+    background:#fff;
+    border:1px solid var(--roxo-cl);
+    box-shadow:0 6px 18px rgba(91,63,162,.16);
+    text-align:center;
+  }
+  .cd-num{
+    font-weight:800; letter-spacing:.04em;
+    font-size:clamp(22px,6vw,34px);
+    color:var(--roxo);
+  }
+  .cd-label{ font-size:.85rem; color:#8b8fa0; font-weight:700; }
+  @media (max-width:420px){
+    .cd-box{ min-width:64px; padding:8px 10px; }
+    .cd-label{ font-size:.8rem; }
+  }
 </style>
 </head>
 <body>
@@ -174,10 +199,10 @@
 <!-- Fundo contínuo (embaçado) sob os cards -->
 <div class="page-bg" aria-hidden="true"></div>
 
-<!-- Overlay Boas‑vindas (MP3) -->
+<!-- Overlay Boas-vindas (MP3) -->
 <div id="welcome-overlay" class="overlay">
   <div class="welcome">
-    <h3>Bem‑vindo(a) à Festa da Isabella! 🎶</h3>
+    <h3>Bem-vindo(a) à Festa da Isabella! 🎶</h3>
     <p>Toque a música para entrar no clima da celebração.</p>
     <div class="row">
       <button id="start-music" class="btn btn-primary">Entrar e tocar playlist</button>
@@ -202,9 +227,9 @@
 
 <main class="container">
 
-  <!-- Boas‑vindas -->
+  <!-- Boas-vindas -->
   <section class="card center" id="boas-vindas">
-    <h2>Boas‑vindas</h2>
+    <h2>Boas-vindas</h2>
     <p>É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖</p>
     <p>Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.</p>
     <p>Esperamos você para comemorar conosco esse dia tão importante! 🥳✨</p>
@@ -285,6 +310,29 @@
       allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
       sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
       src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"></iframe>
+  </section>
+
+  <!-- Contagem regressiva -->
+  <section class="card center" id="countdown-card">
+    <h2 id="cd-status" class="cd-title">Falta pouco! 🗓️</h2>
+    <div class="countdown" aria-live="polite">
+      <div class="cd-grid">
+        <div class="cd-unit">
+          <div class="cd-box"><span id="cd-months" class="cd-num">00</span></div>
+          <div class="cd-label">meses</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-box"><span id="cd-days" class="cd-num">00</span></div>
+          <div class="cd-label">dias</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-box"><span id="cd-hours" class="cd-num">00</span></div>
+          <div class="cd-label">horas</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Tempo -->
@@ -538,7 +586,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
 (function(){
   const yn = document.getElementById('yn');
   const extra = document.getElementById('rsvp-extra');
-  let going = null;                        // começa sem seleção
+  let going = null;
 
   yn.querySelectorAll('.opt').forEach(opt=>{
     opt.addEventListener('click',()=>{
@@ -584,7 +632,59 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   });
 })();
 
-/* ---------- Tempo (Open‑Meteo) ---------- */
+/* ---------- Contagem regressiva (meses:dias:horas) ---------- */
+(function(){
+  const EVENT_ISO = '2025-11-22T14:00:00'; // horário local
+  const target = new Date(EVENT_ISO);
+
+  const elM = document.getElementById('cd-months');
+  const elD = document.getElementById('cd-days');
+  const elH = document.getElementById('cd-hours');
+  const elStatus = document.getElementById('cd-status');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function addMonths(date, n){
+    const d = new Date(date);
+    const day = d.getDate();
+    d.setDate(1);
+    d.setMonth(d.getMonth()+n);
+    const last = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+    d.setDate(Math.min(day, last));
+    return d;
+  }
+
+  function tick(){
+    const now = new Date();
+    if(now >= target){
+      elM.textContent = '00'; elD.textContent = '00'; elH.textContent = '00';
+      if(elStatus) elStatus.textContent = 'É hoje! 🎉';
+      return;
+    }
+    let anchor = new Date(now);
+    anchor.setSeconds(0,0);
+
+    let months = 0;
+    while(addMonths(anchor,1) <= target){
+      anchor = addMonths(anchor,1);
+      months++;
+      if(months>120) break; // segurança
+    }
+
+    let rem = target - anchor;
+    const days = Math.floor(rem/86400000); rem -= days*86400000;
+    const hours = Math.floor(rem/3600000);
+
+    elM.textContent = pad(months);
+    elD.textContent = pad(days);
+    elH.textContent = pad(hours);
+  }
+
+  tick();
+  setInterval(tick, 60000); // atualiza a cada minuto
+})();
+
+/* ---------- Tempo (Open-Meteo) ---------- */
 (function(){
   const EVENT_DATE = '2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
@@ -615,14 +715,14 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
       if(dLeft>=0 && dLeft<=16){
         const d=await daily(); const tmax=Math.round(d.daily.temperature_2m_max[0]); const tmin=Math.round(d.daily.temperature_2m_min[0]); const p=d.daily.precipitation_probability_mean?.[0];
         elText.textContent = (typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`;
-        srcStamp('Open‑Meteo (previsão diária)');
+        srcStamp('Open-Meteo (previsão diária)');
       }else{
         const c=await clim(); const m=c.monthly||{}; const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27); const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
         elText.textContent=`Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
-        srcStamp('Open‑Meteo (climatologia 1991–2020)');
+        srcStamp('Open-Meteo (climatologia 1991–2020)');
       }
     }catch(e){
-      elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; srcStamp('Open‑Meteo');
+      elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; srcStamp('Open-Meteo');
     }
   })();
 })();
