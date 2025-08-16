@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -109,27 +111,53 @@
   .map{width:100%;height:300px;border:0;border-radius:12px;overflow:hidden}
   .apple-embed{width:100%;max-width:680px;height:260px;border:0;border-radius:12px}
 
-  /* Weather: UI nova, sem alterar a marcação */
+  /* Weather */
   .weather{max-width:700px;margin:0 auto}
-  #weatherText{
-    display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;
-    margin:0; font-size:1rem;
+
+  /* Overlay música */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .overlay.hide{display:none}
+  .welcome{background:#fff;width:min(92vw,520px);border-radius:16px;padding:24px 20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .welcome h3{margin:0 0 8px;color:var(--roxo);font-size:clamp(22px,2.6vw,28px)}
+  .welcome p{color:#444;margin:0 0 16px}
+
+  /* ===== Modal “de vidro” ===== */
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:9998}
+  .modal.open{display:flex}
+  .modal-card{
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:saturate(125%);
+    -webkit-backdrop-filter:saturate(125%);
+    border:1px solid rgba(255,255,255,.9);
+    border-radius:16px;width:min(92vw,620px);max-height:88vh;overflow:auto;
+    padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.25);
+    text-align:center;
   }
-  #weatherText .wx-icon{ font-size:1.25rem }
-  #weatherText .wx-range{
-    display:inline-flex; align-items:baseline; gap:6px;
-    background:#fff; border:1px solid var(--roxo-cl); border-radius:12px;
-    padding:8px 12px; box-shadow:0 6px 14px rgba(91,63,162,.12); font-weight:800;
+  .modal-header{display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative}
+  .modal-title{font-size:22px;color:var(--roxo);font-weight:800;letter-spacing:-.02em}
+  .close{position:absolute;right:8px;top:0;background:#f2effd;border:0;color:var(--roxo);width:36px;height:36px;border-radius:9px;font-size:18px;cursor:pointer}
+
+  /* Form */
+  .field{margin:10px 0}
+  .label{display:block;margin:0 0 6px;font-weight:700}
+  .input,.textarea,select{
+    width:100%;border:2px solid #ece9ff;background:#f7f5ff;border-radius:10px;
+    padding:12px 12px;font:inherit;text-align:center;
   }
-  #weatherText .wx-min{ color:#6b7280 }
-  #weatherText .wx-max{ color:var(--roxo) }
-  #weatherText .wx-sep{ opacity:.6 }
-  #weatherText .wx-extra{
-    background:var(--roxo-cl); color:var(--roxo); border-radius:999px;
-    padding:6px 10px; font-weight:700;
-  }
-  /* Fonte igual à marca d’água */
-  #weatherSource{ font-size:12px; color:#9aa0a6; }
+  .textarea{min-height:96px;resize:vertical}
+
+  /* RSVP */
+  .yn{display:flex;gap:10px;justify-content:center}
+  .yn .opt{flex:1;border-radius:10px;border:2px solid #ece9ff;background:#f7f5ff;padding:10px 12px;text-align:center;font-weight:700;cursor:pointer}
+  .yn .opt.active{background:var(--roxo);color:#fff;border-color:var(--roxo)}
+  .hide{display:none}
+
+  /* Mural */
+  .mural-box{min-height:66px;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:12px;background:#faf8ff;color:#4a4a4a}
+  .mural-msg{font-size:1.05rem;text-align:center;transition:opacity .6s ease, transform .6s ease}
+  .fade-out{opacity:0;transform:translateY(8px)}
+  .fade-in{opacity:1;transform:translateY(0)}
+  .muted{color:var(--muted);font-size:.95rem}
 
   /* Marca d’água fixa */
   footer.watermark{
@@ -503,7 +531,7 @@ async function loadMural(isRealtime=false){
       .order('created_at',{ascending:false})
       .limit(12);
 
-    // Fallback: inserted_at
+    // Fallback: ordenar por inserted_at (se created_at não existir)
     if(error && error.code === '42703'){
       ({ data, error } = await supabaseClient
         .from('messages')
@@ -511,7 +539,7 @@ async function loadMural(isRealtime=false){
         .order('inserted_at',{ascending:false})
         .limit(12));
     }
-    // Fallback final
+    // Fallback final: sem ordenação (pega os últimos 12 que vierem)
     if(error){
       ({ data, error } = await supabaseClient
         .from('messages')
@@ -679,76 +707,45 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   setInterval(tick, 60000);
 })();
 
-/* ---------- Tempo (Open-Meteo) com emojis automáticos ---------- */
+/* ---------- Tempo (Open-Meteo) ---------- */
 (function(){
   const EVENT_DATE = '2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
-  const elDate=document.getElementById('weatherDate'),
-        elText=document.getElementById('weatherText'),
-        elSrc=document.getElementById('weatherSource');
-
-  elDate.textContent = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'})
-    .format(new Date(EVENT_DATE+'T12:00:00'));
+  const elDate=document.getElementById('weatherDate'), elText=document.getElementById('weatherText'), elSrc=document.getElementById('weatherSource');
+  elDate.textContent = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(EVENT_DATE+'T12:00:00'));
 
   function daysTo(iso){const t=new Date();t.setHours(0,0,0,0);const e=new Date(iso+'T00:00:00');return Math.round((e-t)/86400000);}
   const dLeft=daysTo(EVENT_DATE);
 
   async function daily(){
     const u=new URL('https://api.open-meteo.com/v1/forecast');
-    u.search=new URLSearchParams({latitude:LAT,longitude:LON,timezone:TZ,
-      daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',
-      start_date:EVENT_DATE,end_date:EVENT_DATE});
+    u.search=new URLSearchParams({latitude:LAT,longitude:LON,timezone:TZ,daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',start_date:EVENT_DATE,end_date:EVENT_DATE});
     const r=await fetch(u); if(!r.ok) throw 0; return r.json();
   }
   async function clim(){
     const u=new URL('https://climate-api.open-meteo.com/v1/climate');
-    u.search=new URLSearchParams({latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',
-      monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',month:11});
+    u.search=new URLSearchParams({latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',month:11});
     const r=await fetch(u); if(!r.ok) throw 0; return r.json();
   }
-
-  function pickIcon(p){
-    if(typeof p==='number'){
-      if(p>=60) return '🌧️';
-      if(p>=30) return '🌦️';
-    }
-    return '☀️';
-  }
-
-  function render(tmin,tmax,p){
-    const icon = pickIcon(p);
-    const rain = typeof p==='number' ? `<span class="wx-extra">Chance de chuva ${p}%</span>` : '';
-    elText.innerHTML =
-      `<span class="wx-icon">${icon}</span>
-       <span class="wx-range"><span class="wx-min">${tmin}°</span><span class="wx-sep">→</span><span class="wx-max">${tmax}°</span></span>
-       ${rain}`;
-  }
-
-  function srcStamp(){
+  function srcStamp(name){
     const now=new Date();
-    const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ})
-      .format(now).replace('.','');
-    elSrc.textContent = `Fonte: Open-Meteo • Atualizado em ${stamp} (BRT)`;
+    const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ}).format(now).replace('.','');
+    elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">${name}</a> • Atualizado em ${stamp} (BRT)`;
   }
 
   (async()=>{
     try{
       if(dLeft>=0 && dLeft<=16){
-        const d=await daily();
-        const tmax=Math.round(d.daily.temperature_2m_max[0]);
-        const tmin=Math.round(d.daily.temperature_2m_min[0]);
-        const p=d.daily.precipitation_probability_mean?.[0];
-        render(tmin,tmax, typeof p==='number'?Math.round(p):undefined);
+        const d=await daily(); const tmax=Math.round(d.daily.temperature_2m_max[0]); const tmin=Math.round(d.daily.temperature_2m_min[0]); const p=d.daily.precipitation_probability_mean?.[0];
+        elText.textContent = (typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`;
+        srcStamp('Open-Meteo (previsão diária)');
       }else{
-        const c=await clim(); const m=c.monthly||{};
-        const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27);
-        const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
-        render(tmin,tmax, undefined);
+        const c=await clim(); const m=c.monthly||{}; const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27); const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
+        elText.textContent=`Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
+        srcStamp('Open-Meteo (climatologia 1991–2020)');
       }
     }catch(e){
-      render(20,27, undefined);
-    }finally{
-      srcStamp();
+      elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; srcStamp('Open-Meteo');
     }
   })();
 })();
