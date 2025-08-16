@@ -109,14 +109,18 @@
   .map{width:100%;height:300px;border:0;border-radius:12px;overflow:hidden}
   .apple-embed{width:100%;max-width:680px;height:260px;border:0;border-radius:12px}
 
-  /* ======== Tempo (estilo do card) ======== */
+  /* ======== Tempo (card clean, menor, números com sombra) ======== */
   .weather{max-width:700px;margin:0 auto}
   #weatherText{
     display:flex; align-items:center; justify-content:center; gap:10px;
-    font-size:1.6rem; font-weight:800; color:var(--txt);
+    font-size:1rem; font-weight:600; color:var(--txt);
   }
-  .temp-highlight{ color:var(--roxo); font-weight:800; }
-  .wx-emoji{ font-size:1.8rem; line-height:1; }
+  .temp-highlight{ color:var(--roxo); font-weight:700; letter-spacing:.01em; }
+  .temp-highlight .num{
+    font-weight:800;
+    text-shadow:0 1px 4px rgba(0,0,0,.22); /* foco suave nos números */
+  }
+  .wx-emoji{ font-size:1.25rem; line-height:1; transform:translateY(1px) }
   #weatherDate{ color:var(--muted); }
   #weatherSource{ color:var(--muted); font-size:12px; line-height:1.4; } /* igual à marca d’água */
 
@@ -709,7 +713,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   setInterval(tick, 60000);
 })();
 
-/* ---------- Tempo (Open-Meteo) — clean + “Mín • Máx” em roxo com emoji automático ---------- */
+/* ---------- Tempo (Open-Meteo) — clean + “Mín • Máx” em roxo, números com sombra e emoji automático ---------- */
 (function(){
   const EVENT_DATE = '2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
@@ -749,43 +753,37 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
     elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> • Atualizado em ${stamp} (BRT)`;
   }
 
+  function render(tmin, tmax, p){
+    // Emoji automático: ☀️ (<20%), 🌥️ (20–59%), 🌧️ (>=60%)
+    let emoji='☀️';
+    if(typeof p==='number'){
+      if(p>=60) emoji='🌧️';
+      else if(p>=20) emoji='🌥️';
+    }
+    elText.innerHTML = `
+      <span class="wx-emoji">${emoji}</span>
+      <span class="temp-highlight">Mín <span class="num">${Math.round(tmin)}°</span> • Máx <span class="num">${Math.round(tmax)}°</span></span>
+    `;
+  }
+
   (async()=>{
     try{
       if(dLeft>=0 && dLeft<=16){
         const d=await daily();
-        const tmax=Math.round(d.daily.temperature_2m_max[0]);
-        const tmin=Math.round(d.daily.temperature_2m_min[0]);
+        const tmax=d.daily.temperature_2m_max?.[0];
+        const tmin=d.daily.temperature_2m_min?.[0];
         const p=d.daily.precipitation_probability_mean?.[0];
-
-        // Emoji automático: ☀️ (<20%), 🌥️ (20–59%), 🌧️ (>=60%)
-        let emoji='☀️';
-        if(typeof p==='number'){
-          if(p>=60) emoji='🌧️';
-          else if(p>=20) emoji='🌥️';
-        }
-
-        elText.innerHTML = `
-          <span class="wx-emoji">${emoji}</span>
-          <span class="temp-highlight">Mín ${tmin}° • Máx ${tmax}°</span>
-        `;
-        srcStamp();
+        render(tmin, tmax, p);
       }else{
         const c=await clim(); const m=c.monthly||{};
-        const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27);
-        const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
-
-        elText.innerHTML = `
-          <span class="wx-emoji">☀️</span>
-          <span class="temp-highlight">Mín ${tmin}° • Máx ${tmax}°</span>
-        `;
-        srcStamp();
+        const tmax=m.temperature_2m_max_mean?.[0] ?? 27;
+        const tmin=m.temperature_2m_min_mean?.[0] ?? 20;
+        render(tmin, tmax, null);
       }
     }catch(e){
       // Fallback estático
-      elText.innerHTML = `
-        <span class="wx-emoji">☀️</span>
-        <span class="temp-highlight">Mín 20° • Máx 27°</span>
-      `;
+      render(20, 27, null);
+    }finally{
       srcStamp();
     }
   })();
