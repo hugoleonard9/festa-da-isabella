@@ -64,9 +64,11 @@
   .hero h1{
     color:#fff; margin:0 0 6px;
     font-size:clamp(36px,6vw,56px); font-weight:800; letter-spacing:-.02em;
+    text-shadow:0 6px 20px rgba(0,0,0,.45);
   }
   .hero p{
     color:#fff; margin:0 0 24px; font-weight:500; font-size:clamp(16px,2.3vw,20px);
+    text-shadow:0 4px 14px rgba(0,0,0,.35);
   }
 
   /* ===== Cards ===== */
@@ -107,23 +109,26 @@
   .map{width:100%;height:300px;border:0;border-radius:12px;overflow:hidden}
   .apple-embed{width:100%;max-width:680px;height:260px;border:0;border-radius:12px}
 
-  /* Weather */
+  /* Weather: UI nova, sem alterar a marcação */
   .weather{max-width:700px;margin:0 auto}
-
-  /* === Weather card UI === */
-  .wx{ display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; }
-  .wx-range{ display:flex; align-items:baseline; gap:6px; }
-  .wx-min, .wx-max{ font-weight:800; }
-  .wx-min{ color:#6b6f81; }
-  .wx-max{ color:var(--roxo); }
-  .wx-sep{ opacity:.5; }
-  .wx-pill{
-    padding:8px 12px; border-radius:999px; font-weight:700;
-    background:var(--roxo-cl); color:var(--roxo); font-size:.95rem;
-    box-shadow:0 6px 14px rgba(91,63,162,.12);
+  #weatherText{
+    display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;
+    margin:0; font-size:1rem;
   }
-  .wx-date{ color:var(--muted); font-weight:700; }
-  /* Fonte do tempo = mesmo tamanho da marca d’água */
+  #weatherText .wx-icon{ font-size:1.25rem }
+  #weatherText .wx-range{
+    display:inline-flex; align-items:baseline; gap:6px;
+    background:#fff; border:1px solid var(--roxo-cl); border-radius:12px;
+    padding:8px 12px; box-shadow:0 6px 14px rgba(91,63,162,.12); font-weight:800;
+  }
+  #weatherText .wx-min{ color:#6b7280 }
+  #weatherText .wx-max{ color:var(--roxo) }
+  #weatherText .wx-sep{ opacity:.6 }
+  #weatherText .wx-extra{
+    background:var(--roxo-cl); color:var(--roxo); border-radius:999px;
+    padding:6px 10px; font-weight:700;
+  }
+  /* Fonte igual à marca d’água */
   #weatherSource{ font-size:12px; color:#9aa0a6; }
 
   /* Marca d’água fixa */
@@ -288,20 +293,11 @@
       src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"></iframe>
   </section>
 
-  <!-- 9) Tempo (ajustado) -->
+  <!-- 9) Tempo -->
   <section class="card weather center">
     <h2>Tempo</h2>
-    <div id="weatherDate" class="wx-date" style="margin-bottom:6px">—</div>
-
-    <div class="wx" id="weatherUI">
-      <div class="wx-range">
-        <span class="wx-min" id="wxMin">--°</span>
-        <span class="wx-sep">→</span>
-        <span class="wx-max" id="wxMax">--°</span>
-      </div>
-      <div class="wx-pill" id="wxRain" style="display:none">Chuva — %</div>
-    </div>
-
+    <div id="weatherDate" class="muted" style="margin-bottom:6px">—</div>
+    <p id="weatherText">Carregando…</p>
     <p id="weatherSource" class="muted">Fonte: —</p>
   </section>
 
@@ -398,7 +394,7 @@
 
   async function tryPlay() {
     try { audio.load(); await audio.play(); return true; }
-    catch (e) { return false; }
+    catch (e) { console.warn('Falha ao tocar áudio:', e?.message || e); return false; }
   }
 
   btnPlay?.addEventListener('click', async () => {
@@ -460,6 +456,7 @@
 
 /* ---------- Supabase (Mural) — usa apenas 'mensagem' ---------- */
 const SUPABASE_URL  = "https://kfoousycrqscvhivhmxu.supabase.co";
+/* USE sua anon key completa, como no dashboard: */
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
 
 let supabaseClient = null;
@@ -499,12 +496,14 @@ function initSupabase(){
 async function loadMural(isRealtime=false){
   if(!supaReady) return;
   try{
+    // 1ª tentativa: ordenar por created_at
     let { data, error } = await supabaseClient
       .from('messages')
       .select('mensagem, created_at')
       .order('created_at',{ascending:false})
       .limit(12);
 
+    // Fallback: inserted_at
     if(error && error.code === '42703'){
       ({ data, error } = await supabaseClient
         .from('messages')
@@ -512,6 +511,7 @@ async function loadMural(isRealtime=false){
         .order('inserted_at',{ascending:false})
         .limit(12));
     }
+    // Fallback final
     if(error){
       ({ data, error } = await supabaseClient
         .from('messages')
@@ -577,7 +577,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   }
 });
 
-/* ---------- RSVP (WhatsApp) ---------- */
+/* ---------- RSVP (WhatsApp) – mensagens no formato solicitado ---------- */
 (function(){
   const yn = document.getElementById('yn');
   const extra = document.getElementById('rsvp-extra');
@@ -629,7 +629,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
 
 /* ---------- Contagem regressiva (meses:dias:horas) ---------- */
 (function(){
-  const EVENT_ISO = '2025-11-22T14:00:00';
+  const EVENT_ISO = '2025-11-22T14:00:00'; // horário local
   const target = new Date(EVENT_ISO);
 
   const elM = document.getElementById('cd-months');
@@ -638,6 +638,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   const elStatus = document.getElementById('cd-status');
 
   function pad(n){ return String(n).padStart(2,'0'); }
+
   function addMonths(date, n){
     const d = new Date(date);
     const day = d.getDate();
@@ -678,16 +679,13 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   setInterval(tick, 60000);
 })();
 
-/* ---------- Tempo (Open-Meteo) – UI nova ---------- */
+/* ---------- Tempo (Open-Meteo) com emojis automáticos ---------- */
 (function(){
   const EVENT_DATE = '2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
-
-  const elDate = document.getElementById('weatherDate');
-  const elMin  = document.getElementById('wxMin');
-  const elMax  = document.getElementById('wxMax');
-  const elRain = document.getElementById('wxRain');
-  const elSrc  = document.getElementById('weatherSource');
+  const elDate=document.getElementById('weatherDate'),
+        elText=document.getElementById('weatherText'),
+        elSrc=document.getElementById('weatherSource');
 
   elDate.textContent = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'})
     .format(new Date(EVENT_DATE+'T12:00:00'));
@@ -697,28 +695,39 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
 
   async function daily(){
     const u=new URL('https://api.open-meteo.com/v1/forecast');
-    u.search=new URLSearchParams({
-      latitude:LAT,longitude:LON,timezone:TZ,
+    u.search=new URLSearchParams({latitude:LAT,longitude:LON,timezone:TZ,
       daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',
-      start_date:EVENT_DATE,end_date:EVENT_DATE
-    });
+      start_date:EVENT_DATE,end_date:EVENT_DATE});
     const r=await fetch(u); if(!r.ok) throw 0; return r.json();
   }
   async function clim(){
     const u=new URL('https://climate-api.open-meteo.com/v1/climate');
-    u.search=new URLSearchParams({
-      latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',
-      monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',
-      month:11
-    });
+    u.search=new URLSearchParams({latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',
+      monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',month:11});
     const r=await fetch(u); if(!r.ok) throw 0; return r.json();
+  }
+
+  function pickIcon(p){
+    if(typeof p==='number'){
+      if(p>=60) return '🌧️';
+      if(p>=30) return '🌦️';
+    }
+    return '☀️';
+  }
+
+  function render(tmin,tmax,p){
+    const icon = pickIcon(p);
+    const rain = typeof p==='number' ? `<span class="wx-extra">Chance de chuva ${p}%</span>` : '';
+    elText.innerHTML =
+      `<span class="wx-icon">${icon}</span>
+       <span class="wx-range"><span class="wx-min">${tmin}°</span><span class="wx-sep">→</span><span class="wx-max">${tmax}°</span></span>
+       ${rain}`;
   }
 
   function srcStamp(){
     const now=new Date();
-    const stamp=new Intl.DateTimeFormat('pt-BR',{
-      day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ
-    }).format(now).replace('.','');
+    const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ})
+      .format(now).replace('.','');
     elSrc.textContent = `Fonte: Open-Meteo • Atualizado em ${stamp} (BRT)`;
   }
 
@@ -729,28 +738,15 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
         const tmax=Math.round(d.daily.temperature_2m_max[0]);
         const tmin=Math.round(d.daily.temperature_2m_min[0]);
         const p=d.daily.precipitation_probability_mean?.[0];
-
-        elMin.textContent = `${tmin}°`;
-        elMax.textContent = `${tmax}°`;
-
-        if(typeof p==='number'){
-          elRain.style.display='';
-          elRain.textContent = `Chance de chuva ${p}%`;
-        }else{
-          elRain.style.display='none';
-        }
+        render(tmin,tmax, typeof p==='number'?Math.round(p):undefined);
       }else{
-        const c=await clim(), m=c.monthly||{};
+        const c=await clim(); const m=c.monthly||{};
         const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27);
         const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
-        elMin.textContent = `${tmin}°`;
-        elMax.textContent = `${tmax}°`;
-        elRain.style.display='none';
+        render(tmin,tmax, undefined);
       }
     }catch(e){
-      elMin.textContent='20°';
-      elMax.textContent='27°';
-      elRain.style.display='none';
+      render(20,27, undefined);
     }finally{
       srcStamp();
     }
