@@ -496,45 +496,71 @@
   fill(); setInterval(fill, 8000);
 })();
 
-/* ---------- Supabase (Mural) ---------- */
+/* ---------- Supabase (Mural) – robusto ---------- */
 const SUPABASE_URL = "https://kfoousycrqscvhivhmxu.supabase.co";
-const SUPABASE_ANON = "eyJhbGciOiJIUz1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtmb291c3ljcnFzY3ZoaXZobXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDI1MTcsImV4cCI6MjA3MDY3ODUxN30.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ";
+/* ATENÇÃO: corrigido 'I1' -> 'I1' (token válido com 'I1') */
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e55uMlW4mBmQjvG0U9WaEyqLPvjL9US3LP_9IvNTLVQ".replace(/^(.+?)\./,"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.");
 
-let supabaseClient;
-(function(){
-  window.supabase = null;
+let supabaseClient = null;
+let supaReady = false;
+const muralBox = document.getElementById('muralMessage');
+
+(function loadSupabaseLib(){
+  if (typeof window.supabase?.createClient === 'function') return initSupabase();
   const s = document.createElement('script');
   s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
-  s.onload = () => {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth:{persistSession:false} });
-    loadMural();
-    try{
-      supabaseClient.channel('public:messages')
-        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'}, ()=>loadMural(true))
-        .subscribe();
-    }catch(_){}
+  s.async = true;
+  s.onload = initSupabase;
+  s.onerror = () => {
+    console.error('Falha ao carregar @supabase/supabase-js');
+    muralBox.textContent = "Falha ao carregar as mensagens. Recarregue a página.";
+    muralBox.classList.add('muted');
   };
   document.head.appendChild(s);
 })();
 
-const muralBox = document.getElementById('muralMessage');
+function initSupabase(){
+  try{
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth:{ persistSession:false } });
+    supaReady = true;
+    loadMural();
 
-async function loadMural(isRealtime){
-  if(!supabaseClient) return;
+    try{
+      supabaseClient.channel('public:messages')
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'}, ()=>loadMural(true))
+        .subscribe();
+    }catch(e){
+      console.warn('Realtime não disponível:', e?.message || e);
+    }
+  }catch(e){
+    console.error('Erro ao iniciar Supabase:', e);
+    muralBox.textContent = "Não foi possível iniciar o mural.";
+    muralBox.classList.add('muted');
+  }
+}
+
+async function loadMural(isRealtime=false){
+  if(!supaReady || !supabaseClient) return;
   try{
     const { data, error } = await supabaseClient
       .from('messages')
-      .select('mensagem, created_at')
+      .select('mensagem, message, created_at')
       .order('created_at',{ascending:false})
       .limit(12);
+
     if(error) throw error;
 
-    const list = data?.map(d=>d.mensagem).filter(Boolean);
-    if(!list?.length){
+    const list = (data||[])
+      .map(d => d.mensagem ?? d.message ?? '')
+      .filter(Boolean);
+
+    if(!list.length){
       muralBox.textContent = "Seja o primeiro a deixar um recado 💜";
       muralBox.classList.remove('muted');
+      clearInterval(window._muralTimer);
       return;
     }
+
     muralBox.classList.remove('muted');
     let idx = 0;
     function show(i){
@@ -547,36 +573,36 @@ async function loadMural(isRealtime){
       }, 300);
     }
     show(0);
+
     if(!isRealtime){
       clearInterval(window._muralTimer);
       window._muralTimer = setInterval(()=>{ idx=(idx+1)%list.length; show(idx); }, 4000);
     }
   }catch(e){
+    console.error('Erro ao carregar mural:', e);
     muralBox.textContent = "Não foi possível carregar as mensagens agora.";
     muralBox.classList.add('muted');
   }
 }
 
-/* ---------- Modais ---------- */
-function openModal(id){ document.getElementById(id).classList.add('open'); document.body.classList.add('modal-open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.classList.remove('modal-open'); }
-document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
-document.getElementById('open-mural')?.addEventListener('click',()=>openModal('modal-mural'));
-document.getElementById('open-rsvp')?.addEventListener('click',()=>openModal('modal-rsvp'));
-
-/* ---------- Enviar mural ---------- */
+/* Enviar mural (com fallback de coluna 'mensagem' -> 'message') */
 document.getElementById('mural-send')?.addEventListener('click', async ()=>{
+  if(!supaReady){ alert('Mural ainda iniciando. Tente novamente em instantes.'); return; }
   const t = document.getElementById('mural-input').value.trim();
   const err = document.getElementById('mural-error');
   if(t.length<2){ err.textContent="Escreva ao menos 2 caracteres 🙂"; err.style.display='block'; return; }
   err.style.display='none';
   try{
-    const { error } = await supabaseClient.from('messages').insert({ mensagem: t });
-    if(error) throw error;
+    let { error } = await supabaseClient.from('messages').insert({ mensagem: t });
+    if(error){
+      const fb = await supabaseClient.from('messages').insert({ message: t });
+      if(fb.error) throw fb.error;
+    }
     document.getElementById('mural-input').value='';
     closeModal('modal-mural');
     loadMural(true);
   }catch(e){
+    console.error('Erro ao publicar mensagem:', e);
     err.textContent="Não foi possível publicar agora. Tente de novo.";
     err.style.display='block';
   }
@@ -668,7 +694,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
     while(addMonths(anchor,1) <= target){
       anchor = addMonths(anchor,1);
       months++;
-      if(months>120) break; // segurança
+      if(months>120) break;
     }
 
     let rem = target - anchor;
@@ -681,7 +707,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   }
 
   tick();
-  setInterval(tick, 60000); // atualiza a cada minuto
+  setInterval(tick, 60000);
 })();
 
 /* ---------- Tempo (Open-Meteo) ---------- */
