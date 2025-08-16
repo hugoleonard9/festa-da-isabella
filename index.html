@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -111,8 +109,15 @@
   .map{width:100%;height:300px;border:0;border-radius:12px;overflow:hidden}
   .apple-embed{width:100%;max-width:680px;height:260px;border:0;border-radius:12px}
 
-  /* Weather */
+  /* ======== Tempo (estilo do card) ======== */
   .weather{max-width:700px;margin:0 auto}
+  #weatherText{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    font-size:1.1rem; font-weight:700; color:var(--roxo);
+  }
+  .wx-emoji{ font-size:1.6rem; line-height:1; }
+  #weatherDate{ color:var(--muted); }
+  #weatherSource{ color:var(--muted); font-size:12px; line-height:1.4; } /* igual à marca d’água */
 
   /* Overlay música */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
@@ -707,45 +712,73 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   setInterval(tick, 60000);
 })();
 
-/* ---------- Tempo (Open-Meteo) ---------- */
+/* ---------- Tempo (Open-Meteo) — card atualizado com emojis e fonte no tamanho da marca d’água ---------- */
 (function(){
   const EVENT_DATE = '2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
   const elDate=document.getElementById('weatherDate'), elText=document.getElementById('weatherText'), elSrc=document.getElementById('weatherSource');
+
+  // Data exibida (ex.: "22 de novembro")
   elDate.textContent = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(EVENT_DATE+'T12:00:00'));
 
-  function daysTo(iso){const t=new Date();t.setHours(0,0,0,0);const e=new Date(iso+'T00:00:00');return Math.round((e-t)/86400000);}
+  function daysTo(iso){
+    const t=new Date(); t.setHours(0,0,0,0);
+    const e=new Date(iso+'T00:00:00');
+    return Math.round((e-t)/86400000);
+  }
   const dLeft=daysTo(EVENT_DATE);
 
   async function daily(){
     const u=new URL('https://api.open-meteo.com/v1/forecast');
-    u.search=new URLSearchParams({latitude:LAT,longitude:LON,timezone:TZ,daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',start_date:EVENT_DATE,end_date:EVENT_DATE});
+    u.search=new URLSearchParams({
+      latitude:LAT, longitude:LON, timezone:TZ,
+      daily:'temperature_2m_max,temperature_2m_min,precipitation_probability_mean',
+      start_date:EVENT_DATE, end_date:EVENT_DATE
+    });
     const r=await fetch(u); if(!r.ok) throw 0; return r.json();
   }
   async function clim(){
     const u=new URL('https://climate-api.open-meteo.com/v1/climate');
-    u.search=new URLSearchParams({latitude:LAT,longitude:LON,start_year:1991,end_year:2020,models:'ERA5',monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',month:11});
+    u.search=new URLSearchParams({
+      latitude:LAT, longitude:LON, start_year:1991, end_year:2020, models:'ERA5',
+      monthly:'temperature_2m_max_mean,temperature_2m_min_mean,precipitation_probability_mean',
+      month:11
+    });
     const r=await fetch(u); if(!r.ok) throw 0; return r.json();
   }
   function srcStamp(name){
     const now=new Date();
     const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ}).format(now).replace('.','');
-    elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">${name}</a> • Atualizado em ${stamp} (BRT)`;
+    elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> • Atualizado em ${stamp} (BRT)`;
   }
 
   (async()=>{
     try{
       if(dLeft>=0 && dLeft<=16){
-        const d=await daily(); const tmax=Math.round(d.daily.temperature_2m_max[0]); const tmin=Math.round(d.daily.temperature_2m_min[0]); const p=d.daily.precipitation_probability_mean?.[0];
-        elText.textContent = (typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`;
-        srcStamp('Open-Meteo (previsão diária)');
+        const d=await daily();
+        const tmax=Math.round(d.daily.temperature_2m_max[0]);
+        const tmin=Math.round(d.daily.temperature_2m_min[0]);
+        const p=d.daily.precipitation_probability_mean?.[0];
+
+        // Emoji automático (chuva se >= 40% de chance)
+        const emoji = (typeof p==='number' && p>=40) ? '🌧️' : '☀️';
+
+        elText.innerHTML = `
+          <span class="wx-emoji">${emoji}</span>
+          <span>Previsão: ${tmin}° – ${tmax}°${typeof p==='number' ? `, chance de chuva ${p}%` : ''}</span>
+        `;
+        srcStamp('previsão diária');
       }else{
-        const c=await clim(); const m=c.monthly||{}; const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27); const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
-        elText.textContent=`Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
-        srcStamp('Open-Meteo (climatologia 1991–2020)');
+        const c=await clim(); const m=c.monthly||{};
+        const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27);
+        const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
+
+        elText.innerHTML = `<span class="wx-emoji">☀️</span><span>Nesta época do ano, costuma fazer entre ${tmin}° e ${tmax}°.</span>`;
+        srcStamp('climatologia 1991–2020');
       }
     }catch(e){
-      elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; srcStamp('Open-Meteo');
+      elText.innerHTML = `<span class="wx-emoji">☀️</span><span>Nesta época do ano, a temperatura costuma variar entre 20° e 27°.</span>`;
+      srcStamp('Open-Meteo');
     }
   })();
 })();
