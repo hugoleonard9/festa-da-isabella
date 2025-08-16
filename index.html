@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -157,29 +159,6 @@
   .fade-in{opacity:1;transform:translateY(0)}
   .muted{color:var(--muted);font-size:.95rem}
 
-  /* ===== Contagem regressiva ===== */
-  .countdown{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
-    max-width:640px; margin:10px auto 0;
-  }
-  .time-box{
-    background: rgba(255,255,255,0.68);
-    border:1px solid rgba(255,255,255,.5);
-    border-radius:12px; padding:14px 8px;
-    box-shadow: var(--shadow);
-  }
-  .time-box .num{
-    font-weight:800; font-size:clamp(26px,5vw,40px); line-height:1;
-    color: var(--roxo);
-  }
-  .time-box .lbl{
-    margin-top:6px; font-size:.9rem; color:#4a4a4a;
-  }
-  .countdown-note{ margin-top:8px; color:var(--muted); font-size:.95rem }
-  @media (max-width:480px){
-    .countdown{ grid-template-columns:repeat(2,1fr); }
-  }
-
   /* Marca d’água fixa */
   footer.watermark{
     position:fixed;left:0;right:0;bottom:4px;
@@ -195,10 +174,10 @@
 <!-- Fundo contínuo (embaçado) sob os cards -->
 <div class="page-bg" aria-hidden="true"></div>
 
-<!-- Overlay Boas-vindas (MP3) -->
+<!-- Overlay Boas‑vindas (MP3) -->
 <div id="welcome-overlay" class="overlay">
   <div class="welcome">
-    <h3>Bem-vindo(a) à Festa da Isabella! 🎶</h3>
+    <h3>Bem‑vindo(a) à Festa da Isabella! 🎶</h3>
     <p>Toque a música para entrar no clima da celebração.</p>
     <div class="row">
       <button id="start-music" class="btn btn-primary">Entrar e tocar playlist</button>
@@ -223,9 +202,9 @@
 
 <main class="container">
 
-  <!-- Boas-vindas -->
+  <!-- Boas‑vindas -->
   <section class="card center" id="boas-vindas">
-    <h2>Boas-vindas</h2>
+    <h2>Boas‑vindas</h2>
     <p>É com muita alegria que convidamos você para celebrar o 1º aniversário da nossa princesa Isabella! 🎉💖</p>
     <p>Será um momento especial para reunirmos família e amigos, com muita diversão, música e boas lembranças.</p>
     <p>Esperamos você para comemorar conosco esse dia tão importante! 🥳✨</p>
@@ -281,32 +260,31 @@
       <a class="btn btn-soft" target="_blank" rel="noopener"
         href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A9u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
+        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
     </div>
   </section>
 
-  <!-- Contagem regressiva -->
-  <section class="card center" id="countdown-card">
-    <h2>Contagem regressiva ⏳</h2>
-    <div class="countdown" aria-live="polite">
-      <div class="time-box">
-        <div id="cd-days" class="num">—</div>
-        <div class="lbl">dias</div>
-      </div>
-      <div class="time-box">
-        <div id="cd-hours" class="num">—</div>
-        <div class="lbl">horas</div>
-      </div>
-      <div class="time-box">
-        <div id="cd-mins" class="num">—</div>
-        <div class="lbl">min</div>
-      </div>
-      <div class="time-box">
-        <div id="cd-secs" class="num">—</div>
-        <div class="lbl">seg</div>
-      </div>
+  <!-- Presentes -->
+  <section class="card center">
+    <h2>Sugestão de presentes 💝</h2>
+    <ul class="details">
+      <li><span class="icon">🧸</span>Brinquedos educativos</li>
+      <li><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
+      <li><span class="icon">🩰</span>Calçados a partir do tamanho 22</li>
+    </ul>
+    <div class="row">
+      <a class="btn btn-soft" target="_blank" rel="noopener"
+        href="https://wa.me/5521993835163?text=Oi%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20presente%20da%20Isabella">Dúvidas sobre o presente</a>
     </div>
-    <div id="countdown-note" class="countdown-note">Carregando…</div>
+  </section>
+
+  <!-- Playlist Apple Music -->
+  <section class="card center">
+    <h2>Playlist da festa</h2>
+    <iframe class="apple-embed"
+      allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+      src="https://embed.music.apple.com/br/playlist/playlist-festa-da-isabella/pl.u-MRjJtWNaq0M"></iframe>
   </section>
 
   <!-- Tempo -->
@@ -556,43 +534,6 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   }
 });
 
-/* ---------- Contagem regressiva ---------- */
-(function(){
-  const EVENT_DATE = '2025-11-22';
-  const EVENT_TIME = '14:00:00';   // ajuste se necessário
-  const TZ_OFFSET  = '-03:00';     // BRT
-
-  const target = new Date(`${EVENT_DATE}T${EVENT_TIME}${TZ_OFFSET}`);
-
-  const elD = document.getElementById('cd-days');
-  const elH = document.getElementById('cd-hours');
-  const elM = document.getElementById('cd-mins');
-  const elS = document.getElementById('cd-secs');
-  const note = document.getElementById('countdown-note');
-
-  function tick(){
-    const now = new Date();
-    let ms = target - now;
-
-    if (ms <= 0){
-      elD.textContent='0'; elH.textContent='0'; elM.textContent='0'; elS.textContent='0';
-      note.textContent='É hoje! 🎉 Nos vemos na festa ✨';
-      return;
-    }
-    const sec=1000, min=60*sec, hour=60*min, day=24*hour;
-    const d=Math.floor(ms/day); ms%=day;
-    const h=Math.floor(ms/hour); ms%=hour;
-    const m=Math.floor(ms/min);  ms%=min;
-    const s=Math.floor(ms/sec);
-
-    elD.textContent=d; elH.textContent=h; elM.textContent=m; elS.textContent=s;
-    note.textContent = d>0 ? `Faltam ${d} dia${d>1?'s':''} para a festa 🎈`
-                           : `Faltam ${h}h ${m}m ${s}s 🎈`;
-  }
-  tick();
-  setInterval(tick, 1000);
-})();
-
 /* ---------- RSVP (WhatsApp) – mensagens no formato solicitado ---------- */
 (function(){
   const yn = document.getElementById('yn');
@@ -643,7 +584,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   });
 })();
 
-/* ---------- Tempo (Open-Meteo) ---------- */
+/* ---------- Tempo (Open‑Meteo) ---------- */
 (function(){
   const EVENT_DATE = '2025-11-22';
   const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
@@ -674,14 +615,14 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
       if(dLeft>=0 && dLeft<=16){
         const d=await daily(); const tmax=Math.round(d.daily.temperature_2m_max[0]); const tmin=Math.round(d.daily.temperature_2m_min[0]); const p=d.daily.precipitation_probability_mean?.[0];
         elText.textContent = (typeof p==='number')?`Previsão: entre ${tmin}° e ${tmax}°, chance de chuva ${p}%`:`Previsão: entre ${tmin}° e ${tmax}°`;
-        srcStamp('Open-Meteo (previsão diária)');
+        srcStamp('Open‑Meteo (previsão diária)');
       }else{
         const c=await clim(); const m=c.monthly||{}; const tmax=Math.round(m.temperature_2m_max_mean?.[0]??27); const tmin=Math.round(m.temperature_2m_min_mean?.[0]??20);
         elText.textContent=`Nesta época do ano, a temperatura costuma variar entre ${tmin}° e ${tmax}°.`;
-        srcStamp('Open-Meteo (climatologia 1991–2020)');
+        srcStamp('Open‑Meteo (climatologia 1991–2020)');
       }
     }catch(e){
-      elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; srcStamp('Open-Meteo');
+      elText.textContent='Nesta época do ano, a temperatura costuma variar entre 20° e 27°.'; srcStamp('Open‑Meteo');
     }
   })();
 })();
