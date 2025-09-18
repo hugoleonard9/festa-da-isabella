@@ -257,7 +257,7 @@
 <!-- Overlay Boas-vindas (MP3) -->
 <div id="welcome-overlay" class="overlay">
   <div class="welcome">
-    <h3>Bem-vind(o/a) à Festa da Isabella! 🎶</h3>
+    <h3>Bem-vindo(a) à Festa da Isabella! 🎶</h3>
     <p>Toque a música para entrar no clima da celebração.</p>
     <div class="row">
       <button id="start-music" class="btn btn-primary">Entrar e tocar playlist</button>
@@ -319,8 +319,7 @@
     <ul class="details">
       <li><span class="icon">📅</span>16 de novembro de 2025, 10h30–15h00</li>
       <li><span class="icon">📍</span>Sítio Verdes Encantos – Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil</li>
-      <!-- AQUI: linha do traje alterada -->
-      <li><span class="icon">👗</span>Traje: casual festivo (piscina liberada — leve traje de banho e toalha, se quiser aproveitar)</li>
+      <li><span class="icon">👗</span>Traje: casual festivo</li>
     </ul>
     <div class="row row-2">
       <button id="open-rsvp" class="btn btn-primary">Confirmar presença</button>
@@ -835,7 +834,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
         const p=d.daily.precipitation_probability_mean?.[0];
         render(tmin, tmax, p);
       }else{
-        const c=await clim(); const m=c.monthly||};
+        const c=await clim(); const m=c.monthly||{};
         const tmax=m.temperature_2m_max_mean?.[0] ?? 27;
         const tmin=m.temperature_2m_min_mean?.[0] ?? 20;
         render(tmin, tmax, null);
