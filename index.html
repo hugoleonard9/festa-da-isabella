@@ -317,8 +317,8 @@
   <section class="card center">
     <h2>Informações da festa</h2>
     <ul class="details">
-      <li><span class="icon">📅</span>16 de novembro de 2025, 10h30–15h00</li>
-      <li><span class="icon">📍</span>Sítio Verdes Encantos – Estr Zumbi dos Palmares, 286 - Tinguá, Nova Iguaçu - RJ, 26063-355, Brasil</li>
+      <li><span class="icon">📅</span>16 de novembro de 2025, 11h00–15h00</li>
+      <li><span class="icon">📍</span>Recanto dos Sonhos — Rua Bela Floresta, 355 – Vargem Pequena, Rio de Janeiro — CEP 22783-500 (Sítio Bela Floresta)</li>
       <li><span class="icon">👗</span>Traje: casual festivo (piscina liberada — leve traje de banho)</li>
     </ul>
     <div class="row row-2">
@@ -331,12 +331,12 @@
   <section class="card center">
     <h2>Como chegar</h2>
     <iframe class="map" loading="lazy" allowfullscreen
-      src="https://maps.google.com/maps?q=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil&t=m&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
+      src="https://maps.google.com/maps?q=Recanto%20dos%20Sonhos%20-%20Rua%20Bela%20Floresta%2C%20355%20-%20Vargem%20Pequena%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022783-500%20%28S%C3%ADtio%20Bela%20Floresta%29&t=m&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
     <div class="row">
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/dir/?api=1&destination=S%C3%ADtio%20Verdes%20Encantos%20-%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Traçar rota</a>
+        href="https://www.google.com/maps/dir/?api=1&destination=Recanto%20dos%20Sonhos%20-%20Rua%20Bela%20Floresta%2C%20355%20-%20Vargem%20Pequena%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2022783-500%2C%20Brasil">Traçar rota</a>
       <a class="btn btn-soft" target="_blank" rel="noopener"
-        href="https://www.google.com/maps/search/?api=1&query=S%C3%ADtio%20Verdes%20Encantos%20Estr%20Zumbi%20dos%20Palmares%2C%20286%20-%20Tingu%C3%A1%2C%20Nova%20Igua%C3%A7u%20-%20RJ%2C%2026063-355%2C%20Brasil">Abrir no Google Maps</a>
+        href="https://www.google.com/maps/search/?api=1&query=Recanto%20dos%20Sonhos%20Rua%20Bela%20Floresta%2C%20355%20-%20Vargem%20Pequena%2C%20Rio%20de%20Janeiro%2C%20RJ%2C%2022783-500%2C%20Brasil">Abrir no Google Maps</a>
     </div>
   </section>
 
@@ -373,7 +373,7 @@
     <ul class="details">
       <li><span class="icon">🧸</span>Brinquedos educativos</li>
       <li><span class="icon">👗</span>Roupas tamanho 2 anos (cores suaves)</li>
-      <li><span class="icon">🩰</span>Calçados a partir do tamanho  22+ (ex.: 22 • 24 • 26…)</li>
+      <li><span class="icon">🩰</span>Calçados a partir do tamanho 22 (ex.: 22 • 24 • 26…)</li>
     </ul>
     <div class="row">
       <a class="btn btn-soft" target="_blank" rel="noopener"
@@ -722,7 +722,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
 
 /* ---------- Contagem regressiva (meses:dias:horas) ---------- */
 (function(){
-  const EVENT_ISO = '2025-11-16T10:30:00'; // horário local
+  const EVENT_ISO = '2025-11-16T11:00:00'; // horário local (atualizado)
   const target = new Date(EVENT_ISO);
 
   const elM = document.getElementById('cd-months');
@@ -772,11 +772,16 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   setInterval(tick, 60000);
 })();
 
-/* ---------- Tempo (Open-Meteo) — clean + “Mín • Máx” em roxo, números com sombra e emoji automático ---------- */
+/* ---------- Tempo (Open-Meteo) — Vargem Pequena (RJ) ---------- */
 (function(){
   const EVENT_DATE = '2025-11-16';
-  const LAT=-22.606, LON=-43.490, TZ='America/Sao_Paulo';
-  const elDate=document.getElementById('weatherDate'), elText=document.getElementById('weatherText'), elSrc=document.getElementById('weatherSource');
+  const LAT = -22.969;   // Vargem Pequena (aprox.)
+  const LON = -43.462;   // Vargem Pequena (aprox.)
+  const TZ  = 'America/Sao_Paulo';
+
+  const elDate=document.getElementById('weatherDate');
+  const elText=document.getElementById('weatherText');
+  const elSrc=document.getElementById('weatherSource');
 
   // Data exibida (ex.: "16 de novembro")
   elDate.textContent = new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'long'}).format(new Date(EVENT_DATE+'T12:00:00'));
@@ -808,7 +813,8 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
   }
   function srcStamp(){
     const now=new Date();
-    const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ}).format(now).replace('.','');
+    const stamp=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZone:TZ})
+      .format(now).replace('.','');
     elSrc.innerHTML=`Fonte: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> • Atualizado em ${stamp} (BRT)`;
   }
 
@@ -831,7 +837,7 @@ document.getElementById('mural-send')?.addEventListener('click', async ()=>{
         const d=await daily();
         const tmax=d.daily.temperature_2m_max?.[0];
         const tmin=d.daily.temperature_2m_min?.[0];
-        const p=d.daily.precipitation_probability_mean?.[0];
+        const p   =d.daily.precipitation_probability_mean?.[0];
         render(tmin, tmax, p);
       }else{
         const c=await clim(); const m=c.monthly||{};
