@@ -251,29 +251,48 @@
   /* >>> Encerrar confirmações: esconder o botão RSVP */
   #open-rsvp { display: none !important; }
 
-  /* >>> Ribbon de destaque "Confirmações encerradas" (agora no card "Falta pouco") */
+  /* >>> Ribbon "Confirmações encerradas" — segura e responsiva */
   .card.ribbon { position: relative; overflow: hidden; }
+
+  /* Versão diagonal (desktop/tablet) */
   .ribbon-badge{
     position: absolute;
-    top: 12px;
-    right: -46px;
+    top: 16px;
+    right: -90px;                 /* cruza o canto sem cortar */
     transform: rotate(45deg);
     background: linear-gradient(135deg, var(--roxo), var(--roxo-esc));
     color: #fff;
-    padding: 8px 88px;
+    padding: 10px 170px;          /* comprimento suficiente pro texto */
     font-weight: 800;
     letter-spacing: .04em;
     text-transform: uppercase;
-    font-size: .78rem;
+    font-size: clamp(.66rem, 1.5vw, .82rem);
+    white-space: nowrap;          /* impede quebra de linha */
     box-shadow: 0 8px 18px rgba(0,0,0,.15);
     pointer-events: none;
     user-select: none;
+    z-index: 2;
   }
-  @media (max-width: 420px){
-    .ribbon-badge{ top:10px; right:-64px; padding:6px 110px; font-size:.72rem; }
+
+  @media (min-width: 1200px){
+    .ribbon-badge{ right: -100px; padding: 10px 190px; }
   }
-  @media (min-width: 900px){
-    .ribbon-badge{ top:16px; right:-52px; }
+  @media (max-width: 900px){
+    .ribbon-badge{ right: -80px;  padding: 8px 150px; }
+  }
+
+  /* Em telas pequenas, vira uma barra horizontal para nunca cortar */
+  @media (max-width: 640px){
+    .card.ribbon{ padding-top: 56px; }  /* espaço para a barra */
+    .ribbon-badge{
+      transform: none;
+      top: 10px;
+      right: 12px;
+      left: 12px;               /* ocupa a largura do card */
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
   }
   </style>
 </head>
