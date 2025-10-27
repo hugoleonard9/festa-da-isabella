@@ -211,7 +211,7 @@
 
   /* ===== Melhorias para Desktop e Ultrawide ===== */
   @media (min-width: 900px) {
-    .container { max-width: 1100px; padding: 28px 20px; }
+    .container { max_width: 1100px; padding: 28px 20px; }
 
     .hero { height: 62vh; min-height: 520px; background-position: center 35%; }
     .hero h1 { font-size: clamp(40px, 5.2vw, 64px); }
@@ -251,16 +251,16 @@
   /* >>> Encerrar confirmações: esconder o botão RSVP */
   #open-rsvp { display: none !important; }
 
-  /* >>> Ribbon de destaque "Confirmações encerradas" */
+  /* >>> Ribbon de destaque "Confirmações encerradas" (agora no card "Falta pouco") */
   .card.ribbon { position: relative; overflow: hidden; }
   .ribbon-badge{
     position: absolute;
     top: 12px;
-    right: -48px;
+    right: -46px;
     transform: rotate(45deg);
     background: linear-gradient(135deg, var(--roxo), var(--roxo-esc));
     color: #fff;
-    padding: 8px 86px;
+    padding: 8px 88px;
     font-weight: 800;
     letter-spacing: .04em;
     text-transform: uppercase;
@@ -269,8 +269,11 @@
     pointer-events: none;
     user-select: none;
   }
+  @media (max-width: 420px){
+    .ribbon-badge{ top:10px; right:-64px; padding:6px 110px; font-size:.72rem; }
+  }
   @media (min-width: 900px){
-    .ribbon-badge{ top: 16px; right: -52px; }
+    .ribbon-badge{ top:16px; right:-52px; }
   }
   </style>
 </head>
@@ -316,7 +319,8 @@
   </section>
 
   <!-- 2) Contagem regressiva -->
-  <section class="card center" id="countdown-card">
+  <section class="card center ribbon" id="countdown-card">
+    <span class="ribbon-badge" aria-hidden="true">Confirmações encerradas</span>
     <h2 id="cd-status" class="cd-title">Falta pouco! 🎉</h2>
     <div class="countdown" aria-live="polite">
       <div class="cd-grid">
@@ -339,8 +343,7 @@
   </section>
 
   <!-- 3) Informações -->
-  <section class="card center ribbon" id="info-festa">
-    <span class="ribbon-badge" aria-hidden="true">Confirmações encerradas</span>
+  <section class="card center" id="info-festa">
     <h2>Informações da festa</h2>
     <ul class="details">
       <li><span class="icon">📅</span>16 de novembro de 2025, 11h00–15h00</li>
@@ -453,7 +456,7 @@
   <div class="modal-card">
     <div class="modal-header">
       <div class="modal-title">Confirmação de presença ✨</div>
-    <button class="close" data-close="modal-rsvp">✕</button>
+      <button class="close" data-close="modal-rsvp">✕</button>
     </div>
 
     <p class="muted" style="margin:0 0 10px">Preencha seus dados e envie — abriremos o WhatsApp com a mensagem pronta.</p>
